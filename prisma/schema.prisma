@@ -84,7 +84,7 @@ model Publication {
     imageUrl      String?
     author        User           @relation(fields: [authorId], references: [id])
     authorId      String
-    items         Item[]
+    Items         Item[]
     Subscriptions Subscription[]
 }
 
