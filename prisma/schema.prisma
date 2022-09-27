@@ -55,7 +55,7 @@ model User {
     sessions      Session[]
     Publications  Publication[]
     publicationId Int?
-    Subscription  Subscription[]
+    Subscriptions Subscription[]
 }
 
 model VerificationToken {
@@ -78,15 +78,15 @@ model Item {
 }
 
 model Publication {
-    id           Int            @id @default(autoincrement())
-    createdAt    DateTime       @default(now())
-    name         String
-    description  String?
-    imageUrl     String?
-    author       User           @relation(fields: [authorId], references: [id])
-    authorId     String
-    items        Item[]
-    Subscription Subscription[]
+    id            Int            @id @default(autoincrement())
+    createdAt     DateTime       @default(now())
+    name          String
+    description   String?
+    imageUrl      String?
+    author        User           @relation(fields: [authorId], references: [id])
+    authorId      String
+    items         Item[]
+    Subscriptions Subscription[]
 }
 
 model Subscription {
