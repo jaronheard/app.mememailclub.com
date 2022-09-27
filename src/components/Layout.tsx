@@ -101,6 +101,7 @@ const Layout = (props: LayoutProps) => {
                                 className="h-8 w-8 rounded-full"
                                 src={props.user.imageUrl || ""}
                                 alt=""
+                                referrerPolicy="no-referrer"
                               />
                             </Menu.Button>
                           </div>
