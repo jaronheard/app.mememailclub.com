@@ -1,4 +1,5 @@
 import { signIn, signOut, useSession } from "next-auth/react";
+import { useState } from "react";
 import { trpc } from "../utils/trpc";
 
 const Items = () => {
@@ -24,6 +25,10 @@ const Items = () => {
 
 const Home = () => {
   const { data: session, status } = useSession();
+  const [name, setName] = useState("");
+  const [front, setFront] = useState([""]);
+  const [back, setBack] = useState([""]);
+  const createItem = trpc.useMutation("item.createItem");
 
   if (status === "loading") {
     return <main className="flex flex-col items-center pt-4">Loading...</main>;
@@ -36,6 +41,53 @@ const Home = () => {
         <div>
           <p>Signed in as {session.user?.email}</p>
           <button onClick={() => signOut()}>Sign out</button>
+          <div className="pt-6">
+            <form
+              className="flex flex-col gap-2"
+              onSubmit={(event) => {
+                event.preventDefault();
+
+                createItem.mutate({
+                  email: session.user?.email as string,
+                  name: name,
+                  front: front,
+                  back: back,
+                });
+
+                setName("");
+                setFront([""]);
+                setBack([""]);
+              }}
+            >
+              <input
+                type="text"
+                value={name}
+                placeholder="Name"
+                onChange={(event) => setName(event.target.value)}
+                className="rounded-md border-2 border-zinc-800 px-4 py-2 focus:outline-none"
+              />
+              <input
+                type="text"
+                value={front}
+                placeholder="Front"
+                onChange={(event) => setFront([event.target.value])}
+                className="rounded-md border-2 border-zinc-800 px-4 py-2 focus:outline-none"
+              />
+              <input
+                type="text"
+                value={back}
+                placeholder="Back"
+                onChange={(event) => setBack([event.target.value])}
+                className="rounded-md border-2 border-zinc-800 px-4 py-2 focus:outline-none"
+              />
+              <button
+                type="submit"
+                className="rounded-md border-2 border-zinc-800 p-2 focus:outline-none"
+              >
+                Submit
+              </button>
+            </form>
+          </div>
           <div className="pt-10">
             <Items />
           </div>

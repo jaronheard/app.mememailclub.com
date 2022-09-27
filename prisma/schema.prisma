@@ -64,9 +64,10 @@ model VerificationToken {
 }
 
 model Item {
-    id          String   @id @default(cuid())
-    createdAt   DateTime @default(now())
-    name        String
-    front       String[] @db.VarChar(100)
-    back        String[] @db.VarChar(100)
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    email     String
+    name      String
+    front     String[] @db.VarChar(100)
+    back      String[] @db.VarChar(100)
 }

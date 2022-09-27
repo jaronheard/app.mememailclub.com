@@ -9,6 +9,7 @@ export const itemRouter = createRouter()
         return await ctx.prisma.item.findMany({
           select: {
             name: true,
+            email: true,
             front: true,
             back: true,
           },
@@ -31,14 +32,16 @@ export const itemRouter = createRouter()
   })
   .mutation("createItem", {
     input: z.object({
-      name: z.string().max(100),
-      front: z.string().max(100),
-      back: z.string(),
+      email: z.string().email(),
+      name: z.string(),
+      front: z.array(z.string().max(100)),
+      back: z.array(z.string().max(100)),
     }),
     async resolve({ ctx, input }) {
       try {
         await ctx.prisma.item.create({
           data: {
+            email: input.email,
             name: input.name,
             front: input.front,
             back: input.back,
