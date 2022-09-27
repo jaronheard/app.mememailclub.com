@@ -46,13 +46,16 @@ model Session {
 }
 
 model User {
-    id            String    @id @default(cuid())
+    id            String         @id @default(cuid())
     name          String?
-    email         String?   @unique
+    email         String?        @unique
     emailVerified DateTime?
     image         String?
     accounts      Account[]
     sessions      Session[]
+    Publications  Publication[]
+    publicationId Int?
+    Subscription  Subscription[]
 }
 
 model VerificationToken {
@@ -64,10 +67,31 @@ model VerificationToken {
 }
 
 model Item {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    email     String
-    name      String
-    front     String[] @db.VarChar(100)
-    back      String[] @db.VarChar(100)
+    id            Int         @id @default(autoincrement())
+    createdAt     DateTime    @default(now())
+    email         String
+    name          String
+    front         String[]    @db.VarChar(100)
+    back          String[]    @db.VarChar(100)
+    publicationId Int
+    publication   Publication @relation(fields: [publicationId], references: [id])
+}
+
+model Publication {
+    id           Int            @id @default(autoincrement())
+    createdAt    DateTime       @default(now())
+    name         String
+    author       User           @relation(fields: [authorId], references: [id])
+    authorId     String
+    items        Item[]
+    Subscription Subscription[]
+}
+
+model Subscription {
+    id            String      @id @default(cuid())
+    createdAt     DateTime    @default(now())
+    publicationId Int
+    publication   Publication @relation(fields: [publicationId], references: [id])
+    subscriberId  String
+    subscriber    User        @relation(fields: [subscriberId], references: [id])
 }
