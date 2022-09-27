@@ -3,9 +3,47 @@ import { useState } from "react";
 import Layout from "../components/Layout";
 import SignIn from "../components/SignIn";
 import { trpc } from "../utils/trpc";
+import { PlusIcon } from "@heroicons/react/20/solid";
+
+const PublicationsEmpty = () => {
+  return (
+    <div className="text-center">
+      <svg
+        className="mx-auto h-12 w-12 text-gray-400"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        aria-hidden="true"
+      >
+        <path
+          vectorEffect="non-scaling-stroke"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"
+        />
+      </svg>
+      <h3 className="mt-2 text-sm font-medium text-gray-900">
+        No publications
+      </h3>
+      <p className="mt-1 text-sm text-gray-500">
+        Get started by creating a new publication.
+      </p>
+      <div className="mt-6">
+        <button
+          type="button"
+          className="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+        >
+          <PlusIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
+          New Publication
+        </button>
+      </div>
+    </div>
+  );
+};
 
 const Items = () => {
-  const { data: items, isLoading } = trpc.useQuery(["item.getAll"]);
+  const { data: items, isLoading } = trpc.useQuery(["items.getAll"]);
 
   if (isLoading) return <div>Fetching messages...</div>;
 
@@ -25,23 +63,50 @@ const Items = () => {
   );
 };
 
+const Publications = () => {
+  const { data: publications, isLoading } = trpc.useQuery([
+    "publications.getAll",
+  ]);
+
+  if (isLoading) return <div>Fetching messages...</div>;
+
+  // return placeeholder if 0 publications
+  if (publications?.length === 0) {
+    return <PublicationsEmpty />;
+  }
+
+  return (
+    <div className="flex flex-col gap-4">
+      {publications?.map((publication, index) => {
+        console.log(publication);
+        return (
+          <div key={index}>
+            <p>{publication.name}</p>
+            <p>{publication.description}</p>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
 const Home = () => {
   const { data: session, status } = useSession();
   const [name, setName] = useState("");
   const [front, setFront] = useState([""]);
   const [back, setBack] = useState([""]);
   const ctx = trpc.useContext();
-  const createItem = trpc.useMutation("item.createItem", {
+  const createItem = trpc.useMutation("items.createItem", {
     onMutate: () => {
-      ctx.cancelQuery(["item.getAll"]);
+      ctx.cancelQuery(["items.getAll"]);
 
-      const optimisticUpdate = ctx.getQueryData(["item.getAll"]);
+      const optimisticUpdate = ctx.getQueryData(["items.getAll"]);
       if (optimisticUpdate) {
-        ctx.setQueryData(["item.getAll"], optimisticUpdate);
+        ctx.setQueryData(["items.getAll"], optimisticUpdate);
       }
     },
     onSettled: () => {
-      ctx.invalidateQueries(["item.getAll"]);
+      ctx.invalidateQueries(["items.getAll"]);
     },
   });
 
@@ -60,7 +125,8 @@ const Home = () => {
           }}
           signOut={signOut}
         >
-          <div>
+          <Publications />
+          {/* <div>
             <div className="pt-6">
               <form
                 className="flex flex-col gap-2"
@@ -110,8 +176,8 @@ const Home = () => {
             </div>
             <div className="pt-10">
               <Items />
-            </div>
-          </div>
+            </div> 
+          </div>*/}
         </Layout>
       ) : (
         <SignIn signIn={() => signIn("google")} />

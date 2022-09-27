@@ -2,7 +2,7 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createRouter } from "./context";
 
-export const publicationRouter = createRouter()
+export const publications = createRouter()
   .query("getAll", {
     async resolve({ ctx }) {
       try {
