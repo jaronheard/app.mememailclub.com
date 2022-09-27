@@ -54,7 +54,6 @@ model User {
     accounts      Account[]
     sessions      Session[]
     Publications  Publication[]
-    publicationId Int?
     Subscriptions Subscription[]
 }
 
