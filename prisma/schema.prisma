@@ -62,3 +62,11 @@ model VerificationToken {
 
     @@unique([identifier, token])
 }
+
+model Item {
+    id          String   @id @default(cuid())
+    createdAt   DateTime @default(now())
+    name        String
+    front       String[] @db.VarChar(100)
+    back        String[] @db.VarChar(100)
+}
