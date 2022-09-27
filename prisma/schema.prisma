@@ -81,7 +81,7 @@ model Publication {
     id           Int            @id @default(autoincrement())
     createdAt    DateTime       @default(now())
     name         String
-    description  String
+    description  String?
     author       User           @relation(fields: [authorId], references: [id])
     authorId     String
     items        Item[]
