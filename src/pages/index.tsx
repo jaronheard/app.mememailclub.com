@@ -3,7 +3,55 @@ import { useState } from "react";
 import Layout from "../components/Layout";
 import SignIn from "../components/SignIn";
 import { trpc } from "../utils/trpc";
-import { PlusIcon } from "@heroicons/react/20/solid";
+// Import for PublicationsEmpty
+import { EyeIcon, EyeSlashIcon, PlusIcon } from "@heroicons/react/20/solid";
+//imports for PublicationsList
+import {
+  CheckCircleIcon,
+  ChevronRightIcon,
+  UsersIcon,
+  EnvelopeOpenIcon,
+} from "@heroicons/react/20/solid";
+import { format } from "date-fns";
+
+const applications = [
+  {
+    applicant: {
+      name: "Ricardo Cooper",
+      email: "ricardo.cooper@example.com",
+      imageUrl:
+        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+    },
+    date: "2020-01-07",
+    dateFull: "January 7, 2020",
+    stage: "Completed phone screening",
+    href: "#",
+  },
+  {
+    applicant: {
+      name: "Kristen Ramos",
+      email: "kristen.ramos@example.com",
+      imageUrl:
+        "https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+    },
+    date: "2020-01-07",
+    dateFull: "January 7, 2020",
+    stage: "Completed phone screening",
+    href: "#",
+  },
+  {
+    applicant: {
+      name: "Ted Fox",
+      email: "ted.fox@example.com",
+      imageUrl:
+        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+    },
+    date: "2020-01-07",
+    dateFull: "January 7, 2020",
+    stage: "Completed phone screening",
+    href: "#",
+  },
+];
 
 const PublicationsEmpty = () => {
   return (
@@ -76,16 +124,88 @@ const Publications = () => {
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      {publications?.map((publication, index) => {
-        console.log(publication);
-        return (
-          <div key={index}>
-            <p>{publication.name}</p>
-            <p>{publication.description}</p>
-          </div>
-        );
-      })}
+    <div className="overflow-hidden bg-white shadow sm:rounded-md">
+      <ul role="list" className="divide-y divide-gray-200">
+        {publications &&
+          publications.map((publication) => (
+            <li key={publication.id}>
+              <a href="#" className="block hover:bg-gray-50">
+                <div className="flex items-center px-4 py-4 sm:px-6">
+                  <div className="flex min-w-0 flex-1 items-center">
+                    <div className="flex-shrink-0">
+                      <img
+                        className="h-12 w-12 rounded-full"
+                        src={publication.imageUrl || ""}
+                        alt=""
+                      />
+                    </div>
+                    <div className="min-w-0 flex-1 px-4 md:grid md:grid-cols-2 md:gap-4">
+                      <div>
+                        <p className="truncate text-sm font-medium text-indigo-600">
+                          {publication.name}
+                        </p>
+                        <p className="mt-2 flex items-center text-sm text-gray-500">
+                          <UsersIcon
+                            className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                            aria-hidden="true"
+                          />
+                          <span className="">
+                            {publication.Subscriptions.length} subscribers
+                          </span>
+                          <EnvelopeOpenIcon
+                            className="ml-3 mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                            aria-hidden="true"
+                          />
+                          <span className="">
+                            {publication.Items.length} items
+                          </span>
+                        </p>
+                      </div>
+                      <div className="hidden md:block">
+                        <div>
+                          <p className="text-sm text-gray-900">
+                            Created on{" "}
+                            <time
+                              dateTime={format(
+                                publication.createdAt,
+                                "yyyy-MM-dd"
+                              )}
+                            >
+                              {format(publication.createdAt, "yyyy-MM-dd")}
+                            </time>
+                          </p>
+                          <p className="mt-2 flex items-center text-sm text-gray-500">
+                            {publication.status === "DRAFT" && (
+                              <EyeSlashIcon
+                                className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                                aria-hidden="true"
+                              />
+                            )}
+                            {publication.status === "PUBLISHED" && (
+                              <EyeIcon
+                                className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                                aria-hidden="true"
+                              />
+                            )}
+                            <span className="capitalize">
+                              {publication.status.toLowerCase()}
+                            </span>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <ChevronRightIcon
+                      className="h-5 w-5 text-gray-400"
+                      aria-hidden="true"
+                    />
+                  </div>
+                </div>
+              </a>
+            </li>
+          ))}
+      </ul>
     </div>
   );
 };

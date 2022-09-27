@@ -8,9 +8,15 @@ export const publications = createRouter()
       try {
         return await ctx.prisma.publication.findMany({
           select: {
+            id: true,
+            createdAt: true,
             name: true,
             description: true,
             author: true,
+            imageUrl: true,
+            status: true,
+            Subscriptions: true,
+            Items: true,
           },
           orderBy: {
             createdAt: "desc",
@@ -34,6 +40,7 @@ export const publications = createRouter()
       authorId: z.string(),
       name: z.string(),
       description: z.string(),
+      imageUrl: z.string().url(),
     }),
     async resolve({ ctx, input }) {
       try {
@@ -42,6 +49,7 @@ export const publications = createRouter()
             authorId: input.authorId,
             name: input.name,
             description: input.description,
+            imageUrl: input.imageUrl,
           },
         });
       } catch (error) {

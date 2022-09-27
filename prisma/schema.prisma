@@ -84,6 +84,7 @@ model Publication {
     imageUrl      String?
     author        User           @relation(fields: [authorId], references: [id])
     authorId      String
+    status        Status         @default(DRAFT)
     Items         Item[]
     Subscriptions Subscription[]
 }
@@ -95,4 +96,9 @@ model Subscription {
     publication   Publication @relation(fields: [publicationId], references: [id])
     subscriberId  String
     subscriber    User        @relation(fields: [subscriberId], references: [id])
+}
+
+enum Status {
+    DRAFT
+    PUBLISHED
 }
