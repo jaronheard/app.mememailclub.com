@@ -82,6 +82,7 @@ model Publication {
     createdAt    DateTime       @default(now())
     name         String
     description  String?
+    imageUrl     String?
     author       User           @relation(fields: [authorId], references: [id])
     authorId     String
     items        Item[]
