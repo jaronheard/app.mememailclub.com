@@ -61,8 +61,6 @@ const Home = () => {
           signOut={signOut}
         >
           <div>
-            <p>Signed in as {session.user?.email}</p>
-            <button onClick={() => signOut()}>Sign out</button>
             <div className="pt-6">
               <form
                 className="flex flex-col gap-2"

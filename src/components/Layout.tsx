@@ -20,7 +20,7 @@ const Layout = (props: LayoutProps) => {
     { name: "Explore", href: "#", current: false },
   ];
   const userNavigation = [
-    // { name: "Your Profile", href: "#" },
+    { name: "Your Profile", href: "#" },
     // { name: "Settings", href: "#" },
     { name: "Sign out", onClick: props.signOut },
   ];
@@ -99,7 +99,7 @@ const Layout = (props: LayoutProps) => {
                               <span className="sr-only">Open user menu</span>
                               <img
                                 className="h-8 w-8 rounded-full"
-                                src={props.user.imageUrl}
+                                src={props.user.imageUrl || ""}
                                 alt=""
                               />
                             </Menu.Button>
@@ -174,8 +174,8 @@ const Layout = (props: LayoutProps) => {
                       <div className="flex-shrink-0">
                         <img
                           className="h-10 w-10 rounded-full"
-                          src={props.user.imageUrl}
-                          referrerpolicy="no-referrer"
+                          src={props.user.imageUrl || ""}
+                          referrerPolicy="no-referrer"
                           alt=""
                         />
                       </div>
