@@ -28,7 +28,20 @@ const Home = () => {
   const [name, setName] = useState("");
   const [front, setFront] = useState([""]);
   const [back, setBack] = useState([""]);
-  const createItem = trpc.useMutation("item.createItem");
+  const ctx = trpc.useContext();
+  const createItem = trpc.useMutation("item.createItem", {
+    onMutate: () => {
+      ctx.cancelQuery(["item.getAll"]);
+
+      const optimisticUpdate = ctx.getQueryData(["item.getAll"]);
+      if (optimisticUpdate) {
+        ctx.setQueryData(["item.getAll"], optimisticUpdate);
+      }
+    },
+    onSettled: () => {
+      ctx.invalidateQueries(["item.getAll"]);
+    },
+  });
 
   if (status === "loading") {
     return <main className="flex flex-col items-center pt-4">Loading...</main>;
