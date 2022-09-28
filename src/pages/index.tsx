@@ -49,27 +49,6 @@ const PublicationsEmpty = () => {
   );
 };
 
-const Items = () => {
-  const { data: items, isLoading } = trpc.useQuery(["items.getAll"]);
-
-  if (isLoading) return <div>Loading items...</div>;
-
-  return (
-    <div className="flex flex-col gap-4">
-      {items?.map((item, index) => {
-        return (
-          <div key={index}>
-            <p>{item.name}</p>
-            <code className="max-w-md">{item.front[0]}</code>
-            <br></br>
-            <code className="max-w-md">{item.back[0]}</code>
-          </div>
-        );
-      })}
-    </div>
-  );
-};
-
 const Publications = () => {
   const { data: publications, isLoading } = trpc.useQuery([
     "publications.getAll",
