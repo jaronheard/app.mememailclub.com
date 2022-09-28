@@ -5,7 +5,6 @@ import Layout from "../../components/Layout";
 import SignIn from "../../components/SignIn";
 import { trpc } from "../../utils/trpc";
 import clsx from "clsx";
-import { router } from "@trpc/server";
 import { useRouter } from "next/router";
 
 const New = () => {
@@ -46,19 +45,7 @@ const New = () => {
           }}
           signOut={signOut}
         >
-          <form
-            onSubmit={handleSubmit((data) => {
-              createPublication.mutate({
-                authorId: session.user?.id as string,
-                name: data.name,
-                description: data.description,
-                imageUrl:
-                  "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-              });
-
-              router.push("/");
-            })}
-          >
+          <form>
             <div className="space-y-8 divide-y divide-gray-200">
               <div>
                 <div>
@@ -82,6 +69,7 @@ const New = () => {
                     <div className="mt-1">
                       <input
                         {...register("name", { required: true })}
+                        autoComplete="off"
                         className={clsx(
                           "block w-full rounded-md border p-3 shadow-sm focus:border-indigo-500  focus:ring-indigo-500 sm:text-sm",
                           {
@@ -108,6 +96,7 @@ const New = () => {
                     <div className="mt-1">
                       <textarea
                         {...register("description", { required: true })}
+                        autoComplete="off"
                         rows={3}
                         className={clsx(
                           "block w-full rounded-md shadow-sm focus:border-indigo-500  focus:ring-indigo-500 sm:text-sm",
@@ -196,10 +185,38 @@ const New = () => {
                   </a>
                 </Link>
                 <button
-                  type="submit"
+                  onClick={handleSubmit((data) => {
+                    createPublication.mutate({
+                      authorId: session.user?.id as string,
+                      name: data.name,
+                      description: data.description,
+                      imageUrl:
+                        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+                      status: "DRAFT",
+                    });
+
+                    router.push("/");
+                  })}
+                  className="ml-3 inline-flex items-center rounded-md border border-transparent bg-indigo-100 px-4 py-2 text-sm font-medium text-indigo-700 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                >
+                  Save draft
+                </button>
+                <button
+                  onClick={handleSubmit((data) => {
+                    createPublication.mutate({
+                      authorId: session.user?.id as string,
+                      name: data.name,
+                      description: data.description,
+                      imageUrl:
+                        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+                      status: "PUBLISHED",
+                    });
+
+                    router.push("/");
+                  })}
                   className="ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 >
-                  Save
+                  Publish
                 </button>
               </div>
             </div>

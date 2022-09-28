@@ -41,6 +41,7 @@ export const publications = createRouter()
       name: z.string(),
       description: z.string(),
       imageUrl: z.string().url(),
+      status: z.enum(["DRAFT", "PUBLISHED"]),
     }),
     async resolve({ ctx, input }) {
       try {
@@ -50,6 +51,7 @@ export const publications = createRouter()
             name: input.name,
             description: input.description,
             imageUrl: input.imageUrl,
+            status: input.status,
           },
         });
       } catch (error) {
