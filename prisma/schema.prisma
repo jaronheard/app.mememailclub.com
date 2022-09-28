@@ -68,10 +68,12 @@ model VerificationToken {
 model Item {
     id            Int         @id @default(autoincrement())
     createdAt     DateTime    @default(now())
-    email         String
     name          String
+    description   String?
+    imageUrl      String?
     front         String[]    @db.VarChar(100)
     back          String[]    @db.VarChar(100)
+    status        Status      @default(DRAFT)
     publicationId Int
     publication   Publication @relation(fields: [publicationId], references: [id])
 }

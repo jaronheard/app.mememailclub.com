@@ -8,6 +8,8 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { signOut } from "next-auth/react";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -17,12 +19,22 @@ interface LayoutProps {
     email?: string | null;
     imageUrl?: string | null;
   };
+  title?: string;
 }
 
 const Layout = (props: LayoutProps) => {
+  const router = useRouter();
   const navigation = [
-    { name: "Create", href: "#", current: true },
-    { name: "Explore", href: "#", current: false },
+    {
+      name: "Explore",
+      href: "/publications",
+      current: ["/publications"].includes(router.asPath),
+    },
+    {
+      name: "Create",
+      href: "/publications/new",
+      current: ["/publications/new"].includes(router.asPath),
+    },
   ];
   const userNavigation = props.user
     ? [
@@ -55,19 +67,19 @@ const Layout = (props: LayoutProps) => {
                       <div className="hidden lg:ml-10 lg:block">
                         <div className="flex space-x-4">
                           {navigation.map((item) => (
-                            <a
-                              key={item.name}
-                              href={item.href}
-                              className={clsx(
-                                item.current
-                                  ? "bg-indigo-700 text-white"
-                                  : "text-white hover:bg-indigo-500 hover:bg-opacity-75",
-                                "rounded-md py-2 px-3 text-sm font-medium"
-                              )}
-                              aria-current={item.current ? "page" : undefined}
-                            >
-                              {item.name}
-                            </a>
+                            <Link key={item.name} href={item.href}>
+                              <a
+                                className={clsx(
+                                  item.current
+                                    ? "bg-indigo-700 text-white"
+                                    : "text-white hover:bg-indigo-500 hover:bg-opacity-75",
+                                  "rounded-md py-2 px-3 text-sm font-medium"
+                                )}
+                                aria-current={item.current ? "page" : undefined}
+                              >
+                                {item.name}
+                              </a>
+                            </Link>
                           ))}
                         </div>
                       </div>
@@ -244,7 +256,9 @@ const Layout = (props: LayoutProps) => {
           <header className="py-10">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
               <h1 className="text-3xl font-bold tracking-tight text-white">
-                Create
+                {props.title ||
+                  navigation.find((item) => item.current)?.name ||
+                  "Meme Mail Club"}
               </h1>
             </div>
           </header>
