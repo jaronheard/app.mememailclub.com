@@ -58,4 +58,30 @@ export const publications = createRouter()
         console.log(error);
       }
     },
+  })
+  .mutation("updatePublication", {
+    input: z.object({
+      id: z.number(),
+      name: z.string(),
+      description: z.string(),
+      imageUrl: z.string().url(),
+      status: z.enum(["DRAFT", "PUBLISHED"]),
+    }),
+    async resolve({ ctx, input }) {
+      try {
+        await ctx.prisma.publication.update({
+          where: {
+            id: input.id,
+          },
+          data: {
+            name: input.name,
+            description: input.description,
+            imageUrl: input.imageUrl,
+            status: input.status,
+          },
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    },
   });
