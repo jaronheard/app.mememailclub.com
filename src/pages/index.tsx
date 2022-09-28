@@ -1,6 +1,5 @@
-import { signIn, signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import Layout from "../components/Layout";
-import SignIn from "../components/SignIn";
 import { trpc } from "../utils/trpc";
 // Import for PublicationsEmpty
 import { EyeIcon, EyeSlashIcon, PlusIcon } from "@heroicons/react/20/solid";
@@ -50,6 +49,7 @@ const PublicationsEmpty = () => {
 };
 
 const Publications = () => {
+  const { status } = useSession();
   const { data: publications, isLoading } = trpc.useQuery([
     "publications.getAll",
   ]);
@@ -63,13 +63,15 @@ const Publications = () => {
 
   return (
     <div>
-      <Link href="/publications/new">
-        <a className="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-          <PlusIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
-          New Publication
-        </a>
-      </Link>
-      <div className="mt-6 overflow-hidden bg-white shadow sm:rounded-md">
+      {status === "authenticated" && (
+        <Link href="/publications/new">
+          <a className="mb-6 inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+            <PlusIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
+            New Publication
+          </a>
+        </Link>
+      )}
+      <div className="overflow-hidden bg-white shadow sm:rounded-md">
         <ul role="list" className="divide-y divide-gray-200">
           {publications &&
             publications.map((publication) => (
@@ -160,7 +162,6 @@ const Publications = () => {
 
 const Home = () => {
   const { data: session, status } = useSession();
-  const createItem = trpc.useMutation("items.createItem");
 
   if (status === "loading") {
     return <main className="flex flex-col items-center pt-4">Loading...</main>;
@@ -175,12 +176,13 @@ const Home = () => {
             email: session.user?.email,
             imageUrl: session.user?.image,
           }}
-          signOut={signOut}
         >
           <Publications />
         </Layout>
       ) : (
-        <SignIn signIn={() => signIn("google")} />
+        <Layout>
+          <Publications />
+        </Layout>
       )}
     </>
   );

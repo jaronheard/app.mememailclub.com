@@ -1,17 +1,22 @@
 import { Fragment } from "react";
 import clsx from "clsx";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
-import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import {
+  Bars3Icon,
+  BellIcon,
+  UserCircleIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline";
+import { signOut } from "next-auth/react";
 
 interface LayoutProps {
   children: React.ReactNode;
-  user: {
+  user?: {
     // all properties could be null or undefined
     name?: string | null;
     email?: string | null;
     imageUrl?: string | null;
   };
-  signOut: () => void;
 }
 
 const Layout = (props: LayoutProps) => {
@@ -19,11 +24,13 @@ const Layout = (props: LayoutProps) => {
     { name: "Create", href: "#", current: true },
     { name: "Explore", href: "#", current: false },
   ];
-  const userNavigation = [
-    { name: "Your Profile", href: "#" },
-    // { name: "Settings", href: "#" },
-    { name: "Sign out", onClick: props.signOut },
-  ];
+  const userNavigation = props.user
+    ? [
+        { name: "Your Profile", href: "#" },
+        // { name: "Settings", href: "#" },
+        { name: "Sign out", onClick: () => signOut() },
+      ]
+    : [{ name: "Sign in", href: "/login" }];
 
   return (
     <>
@@ -97,12 +104,16 @@ const Layout = (props: LayoutProps) => {
                           <div>
                             <Menu.Button className="flex rounded-full bg-indigo-600 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-indigo-600">
                               <span className="sr-only">Open user menu</span>
-                              <img
-                                className="h-8 w-8 rounded-full"
-                                src={props.user.imageUrl || ""}
-                                alt=""
-                                referrerPolicy="no-referrer"
-                              />
+                              {props.user ? (
+                                <img
+                                  className="h-8 w-8 rounded-full"
+                                  src={props.user.imageUrl || ""} // TODO: default image
+                                  alt=""
+                                  referrerPolicy="no-referrer"
+                                />
+                              ) : (
+                                <UserCircleIcon className="h-8 w-8 rounded-full" />
+                              )}
                             </Menu.Button>
                           </div>
                           <Transition
@@ -173,21 +184,27 @@ const Layout = (props: LayoutProps) => {
                   <div className="border-t border-indigo-700 pt-4 pb-3">
                     <div className="flex items-center px-5">
                       <div className="flex-shrink-0">
-                        <img
-                          className="h-10 w-10 rounded-full"
-                          src={props.user.imageUrl || ""}
-                          referrerPolicy="no-referrer"
-                          alt=""
-                        />
+                        {props.user ? (
+                          <img
+                            className="h-10 w-10 rounded-full"
+                            src={props.user.imageUrl || ""}
+                            referrerPolicy="no-referrer"
+                            alt=""
+                          />
+                        ) : (
+                          <UserCircleIcon className="h-10 w-10 rounded-full" />
+                        )}
                       </div>
-                      <div className="ml-3">
-                        <div className="text-base font-medium text-white">
-                          {props.user.name}
+                      {props.user && (
+                        <div className="ml-3">
+                          <div className="text-base font-medium text-white">
+                            {props.user.name}
+                          </div>
+                          <div className="text-sm font-medium text-indigo-300">
+                            {props.user.email}
+                          </div>
                         </div>
-                        <div className="text-sm font-medium text-indigo-300">
-                          {props.user.email}
-                        </div>
-                      </div>
+                      )}
                       <button
                         type="button"
                         className="ml-auto flex-shrink-0 rounded-full bg-indigo-600 p-1 text-indigo-200 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-indigo-600"

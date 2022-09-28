@@ -1,4 +1,4 @@
-import { signIn, signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
 import Layout from "../../components/Layout";
@@ -48,7 +48,6 @@ const Publication = () => {
             email: session.user?.email,
             imageUrl: session.user?.image,
           }}
-          signOut={signOut}
         >
           <form>
             <div className="space-y-8 divide-y divide-gray-200">
@@ -240,7 +239,7 @@ const Publication = () => {
           </form>
         </Layout>
       ) : (
-        <SignIn signIn={() => signIn("google")} />
+        <SignIn />
       )}
     </>
   );

@@ -1,8 +1,6 @@
-interface SignInProps {
-  signIn: () => void;
-}
+import { signIn } from "next-auth/react";
 
-export default function SignIn(props: SignInProps) {
+export default function SignIn() {
   return (
     <>
       <div className="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -23,7 +21,7 @@ export default function SignIn(props: SignInProps) {
             <div className="mt-1 grid grid-cols-1 gap-3">
               <div>
                 <button
-                  onClick={props.signIn}
+                  onClick={() => signIn("google")}
                   className="inline-flex w-full justify-center rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-500 shadow-sm hover:bg-gray-50"
                 >
                   <span className="sr-only">Sign in with Google</span>
