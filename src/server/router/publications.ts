@@ -111,4 +111,20 @@ export const publications = createRouter()
         console.log(error);
       }
     },
+  })
+  .mutation("deletePublication", {
+    input: z.object({
+      id: z.number(),
+    }),
+    async resolve({ ctx, input }) {
+      try {
+        await ctx.prisma.publication.delete({
+          where: {
+            id: input.id,
+          },
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    },
   });

@@ -74,80 +74,82 @@ const Publications = () => {
           {publications &&
             publications.map((publication) => (
               <li key={publication.id}>
-                <a href="#" className="block hover:bg-gray-50">
-                  <div className="flex items-center px-4 py-4 sm:px-6">
-                    <div className="flex min-w-0 flex-1 items-center">
-                      <div className="flex-shrink-0">
-                        <img
-                          className="h-12 w-12 rounded-full"
-                          src={publication.imageUrl || ""}
-                          alt=""
-                        />
-                      </div>
-                      <div className="min-w-0 flex-1 px-4 md:grid md:grid-cols-2 md:gap-4">
-                        <div>
-                          <p className="truncate text-sm font-medium text-indigo-600">
-                            {publication.name}
-                          </p>
-                          <p className="mt-2 flex items-center text-sm text-gray-500">
-                            <UsersIcon
-                              className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
-                              aria-hidden="true"
-                            />
-                            <span className="">
-                              {publication.Subscriptions.length} subscribers
-                            </span>
-                            <EnvelopeOpenIcon
-                              className="ml-3 mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
-                              aria-hidden="true"
-                            />
-                            <span className="">
-                              {publication.Items.length} items
-                            </span>
-                          </p>
+                <Link href={`/publications/${publication.id}`}>
+                  <a className="block hover:bg-gray-50">
+                    <div className="flex items-center px-4 py-4 sm:px-6">
+                      <div className="flex min-w-0 flex-1 items-center">
+                        <div className="flex-shrink-0">
+                          <img
+                            className="h-12 w-12 rounded-full"
+                            src={publication.imageUrl || ""}
+                            alt=""
+                          />
                         </div>
-                        <div className="hidden md:block">
+                        <div className="min-w-0 flex-1 px-4 md:grid md:grid-cols-2 md:gap-4">
                           <div>
-                            <p className="text-sm text-gray-900">
-                              Created on{" "}
-                              <time
-                                dateTime={format(
-                                  publication.createdAt,
-                                  "yyyy-MM-dd"
-                                )}
-                              >
-                                {format(publication.createdAt, "yyyy-MM-dd")}
-                              </time>
+                            <p className="truncate text-sm font-medium text-indigo-600">
+                              {publication.name}
                             </p>
                             <p className="mt-2 flex items-center text-sm text-gray-500">
-                              {publication.status === "DRAFT" && (
-                                <EyeSlashIcon
-                                  className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
-                                  aria-hidden="true"
-                                />
-                              )}
-                              {publication.status === "PUBLISHED" && (
-                                <EyeIcon
-                                  className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
-                                  aria-hidden="true"
-                                />
-                              )}
-                              <span className="capitalize">
-                                {publication.status.toLowerCase()}
+                              <UsersIcon
+                                className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                                aria-hidden="true"
+                              />
+                              <span className="">
+                                {publication.Subscriptions.length} subscribers
+                              </span>
+                              <EnvelopeOpenIcon
+                                className="ml-3 mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                                aria-hidden="true"
+                              />
+                              <span className="">
+                                {publication.Items.length} items
                               </span>
                             </p>
                           </div>
+                          <div className="hidden md:block">
+                            <div>
+                              <p className="text-sm text-gray-900">
+                                Created on{" "}
+                                <time
+                                  dateTime={format(
+                                    publication.createdAt,
+                                    "yyyy-MM-dd"
+                                  )}
+                                >
+                                  {format(publication.createdAt, "yyyy-MM-dd")}
+                                </time>
+                              </p>
+                              <p className="mt-2 flex items-center text-sm text-gray-500">
+                                {publication.status === "DRAFT" && (
+                                  <EyeSlashIcon
+                                    className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                                    aria-hidden="true"
+                                  />
+                                )}
+                                {publication.status === "PUBLISHED" && (
+                                  <EyeIcon
+                                    className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                                    aria-hidden="true"
+                                  />
+                                )}
+                                <span className="capitalize">
+                                  {publication.status.toLowerCase()}
+                                </span>
+                              </p>
+                            </div>
+                          </div>
                         </div>
                       </div>
+                      <div>
+                        <ChevronRightIcon
+                          className="h-5 w-5 text-gray-400"
+                          aria-hidden="true"
+                        />
+                      </div>
                     </div>
-                    <div>
-                      <ChevronRightIcon
-                        className="h-5 w-5 text-gray-400"
-                        aria-hidden="true"
-                      />
-                    </div>
-                  </div>
-                </a>
+                  </a>
+                </Link>
               </li>
             ))}
         </ul>
