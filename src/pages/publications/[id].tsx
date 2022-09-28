@@ -2,11 +2,11 @@ import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
 import Layout from "../../components/Layout";
-import SignIn from "../../components/SignIn";
 import { trpc } from "../../utils/trpc";
 import clsx from "clsx";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import Pricing from "../../components/Pricing";
 
 const Publication = () => {
   const router = useRouter();
@@ -41,7 +41,7 @@ const Publication = () => {
 
   return (
     <>
-      {session ? (
+      {session && session.user?.id === publication?.author.id ? (
         <Layout
           user={{
             name: session.user?.name,
@@ -254,17 +254,17 @@ const Publication = () => {
                 <img
                   className="h-3 w-3 rounded-full"
                   src={publication?.author?.image || ""}
+                  referrerPolicy="no-referrer"
                   alt=""
                 />
                 <p className="text-xs italic text-gray-500">
                   {publication?.author?.name}
                 </p>
               </div>
-              <p className="mt-1 text-sm text-gray-500">
-                {publication?.description}
-              </p>
+              <p className="mt-12 text-gray-700">{publication?.description}</p>
             </div>
           </div>
+          <Pricing />
         </Layout>
       )}
     </>
