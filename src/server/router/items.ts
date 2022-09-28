@@ -21,6 +21,43 @@ export const items = createRouter()
       }
     },
   })
+  .query("getOne", {
+    input: z.object({
+      id: z.number(),
+    }),
+    async resolve({ ctx, input }) {
+      try {
+        return await ctx.prisma.item.findUnique({
+          where: {
+            id: input.id,
+          },
+          select: {
+            name: true,
+            description: true,
+            imageUrl: true,
+            front: true,
+            back: true,
+            publication: {
+              select: {
+                name: true,
+                description: true,
+                imageUrl: true,
+                author: {
+                  select: {
+                    name: true,
+                    image: true,
+                  },
+                },
+                authorId: true,
+              },
+            },
+          },
+        });
+      } catch (error) {
+        console.log("error", error);
+      }
+    },
+  })
   .middleware(async ({ ctx, next }) => {
     // Any queries or mutations after this middleware will
     // raise an error unless there is a current session
@@ -50,6 +87,52 @@ export const items = createRouter()
             front: input.front,
             back: input.back,
             status: input.status,
+          },
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  })
+  .mutation("updateItem", {
+    input: z.object({
+      id: z.number(),
+      name: z.string(),
+      description: z.string(),
+      imageUrl: z.string().url(),
+      front: z.string().url(),
+      back: z.string().url(),
+      status: z.enum(["DRAFT", "PUBLISHED"]),
+    }),
+    async resolve({ ctx, input }) {
+      try {
+        await ctx.prisma.item.update({
+          where: {
+            id: input.id,
+          },
+          data: {
+            name: input.name,
+            description: input.description,
+            imageUrl: input.imageUrl,
+            front: input.front,
+            back: input.back,
+            status: input.status,
+          },
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  })
+  .mutation("deleteItem", {
+    input: z.object({
+      id: z.number(),
+    }),
+    async resolve({ ctx, input }) {
+      try {
+        await ctx.prisma.item.delete({
+          where: {
+            id: input.id,
           },
         });
       } catch (error) {

@@ -71,8 +71,8 @@ model Item {
     name          String
     description   String?
     imageUrl      String?
-    front         String[]    @db.VarChar(100)
-    back          String[]    @db.VarChar(100)
+    front         String
+    back          String
     status        Status      @default(DRAFT)
     publicationId Int
     publication   Publication @relation(fields: [publicationId], references: [id])
