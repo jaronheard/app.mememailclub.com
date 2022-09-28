@@ -1,5 +1,4 @@
 import { signIn, signOut, useSession } from "next-auth/react";
-import { useState } from "react";
 import Layout from "../components/Layout";
 import SignIn from "../components/SignIn";
 import { trpc } from "../utils/trpc";
@@ -180,23 +179,7 @@ const Publications = () => {
 
 const Home = () => {
   const { data: session, status } = useSession();
-  const [name, setName] = useState("");
-  const [front, setFront] = useState([""]);
-  const [back, setBack] = useState([""]);
-  const ctx = trpc.useContext();
-  const createItem = trpc.useMutation("items.createItem", {
-    onMutate: () => {
-      ctx.cancelQuery(["items.getAll"]);
-
-      const optimisticUpdate = ctx.getQueryData(["items.getAll"]);
-      if (optimisticUpdate) {
-        ctx.setQueryData(["items.getAll"], optimisticUpdate);
-      }
-    },
-    onSettled: () => {
-      ctx.invalidateQueries(["items.getAll"]);
-    },
-  });
+  const createItem = trpc.useMutation("items.createItem");
 
   if (status === "loading") {
     return <main className="flex flex-col items-center pt-4">Loading...</main>;
@@ -214,58 +197,6 @@ const Home = () => {
           signOut={signOut}
         >
           <Publications />
-          {/* <div>
-            <div className="pt-6">
-              <form
-                className="flex flex-col gap-2"
-                onSubmit={(event) => {
-                  event.preventDefault();
-
-                  createItem.mutate({
-                    email: session.user?.email as string,
-                    name: name,
-                    front: front,
-                    back: back,
-                  });
-
-                  setName("");
-                  setFront([""]);
-                  setBack([""]);
-                }}
-              >
-                <input
-                  type="text"
-                  value={name}
-                  placeholder="Name"
-                  onChange={(event) => setName(event.target.value)}
-                  className="rounded-md border-2 border-zinc-800 px-4 py-2 focus:outline-none"
-                />
-                <input
-                  type="text"
-                  value={front}
-                  placeholder="Front"
-                  onChange={(event) => setFront([event.target.value])}
-                  className="rounded-md border-2 border-zinc-800 px-4 py-2 focus:outline-none"
-                />
-                <input
-                  type="text"
-                  value={back}
-                  placeholder="Back"
-                  onChange={(event) => setBack([event.target.value])}
-                  className="rounded-md border-2 border-zinc-800 px-4 py-2 focus:outline-none"
-                />
-                <button
-                  type="submit"
-                  className="rounded-md border-2 border-zinc-800 p-2 focus:outline-none"
-                >
-                  Submit
-                </button>
-              </form>
-            </div>
-            <div className="pt-10">
-              <Items />
-            </div> 
-          </div>*/}
         </Layout>
       ) : (
         <SignIn signIn={() => signIn("google")} />

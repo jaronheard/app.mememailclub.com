@@ -15,20 +15,7 @@ const New = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const ctx = trpc.useContext();
-  const createPublication = trpc.useMutation("publications.createPublication", {
-    onMutate: () => {
-      ctx.cancelQuery(["publications.getAll"]);
-
-      const optimisticUpdate = ctx.getQueryData(["publications.getAll"]);
-      if (optimisticUpdate) {
-        ctx.setQueryData(["publications.getAll"], optimisticUpdate);
-      }
-    },
-    onSettled: () => {
-      ctx.invalidateQueries(["publications.getAll"]);
-    },
-  });
+  const createPublication = trpc.useMutation("publications.createPublication");
 
   if (status === "loading") {
     return <main className="flex flex-col items-center pt-4">Loading...</main>;
