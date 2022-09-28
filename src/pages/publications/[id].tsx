@@ -239,7 +239,33 @@ const Publication = () => {
           </form>
         </Layout>
       ) : (
-        <SignIn />
+        <Layout>
+          <div className="flex gap-3">
+            <img
+              className="h-12 w-12 rounded-full"
+              src={publication?.imageUrl || ""}
+              alt=""
+            />
+            <div className="">
+              <h3 className="text-lg font-medium leading-6 text-gray-900">
+                {publication?.name}
+              </h3>
+              <div className="mt-1 flex items-center gap-1">
+                <img
+                  className="h-3 w-3 rounded-full"
+                  src={publication?.author?.image || ""}
+                  alt=""
+                />
+                <p className="text-xs italic text-gray-500">
+                  {publication?.author?.name}
+                </p>
+              </div>
+              <p className="mt-1 text-sm text-gray-500">
+                {publication?.description}
+              </p>
+            </div>
+          </div>
+        </Layout>
       )}
     </>
   );
