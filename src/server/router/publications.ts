@@ -27,6 +27,33 @@ export const publications = createRouter()
       }
     },
   })
+  .query("getOne", {
+    input: z.object({
+      id: z.number(),
+    }),
+    async resolve({ ctx, input }) {
+      try {
+        return await ctx.prisma.publication.findUnique({
+          where: {
+            id: input.id,
+          },
+          select: {
+            id: true,
+            createdAt: true,
+            name: true,
+            description: true,
+            author: true,
+            imageUrl: true,
+            status: true,
+            Subscriptions: true,
+            Items: true,
+          },
+        });
+      } catch (error) {
+        console.log("error", error);
+      }
+    },
+  })
   .middleware(async ({ ctx, next }) => {
     // Any queries or mutations after this middleware will
     // raise an error unless there is a current session
