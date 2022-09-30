@@ -19,6 +19,7 @@
     "@trpc/next": "^9.27.2",
     "@trpc/react": "^9.27.2",
     "@trpc/server": "^9.27.2",
+    "cloudinary": "^1.32.0",
     "clsx": "^1.2.1",
     "date-fns": "^2.29.3",
     "next": "12.3.1",
