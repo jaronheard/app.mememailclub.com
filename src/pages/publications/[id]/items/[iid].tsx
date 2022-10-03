@@ -152,17 +152,13 @@ const Item = () => {
                     <input
                       {...register("front")}
                       type="file"
-                      className="sr-only"
+                      className="hidden"
                     />
                     <FileUpload
                       label="front"
-                      url={getValues().front}
-                      setUrl={(value: string) =>
-                        setValue("front", value, {
-                          shouldValidate: true,
-                          shouldDirty: true,
-                        })
-                      }
+                      id="front"
+                      getValues={getValues}
+                      setValue={setValue}
                     />
                     <p
                       className="mt-1 text-sm text-gray-500 dark:text-gray-300"

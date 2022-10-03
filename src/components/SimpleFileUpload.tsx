@@ -3,13 +3,22 @@ import { uploadFile } from "../utils/cloudinary";
 ("../pages/publications/[id]/items/[iid]");
 
 type FileUploadProps = {
+  id: string;
   label: string;
-  url: string;
-  setUrl: (url: string) => void;
+  getValues: any;
+  setValue: any;
 };
 
-const FileUpload = ({ label, url, setUrl }: FileUploadProps) => {
+const FileUpload = ({ id, label, getValues, setValue }: FileUploadProps) => {
   const [status, setStatus] = useState("idle");
+
+  const url = getValues()[id];
+  const setUrl = (value: string) =>
+    setValue(id, value, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+
   return (
     <div>
       {url && (
