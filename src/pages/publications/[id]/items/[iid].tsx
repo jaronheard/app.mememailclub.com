@@ -6,7 +6,7 @@ import { trpc } from "../../../../utils/trpc";
 import clsx from "clsx";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import FileUpload from "../../../../components/SimpleFileUpload";
+import FileUpload from "../../../../components/FileUpload";
 
 export type FormValues = {
   name: string;
