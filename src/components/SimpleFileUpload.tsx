@@ -48,8 +48,12 @@ const FileUpload = ({
         >
           {status === "uploading" ? "Uploading..." : "Upload File"}
           <input
-            className="sr-only"
+            className="hidden"
+            type="text"
             {...register(id, { required })}
+          />
+          <input
+            className="sr-only"
             aria-describedby="file_input_help"
             id={`${id}-file-upload`}
             type="file"
@@ -57,8 +61,8 @@ const FileUpload = ({
               if (e.target?.files?.[0]) {
                 setStatus("uploading");
                 uploadFile(e.target.files[0]).then((url) => {
-                  setStatus("uploaded");
                   setUrl(url);
+                  setStatus("uploaded");
                 });
               }
             }}

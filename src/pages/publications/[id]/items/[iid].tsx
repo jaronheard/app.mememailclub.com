@@ -26,6 +26,7 @@ const Item = () => {
     reset,
     getValues,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<FormValues>({
     defaultValues: {
@@ -35,7 +36,6 @@ const Item = () => {
       front: "",
       back: "",
     },
-    mode: "onChange",
   });
   const { data: item, isLoading } = trpc.useQuery([
     "items.getOne",
@@ -144,17 +144,35 @@ const Item = () => {
                   </div>
                   <div className="sm:col-span-6">
                     <FileUpload
-                      id="front"
-                      label="Front PDF per instructions"
-                      required={true}
+                      id="imageUrl"
+                      label="Image"
+                      required
                       register={register}
                       getValues={getValues}
                       setValue={setValue}
                     />
+                    {errors.imageUrl && (
+                      <p className="mt-2 text-sm text-red-600" id="email-error">
+                        imageUrl is required. {watch("imageUrl")}{" "}
+                        {errors.imageUrl.type} {errors.imageUrl.type}
+                      </p>
+                    )}
+                  </div>
+                  <div className="sm:col-span-6">
+                    <FileUpload
+                      id="front"
+                      label="Front PDF per instructions"
+                      required
+                      register={register}
+                      getValues={getValues}
+                      setValue={setValue}
+                    />
+                  </div>
+                  <div className="sm:col-span-6">
                     <FileUpload
                       id="back"
                       label="Back PDF per instructions"
-                      required={true}
+                      required
                       register={register}
                       getValues={getValues}
                       setValue={setValue}
@@ -188,10 +206,9 @@ const Item = () => {
                       id: Number(iid),
                       name: data.name,
                       description: data.description,
-                      imageUrl:
-                        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+                      imageUrl: data.imageUrl,
                       front: data.front,
-                      back: "https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/postcards/6x9_postcard.pdf",
+                      back: data.back,
                       status: "DRAFT",
                     });
 
@@ -207,10 +224,9 @@ const Item = () => {
                       id: Number(iid),
                       name: data.name,
                       description: data.description,
-                      imageUrl:
-                        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+                      imageUrl: data.imageUrl,
                       front: data.front,
-                      back: "https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/postcards/6x9_postcard.pdf",
+                      back: data.back,
                       status: "PUBLISHED",
                     });
 
