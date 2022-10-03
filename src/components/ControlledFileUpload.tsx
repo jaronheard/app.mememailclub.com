@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { forwardRef, useState } from "react";
 import { UseFormRegister } from "react-hook-form";
 import { uploadFile } from "../utils/cloudinary";
 import { FormValues } from "../pages/publications/[id]/items/[iid]";
 
-const FileUpload = (
-  props: { label: string } & ReturnType<UseFormRegister<FormValues>>
-) => {
-  const [link, setLink] = useState("");
+const FileUpload = forwardRef<
+  HTMLInputElement,
+  { label: string; url: string } & ReturnType<UseFormRegister<FormValues>>
+>(function FileUpload({ onChange, onBlur, name, label, url }, ref) {
+  const [link, setLink] = useState(url);
   const [status, setStatus] = useState("idle");
   return (
     <div>
@@ -21,11 +22,10 @@ const FileUpload = (
         ref={ref}
         onChange={onChange}
         onBlur={onBlur}
-        value={link}
       />
       <input
         aria-describedby="file_input_help"
-        id={`${props.name}-file-upload`}
+        id={`${name}-file-upload`}
         type="file"
         onChange={(e) => {
           if (e.target?.files?.[0]) {
@@ -39,15 +39,9 @@ const FileUpload = (
       />
       <p
         className="mt-1 text-sm text-gray-500 dark:text-gray-300"
-        id="file_input_help_text"
-      >
-        Testing: {field.value}
-      </p>
-      <p
-        className="mt-1 text-sm text-gray-500 dark:text-gray-300"
         id="file_input_help"
       >
-        {props.label}
+        {label}
       </p>
       <p
         className="mt-1 text-sm text-gray-500 dark:text-gray-300"
@@ -55,15 +49,8 @@ const FileUpload = (
       >
         {status === "Uploading..."}
       </p>
-      {fieldState.error && (
-        <p className="mt-2 text-sm text-red-600" id="email-error">
-          {field.name} is required.
-        </p>
-      )}
     </div>
   );
-};
-
-FileUpload.defaultProps = { url: "No file" };
+});
 
 export default FileUpload;

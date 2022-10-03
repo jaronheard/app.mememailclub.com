@@ -5,9 +5,16 @@ import Layout from "../../../../components/Layout";
 import { trpc } from "../../../../utils/trpc";
 import clsx from "clsx";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
-import { uploadFile } from "../../../../utils/cloudinary";
-import FileUpload from "../../../../components/FileUpload";
+import { useEffect, useState } from "react";
+import FileUpload from "../../../../components/SimpleFileUpload";
+
+export type FormValues = {
+  name: string;
+  description: string;
+  imageUrl: string;
+  front: string;
+  back: string;
+};
 
 const Item = () => {
   const router = useRouter();
@@ -17,8 +24,19 @@ const Item = () => {
     register,
     handleSubmit,
     reset,
+    getValues,
+    setValue,
     formState: { errors },
-  } = useForm();
+  } = useForm<FormValues>({
+    defaultValues: {
+      name: "",
+      description: "",
+      imageUrl: "",
+      front: "",
+      back: "",
+    },
+    mode: "onChange",
+  });
   const { data: item, isLoading } = trpc.useQuery([
     "items.getOne",
     { id: Number(iid) },
@@ -29,11 +47,11 @@ const Item = () => {
   useEffect(() => {
     if (!isLoading) {
       reset({
-        name: item?.name,
-        description: item?.description,
-        imageUrl: item?.imageUrl,
-        front: item?.front,
-        back: item?.back,
+        name: item?.name || "",
+        description: item?.description || "",
+        imageUrl: item?.imageUrl || "",
+        front: item?.front || "",
+        back: item?.back || "",
       });
     }
   }, [reset, item, isLoading]);
@@ -124,21 +142,34 @@ const Item = () => {
                       Write a few sentences about your item.
                     </p>
                   </div>
-                  <FileUpload
-                    id="front"
-                    label="some label"
-                    value={item?.front || ""}
-                    register={register}
-                    errors={errors}
-                    required
-                  />
                   <div className="sm:col-span-6">
                     <label
                       htmlFor="back"
                       className="block text-sm font-medium text-gray-700"
                     >
-                      Back
+                      Front
                     </label>
+                    <input
+                      {...register("front")}
+                      type="file"
+                      className="sr-only"
+                    />
+                    <FileUpload
+                      label="front"
+                      url={getValues().front}
+                      setUrl={(value: string) =>
+                        setValue("front", value, {
+                          shouldValidate: true,
+                          shouldDirty: true,
+                        })
+                      }
+                    />
+                    <p
+                      className="mt-1 text-sm text-gray-500 dark:text-gray-300"
+                      id="file_input_help"
+                    >
+                      Test {getValues().front}
+                    </p>
                     <div
                       className={clsx(
                         "mt-1 flex justify-center rounded-md border-2 border-dashed px-6 pt-5 pb-6",
