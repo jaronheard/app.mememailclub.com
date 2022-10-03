@@ -145,6 +145,7 @@ const Item = () => {
                     <FileUpload
                       id="imageUrl"
                       label="Image"
+                      accept="image/*"
                       required
                       register={register}
                       getValues={getValues}
@@ -154,22 +155,44 @@ const Item = () => {
                   <div className="sm:col-span-6">
                     <FileUpload
                       id="front"
-                      label="Front PDF per instructions"
+                      label="Front"
+                      accept="application/pdf"
                       required
                       register={register}
                       getValues={getValues}
                       setValue={setValue}
-                    />
+                    >
+                      6x9 format PDF, PNG, or JPG per{" "}
+                      <a
+                        href="https://docs.google.com/document/d/1cIc0s2P8gMUaHxykxbzpsaK6U4AJHr0UdqjcRYp6xyc/edit?usp=sharing"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-indigo-600 hover:text-indigo-500"
+                      >
+                        instructions
+                      </a>
+                    </FileUpload>
                   </div>
                   <div className="sm:col-span-6">
                     <FileUpload
                       id="back"
-                      label="Back PDF per instructions"
+                      label="Back"
                       required
+                      accept="application/pdf"
                       register={register}
                       getValues={getValues}
                       setValue={setValue}
-                    />
+                    >
+                      6x9 format PDF, PNG, or JPG per{" "}
+                      <a
+                        href="https://docs.google.com/document/d/1cIc0s2P8gMUaHxykxbzpsaK6U4AJHr0UdqjcRYp6xyc/edit?usp=sharing"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-indigo-600 hover:text-indigo-500"
+                      >
+                        instructions
+                      </a>
+                    </FileUpload>
                   </div>
                 </div>
               </div>

@@ -11,18 +11,22 @@ type FileUploadProps = {
   id: keyof FormValues;
   label: string;
   required?: boolean;
+  accept?: string;
   register: UseFormRegister<FormValues>;
   getValues: UseFormGetValues<FormValues>;
   setValue: UseFormSetValue<FormValues>;
+  children?: React.ReactNode;
 };
 
 const FileUpload = ({
   id,
   label,
   required,
+  accept,
   register,
   getValues,
   setValue,
+  children,
 }: FileUploadProps) => {
   const [status, setStatus] = useState("idle");
 
@@ -37,9 +41,9 @@ const FileUpload = ({
     <div className="flex flex-col gap-2">
       <label
         htmlFor={`${id}-file-upload`}
-        className="block text-sm font-medium capitalize text-gray-700"
+        className="block text-sm font-medium text-gray-700"
       >
-        {id}
+        {label}
       </label>
       <div className="flex gap-3">
         <label
@@ -57,6 +61,7 @@ const FileUpload = ({
             aria-describedby="file_input_help"
             id={`${id}-file-upload`}
             type="file"
+            accept={accept}
             onChange={(e) => {
               if (e.target?.files?.[0]) {
                 setStatus("uploading");
@@ -79,12 +84,11 @@ const FileUpload = ({
           </a>
         )}
       </div>
-      <p
-        className="mt-1 text-sm text-gray-500 dark:text-gray-300"
-        id="file_input_help"
-      >
-        {label}
-      </p>
+      {children && (
+        <p className="mt-1 text-sm text-gray-500" id="file_input_help">
+          {children}
+        </p>
+      )}
     </div>
   );
 };
