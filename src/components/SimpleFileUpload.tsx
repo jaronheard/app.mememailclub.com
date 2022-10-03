@@ -1,15 +1,29 @@
 import { useState } from "react";
 import { uploadFile } from "../utils/cloudinary";
-("../pages/publications/[id]/items/[iid]");
+import { FormValues } from "../pages/publications/[id]/items/[iid]";
+import {
+  UseFormGetValues,
+  UseFormRegister,
+  UseFormSetValue,
+} from "react-hook-form";
 
 type FileUploadProps = {
-  id: string;
+  id: keyof FormValues;
   label: string;
-  getValues: any;
-  setValue: any;
+  required?: boolean;
+  register: UseFormRegister<FormValues>;
+  getValues: UseFormGetValues<FormValues>;
+  setValue: UseFormSetValue<FormValues>;
 };
 
-const FileUpload = ({ id, label, getValues, setValue }: FileUploadProps) => {
+const FileUpload = ({
+  id,
+  label,
+  required,
+  register,
+  getValues,
+  setValue,
+}: FileUploadProps) => {
   const [status, setStatus] = useState("idle");
 
   const url = getValues()[id];
@@ -27,6 +41,7 @@ const FileUpload = ({ id, label, getValues, setValue }: FileUploadProps) => {
         </a>
       )}
       <input
+        {...register(id, { required })}
         aria-describedby="file_input_help"
         id={`${name}-file-upload`}
         type="file"

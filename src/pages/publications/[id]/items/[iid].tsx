@@ -5,7 +5,7 @@ import Layout from "../../../../components/Layout";
 import { trpc } from "../../../../utils/trpc";
 import clsx from "clsx";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import FileUpload from "../../../../components/SimpleFileUpload";
 
 export type FormValues = {
@@ -149,23 +149,14 @@ const Item = () => {
                     >
                       Front
                     </label>
-                    <input
-                      {...register("front")}
-                      type="file"
-                      className="hidden"
-                    />
                     <FileUpload
                       label="front"
                       id="front"
+                      required={true}
+                      register={register}
                       getValues={getValues}
                       setValue={setValue}
                     />
-                    <p
-                      className="mt-1 text-sm text-gray-500 dark:text-gray-300"
-                      id="file_input_help"
-                    >
-                      Test {getValues().front}
-                    </p>
                     <div
                       className={clsx(
                         "mt-1 flex justify-center rounded-md border-2 border-dashed px-6 pt-5 pb-6",
