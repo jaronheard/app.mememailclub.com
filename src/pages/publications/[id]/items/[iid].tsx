@@ -26,7 +26,6 @@ const Item = () => {
     reset,
     getValues,
     setValue,
-    watch,
     formState: { errors },
   } = useForm<FormValues>({
     defaultValues: {
@@ -151,12 +150,6 @@ const Item = () => {
                       getValues={getValues}
                       setValue={setValue}
                     />
-                    {errors.imageUrl && (
-                      <p className="mt-2 text-sm text-red-600" id="email-error">
-                        imageUrl is required. {watch("imageUrl")}{" "}
-                        {errors.imageUrl.type} {errors.imageUrl.type}
-                      </p>
-                    )}
                   </div>
                   <div className="sm:col-span-6">
                     <FileUpload
