@@ -344,7 +344,7 @@ const Publication = () => {
                           id: Number(id),
                         });
 
-                        router.push("/");
+                        router.push("/publications");
                       }}
                       className="ml-3 inline-flex items-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                     >
@@ -361,7 +361,7 @@ const Publication = () => {
                           status: "PUBLISHED",
                         });
 
-                        router.push("/");
+                        router.push("/publications");
                       })}
                       className="ml-3 inline-flex items-center rounded-md border border-transparent bg-indigo-100 px-4 py-2 text-sm font-medium text-indigo-700 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                     >
@@ -378,7 +378,7 @@ const Publication = () => {
                           status: "PUBLISHED",
                         });
 
-                        router.push("/");
+                        router.push("/publications");
                       })}
                       className="ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                     >
