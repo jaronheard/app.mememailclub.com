@@ -5,6 +5,8 @@ import {
   Configuration,
   AddressesApi,
   AddressEditable,
+  PostcardEditable,
+  PostcardsApi,
 } from "@lob/lob-typescript-sdk";
 import { env } from "../../env/server.mjs";
 
@@ -55,6 +57,54 @@ export const lob = createRouter()
         //     status: input.status,
         //   },
         // });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  })
+  .mutation("createPostcard", {
+    input: z.object({
+      addressId: z.string(),
+      itemId: z.number(),
+    }),
+    async resolve({ ctx, input }) {
+      const postcardCreate = new PostcardEditable({
+        to: input.addressId,
+        front:
+          "https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/4x6_pc_template.pdf",
+        back: "https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/4x6_pc_template.pdf",
+      });
+      try {
+        const item = await ctx.prisma.item.findUnique({
+          where: {
+            id: input.itemId,
+          },
+          select: {
+            name: true,
+            description: true,
+            front: true,
+            back: true,
+            publication: {
+              select: {
+                name: true,
+                description: true,
+                imageUrl: true,
+                author: {
+                  select: {
+                    name: true,
+                    image: true,
+                  },
+                },
+                authorId: true,
+              },
+            },
+          },
+        });
+        console.log("item", item);
+        const myPostcard = await new PostcardsApi(config).create(
+          postcardCreate
+        );
+        console.log("myPostcard", myPostcard);
       } catch (error) {
         console.log(error);
       }
