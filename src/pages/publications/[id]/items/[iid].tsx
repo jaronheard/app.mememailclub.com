@@ -82,6 +82,14 @@ const Item = () => {
                         This information will be displayed publicly once your
                         item is published.
                       </p>
+                      <a
+                        href={item?.stripePaymentLink || "#"}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="mt-3 inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-3 py-2 text-sm font-medium leading-4 text-white shadow-sm focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:bg-indigo-700"
+                      >
+                        View payment link
+                      </a>
                     </div>
 
                     <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">

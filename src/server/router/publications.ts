@@ -33,6 +33,7 @@ export const publications = createRouter()
     }),
     async resolve({ ctx, input }) {
       try {
+        console.log("input id", input.id);
         return await ctx.prisma.publication.findUnique({
           where: {
             id: input.id,

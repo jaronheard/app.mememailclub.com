@@ -66,16 +66,18 @@ model VerificationToken {
 }
 
 model Item {
-    id            Int         @id @default(autoincrement())
-    createdAt     DateTime    @default(now())
-    name          String
-    description   String?
-    imageUrl      String?
-    front         String
-    back          String
-    status        Status      @default(DRAFT)
-    publicationId Int
-    publication   Publication @relation(fields: [publicationId], references: [id])
+    id                Int         @id @default(autoincrement())
+    createdAt         DateTime    @default(now())
+    name              String
+    description       String?
+    imageUrl          String?
+    front             String
+    back              String
+    status            Status      @default(DRAFT)
+    stripeProductId   String?
+    stripePaymentLink String?
+    publicationId     Int
+    publication       Publication @relation(fields: [publicationId], references: [id])
 }
 
 model Publication {

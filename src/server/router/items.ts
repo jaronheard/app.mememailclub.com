@@ -1,6 +1,11 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createRouter } from "./context";
+import Stripe from "stripe";
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
+  apiVersion: "2022-08-01",
+});
 
 export const items = createRouter()
   .query("getAll", {
@@ -37,6 +42,7 @@ export const items = createRouter()
             imageUrl: true,
             front: true,
             back: true,
+            stripePaymentLink: true,
             publication: {
               select: {
                 name: true,
@@ -78,6 +84,30 @@ export const items = createRouter()
     }),
     async resolve({ ctx, input }) {
       try {
+        // stripe logic
+        const product = await stripe.products.create({
+          name: input.name,
+          active: input.status === "PUBLISHED",
+          description: input.description,
+          statement_descriptor: `postcard: ${input.name.slice(0, 12)}`,
+          images: [input.imageUrl],
+          // default item information
+          shippable: true,
+          tax_code: "txcd_35020200",
+          default_price_data: {
+            unit_amount_decimal: "200",
+            currency: "usd",
+          },
+        });
+
+        if (typeof product.default_price !== "string") {
+          throw new Error("No default price id");
+        }
+
+        const paymentLink = await stripe.paymentLinks.create({
+          line_items: [{ price: product.default_price, quantity: 1 }],
+        });
+
         await ctx.prisma.item.create({
           data: {
             publicationId: input.publicationId,
@@ -87,6 +117,8 @@ export const items = createRouter()
             front: input.front,
             back: input.back,
             status: input.status,
+            stripeProductId: product.id,
+            stripePaymentLink: paymentLink.url,
           },
         });
       } catch (error) {
@@ -106,6 +138,30 @@ export const items = createRouter()
     }),
     async resolve({ ctx, input }) {
       try {
+        const item = await ctx.prisma.item.findUnique({
+          where: {
+            id: input.id,
+          },
+          select: {
+            stripeProductId: true,
+          },
+        });
+
+        if (!item || !item.stripeProductId) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Stripe product not found",
+          });
+        }
+        // stripe logic
+        const product = await stripe.products.update(item.stripeProductId, {
+          name: input.name,
+          active: input.status === "PUBLISHED",
+          description: input.description,
+          statement_descriptor: `postcard: ${input.name.slice(0, 12)}`,
+          images: [input.imageUrl],
+        });
+
         await ctx.prisma.item.update({
           where: {
             id: input.id,
@@ -117,6 +173,7 @@ export const items = createRouter()
             front: input.front,
             back: input.back,
             status: input.status,
+            stripeProductId: product.id,
           },
         });
       } catch (error) {
@@ -130,6 +187,26 @@ export const items = createRouter()
     }),
     async resolve({ ctx, input }) {
       try {
+        const item = await ctx.prisma.item.findUnique({
+          where: {
+            id: input.id,
+          },
+          select: {
+            stripeProductId: true,
+          },
+        });
+
+        // delete stripe product if it exists
+        if (item?.stripeProductId) {
+          const del = await stripe.products.del(item.stripeProductId);
+          if (!del.deleted) {
+            throw new TRPCError({
+              code: "NOT_FOUND",
+              message: "Stripe product not deleted",
+            });
+          }
+        }
+
         await ctx.prisma.item.delete({
           where: {
             id: input.id,

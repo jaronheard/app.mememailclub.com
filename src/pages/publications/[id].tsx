@@ -26,10 +26,10 @@ const Publication = () => {
     reset,
     formState: { errors },
   } = useForm();
-  const publicationQuery = trpc.useQuery([
-    "publications.getOne",
-    { id: Number(id) },
-  ]);
+  const publicationQuery = trpc.useQuery(
+    ["publications.getOne", { id: Number(id) }],
+    { enabled: !!id }
+  );
   const { data: publication, isLoading } = publicationQuery;
   const updatePublication = trpc.useMutation("publications.updatePublication");
   const deletePublication = trpc.useMutation("publications.deletePublication");
