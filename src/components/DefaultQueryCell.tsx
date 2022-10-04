@@ -10,7 +10,7 @@ const Loading = () => (
   </div>
 );
 type TError = TRPCClientErrorLike<AppRouter>;
-export const DefaultQueryCell = createQueryCell<TError>({
+const DefaultQueryCell = createQueryCell<TError>({
   error: (result) => (
     <NextError
       title={result.error.message}
@@ -20,3 +20,5 @@ export const DefaultQueryCell = createQueryCell<TError>({
   idle: () => <Loading />,
   loading: () => <Loading />,
 });
+
+export default DefaultQueryCell;
