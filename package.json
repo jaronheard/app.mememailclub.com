@@ -36,6 +36,7 @@
     "zod": "^3.18.0"
   },
   "devDependencies": {
+    "@types/micro-cors": "^0.1.2",
     "@types/node": "18.0.0",
     "@types/react": "18.0.14",
     "@types/react-dom": "18.0.5",
