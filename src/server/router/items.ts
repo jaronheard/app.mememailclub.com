@@ -64,6 +64,27 @@ export const items = createRouter()
       }
     },
   })
+  .query("getOneByStripeProductId", {
+    input: z.object({
+      stripeProductId: z.string(),
+    }),
+    async resolve({ ctx, input }) {
+      try {
+        return await ctx.prisma.item.findUnique({
+          where: {
+            stripeProductId: input.stripeProductId,
+          },
+          select: {
+            id: true,
+            front: true,
+            back: true,
+          },
+        });
+      } catch (error) {
+        console.log("error", error);
+      }
+    },
+  })
   .middleware(async ({ ctx, next }) => {
     // Any queries or mutations after this middleware will
     // raise an error unless there is a current session
@@ -106,6 +127,15 @@ export const items = createRouter()
 
         const paymentLink = await stripe.paymentLinks.create({
           line_items: [{ price: product.default_price, quantity: 1 }],
+          shipping_address_collection: { allowed_countries: ["US"] },
+          // TODO: redirect to custom success page
+          after_completion: {
+            hosted_confirmation: {
+              custom_message:
+                "Thank you for your purchase! Your postcard will be shipped by USPS in 1-2 business days.",
+            },
+            type: "hosted_confirmation",
+          },
         });
 
         await ctx.prisma.item.create({
@@ -144,15 +174,17 @@ export const items = createRouter()
           },
           select: {
             stripeProductId: true,
+            stripePaymentLink: true,
           },
         });
 
-        if (!item || !item.stripeProductId) {
+        if (!item || !item.stripeProductId || !item.stripePaymentLink) {
           throw new TRPCError({
             code: "NOT_FOUND",
-            message: "Stripe product not found",
+            message: "Stripe product or product link not found",
           });
         }
+
         // stripe logic
         const product = await stripe.products.update(item.stripeProductId, {
           name: input.name,
@@ -161,6 +193,8 @@ export const items = createRouter()
           statement_descriptor: `postcard: ${input.name.slice(0, 12)}`,
           images: [input.imageUrl],
         });
+
+        // TODO: update payment link with new price
 
         await ctx.prisma.item.update({
           where: {
@@ -174,6 +208,7 @@ export const items = createRouter()
             back: input.back,
             status: input.status,
             stripeProductId: product.id,
+            // stripePaymentLink: item.stripePaymentLink,
           },
         });
       } catch (error) {
@@ -193,6 +228,7 @@ export const items = createRouter()
           },
           select: {
             stripeProductId: true,
+            stripePaymentLink: true,
           },
         });
 
@@ -203,6 +239,20 @@ export const items = createRouter()
             throw new TRPCError({
               code: "NOT_FOUND",
               message: "Stripe product not deleted",
+            });
+          }
+        }
+
+        // deactivate stripe payment link if it exists
+        if (item?.stripePaymentLink) {
+          const updatedPaymentLink = await stripe.paymentLinks.update(
+            item.stripePaymentLink,
+            { active: false }
+          );
+          if (updatedPaymentLink.active) {
+            throw new TRPCError({
+              code: "NOT_FOUND",
+              message: "Stripe product not deactivated",
             });
           }
         }

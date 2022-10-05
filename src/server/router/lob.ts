@@ -1,4 +1,3 @@
-import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createRouter } from "./context";
 import {
@@ -15,14 +14,14 @@ const config: Configuration = new Configuration({
 });
 
 export const lob = createRouter()
-  .middleware(async ({ ctx, next }) => {
-    // Any queries or mutations after this middleware will
-    // raise an error unless there is a current session
-    if (!ctx.session) {
-      throw new TRPCError({ code: "UNAUTHORIZED" });
-    }
-    return next();
-  })
+  // .middleware(async ({ ctx, next }) => {
+  //   // Any queries or mutations after this middleware will
+  //   // raise an error unless there is a current session
+  //   if (!ctx.session) {
+  //     throw new TRPCError({ code: "UNAUTHORIZED" });
+  //   }
+  //   return next();
+  // })
   .mutation("createAddress", {
     input: z.object({
       name: z.string(),
@@ -46,17 +45,7 @@ export const lob = createRouter()
         const myAddress = await addressApi.create(addressCreate);
         const myAddressFromApi = await addressApi.get(myAddress.id);
         console.log("myAddressFromApi", myAddressFromApi);
-        // await ctx.prisma.item.create({
-        //   data: {
-        //     publicationId: input.publicationId,
-        //     name: input.name,
-        //     description: input.description,
-        //     imageUrl: input.imageUrl,
-        //     front: input.front,
-        //     back: input.back,
-        //     status: input.status,
-        //   },
-        // });
+        return myAddressFromApi;
       } catch (error) {
         console.log(error);
       }
@@ -66,45 +55,32 @@ export const lob = createRouter()
     input: z.object({
       addressId: z.string(),
       itemId: z.number(),
+      quantity: z.number(),
     }),
     async resolve({ ctx, input }) {
-      const postcardCreate = new PostcardEditable({
-        to: input.addressId,
-        front:
-          "https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/4x6_pc_template.pdf",
-        back: "https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/4x6_pc_template.pdf",
-      });
       try {
         const item = await ctx.prisma.item.findUnique({
           where: {
             id: input.itemId,
           },
           select: {
-            name: true,
-            description: true,
             front: true,
             back: true,
-            publication: {
-              select: {
-                name: true,
-                description: true,
-                imageUrl: true,
-                author: {
-                  select: {
-                    name: true,
-                    image: true,
-                  },
-                },
-                authorId: true,
-              },
-            },
           },
         });
-        console.log("item", item);
+        const postcardCreate = new PostcardEditable({
+          to: input.addressId,
+          front: item?.front || "",
+          back: item?.back || "",
+          size: "6x9",
+          // set to send date in 5 minutes
+          // send_date: new Date(Date.now() + 5 * 60000).toISOString(),
+          quantity: input.quantity,
+        });
         const myPostcard = await new PostcardsApi(config).create(
           postcardCreate
         );
-        console.log("myPostcard", myPostcard);
+        console.log(`🔔 Postcard created: ${myPostcard.id}`);
       } catch (error) {
         console.log(error);
       }

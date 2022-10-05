@@ -14,6 +14,7 @@ export const serverSchema = z.object({
   GOOGLE_CLIENT_SECRET: z.string(),
   LOB_API_KEY: z.string(),
   STRIPE_SECRET_KEY: z.string(),
+  STRIPE_WEBHOOK_SECRET: z.string(),
 });
 
 /**
@@ -22,6 +23,7 @@ export const serverSchema = z.object({
  * To expose them to the client, prefix them with `NEXT_PUBLIC_`.
  */
 export const clientSchema = z.object({
+  NEXT_PUBLIC_APP_URL: z.string().url(),
   // NEXT_PUBLIC_BAR: z.string(),
 });
 
@@ -32,5 +34,6 @@ export const clientSchema = z.object({
  * @type {{ [k in keyof z.infer<typeof clientSchema>]: z.infer<typeof clientSchema>[k] | undefined }}
  */
 export const clientEnv = {
+  NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
   // NEXT_PUBLIC_BAR: process.env.NEXT_PUBLIC_BAR,
 };
