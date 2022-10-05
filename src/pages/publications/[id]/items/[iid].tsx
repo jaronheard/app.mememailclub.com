@@ -39,8 +39,12 @@ const Item = () => {
   });
   const itemsQuery = trpc.useQuery(["items.getOne", { id: Number(iid) }]);
   const { data: item, isLoading } = itemsQuery;
-  const updateItem = trpc.useMutation("items.updateItem");
-  const deleteItem = trpc.useMutation("items.deleteItem");
+  const updateItem = trpc.useMutation("items.updateItem", {
+    onSuccess: () => router.push(`/publications/${id}`),
+  });
+  const deleteItem = trpc.useMutation("items.deleteItem", {
+    onSuccess: () => router.push(`/publications/${id}`),
+  });
 
   useEffect(() => {
     if (!isLoading) {
@@ -225,8 +229,6 @@ const Item = () => {
                         deleteItem.mutate({
                           id: Number(iid),
                         });
-
-                        router.push(`/publications/${id}`);
                       }}
                       className="ml-3 inline-flex items-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                     >
@@ -243,8 +245,6 @@ const Item = () => {
                           back: data.back,
                           status: "DRAFT",
                         });
-
-                        router.push(`/publications/${id}`);
                       })}
                       className="ml-3 inline-flex items-center rounded-md border border-transparent bg-indigo-100 px-4 py-2 text-sm font-medium text-indigo-700 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                     >
@@ -261,8 +261,6 @@ const Item = () => {
                           back: data.back,
                           status: "PUBLISHED",
                         });
-
-                        router.push(`/publications/${id}`);
                       })}
                       className="ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                     >

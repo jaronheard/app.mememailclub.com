@@ -16,7 +16,9 @@ const New = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const createItem = trpc.useMutation("items.createItem");
+  const createItem = trpc.useMutation("items.createItem", {
+    onSuccess: () => router.push(`/publications/${id}`),
+  });
 
   if (status === "loading") {
     return <main className="flex flex-col items-center pt-4">Loading...</main>;
@@ -296,8 +298,6 @@ const New = () => {
                       back: "https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/postcards/6x9_postcard.pdf",
                       status: "DRAFT",
                     });
-
-                    router.push(`/publications/${id}`);
                   })}
                   className="ml-3 inline-flex items-center rounded-md border border-transparent bg-indigo-100 px-4 py-2 text-sm font-medium text-indigo-700 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 >
@@ -316,8 +316,6 @@ const New = () => {
                       back: "https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/postcards/6x9_postcard.pdf",
                       status: "PUBLISHED",
                     });
-
-                    router.push(`/publications/${id}`);
                   })}
                   className="ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 >
