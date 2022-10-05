@@ -1,9 +1,5 @@
 import Layout from "../components/Layout";
-import {
-  EnvelopeIcon,
-  InboxIcon,
-  SparklesIcon,
-} from "@heroicons/react/24/outline";
+import { EnvelopeIcon, SparklesIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import Img from "../components/Img";
 
@@ -72,9 +68,9 @@ const Home = () => {
                     Automagically send postcards
                   </h2>
                   <p className="mt-4 text-lg text-gray-500">
-                    Are you a creator? Create a postcard subscription and
-                    automatically send your fans a postcard every week or month.
-                    Make money while you sleep!
+                    Are you a creator? Create a postcard publication and share
+                    your creativity to mailboxes without the hassle of printing
+                    and mailing. Make money while you sleep!
                   </p>
                   <div className="mt-6">
                     <Link href="/publications/new">

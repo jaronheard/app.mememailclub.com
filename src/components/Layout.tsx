@@ -249,7 +249,7 @@ const Layout = (props: LayoutProps) => {
               <h1 className="text-3xl font-bold tracking-tight text-white">
                 {props.title ||
                   navigation.find((item) => item.current)?.name ||
-                  "Meme Mail Club"}
+                  "Postcard Cartel"}
               </h1>
             </div>
           </header>
