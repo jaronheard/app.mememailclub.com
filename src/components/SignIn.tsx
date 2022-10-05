@@ -1,16 +1,19 @@
 import { signIn } from "next-auth/react";
+import Img from "./Img";
 
 export default function SignIn() {
   return (
     <>
-      <div className="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <div className="flex min-h-full flex-col justify-center bg-indigo-600 py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
-          <img
+          <Img
             className="mx-auto h-12 w-auto"
-            src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-            alt="Your Company"
+            src="https://res.cloudinary.com/jaronheard/image/upload/v1665000931/mail/Shutterstock_759577369_1_tgmlow.png"
+            alt="Postage Stamp"
+            width={150}
+            height={118}
           />
-          <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
+          <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-white">
             Meme Mail Club
           </h2>
         </div>

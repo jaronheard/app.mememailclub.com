@@ -15,6 +15,7 @@ import {
 } from "@heroicons/react/20/solid";
 import { format } from "date-fns";
 import DefaultQueryCell from "../../components/DefaultQueryCell";
+import Img from "../../components/Img";
 
 const Publication = () => {
   const router = useRouter();
@@ -395,21 +396,25 @@ const Publication = () => {
             success={({ data: publication }) => (
               <>
                 <div className="flex gap-3">
-                  <img
+                  <Img
                     className="h-12 w-12 rounded-full"
                     src={publication?.imageUrl || ""}
                     alt=""
+                    height={48}
+                    width={48}
                   />
                   <div className="">
                     <h3 className="text-lg font-medium leading-6 text-gray-900">
                       {publication?.name}
                     </h3>
                     <div className="mt-1 flex items-center gap-1">
-                      <img
+                      <Img
                         className="h-3 w-3 rounded-full"
                         src={publication?.author?.image || ""}
                         referrerPolicy="no-referrer"
                         alt=""
+                        height={12}
+                        width={12}
                       />
                       <p className="text-xs italic text-gray-500">
                         {publication?.author?.name}

@@ -10,6 +10,7 @@ import {
 import { signOut } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import Img from "./Img";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -58,10 +59,12 @@ const Layout = (props: LayoutProps) => {
                   <div className="relative flex h-16 items-center justify-between lg:border-b lg:border-indigo-400 lg:border-opacity-25">
                     <div className="flex items-center px-2 lg:px-0">
                       <div className="flex-shrink-0">
-                        <img
-                          className="block h-8 w-8"
-                          src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=300"
-                          alt="Your Company"
+                        <Img
+                          className="block h-8 w-auto"
+                          src="https://res.cloudinary.com/jaronheard/image/upload/v1665000931/mail/Shutterstock_759577369_1_tgmlow.png"
+                          alt="Postage Stamp"
+                          width={150}
+                          height={118}
                         />
                       </div>
                       <div className="hidden lg:ml-10 lg:block">
@@ -117,11 +120,12 @@ const Layout = (props: LayoutProps) => {
                             <Menu.Button className="flex rounded-full bg-indigo-600 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-indigo-600">
                               <span className="sr-only">Open user menu</span>
                               {props.user ? (
-                                <img
+                                <Img
                                   className="h-8 w-8 rounded-full"
                                   src={props.user.imageUrl || ""} // TODO: default image
+                                  height={32}
+                                  width={32}
                                   alt=""
-                                  referrerPolicy="no-referrer"
                                 />
                               ) : (
                                 <UserCircleIcon className="h-8 w-8 rounded-full" />
@@ -197,11 +201,12 @@ const Layout = (props: LayoutProps) => {
                     <div className="flex items-center px-5">
                       <div className="flex-shrink-0">
                         {props.user ? (
-                          <img
+                          <Img
                             className="h-10 w-10 rounded-full"
                             src={props.user.imageUrl || ""}
-                            referrerPolicy="no-referrer"
                             alt=""
+                            height={40}
+                            width={40}
                           />
                         ) : (
                           <UserCircleIcon className="h-10 w-10 rounded-full" />

@@ -31,7 +31,7 @@ export const lob = createRouter()
       address_state: z.string(),
       address_zip: z.string(),
     }),
-    async resolve({ ctx, input }) {
+    async resolve({ input }) {
       const addressApi = new AddressesApi(config);
       const addressCreate = new AddressEditable({
         name: input.name,

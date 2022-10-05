@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import FileUpload from "../../../../components/FileUpload";
 import DefaultQueryCell from "../../../../components/DefaultQueryCell";
+import Img from "../../../../components/Img";
 
 export type FormValues = {
   name: string;
@@ -280,21 +281,24 @@ const Item = () => {
               <>
                 <Link href={`/publications/${id}`}>
                   <a className="flex gap-3">
-                    <img
+                    <Img
                       className="h-12 w-12 rounded-full"
                       src={item?.publication.imageUrl || ""}
                       alt=""
+                      height={48}
+                      width={48}
                     />
                     <div className="">
                       <h3 className="text-lg font-medium leading-6 text-gray-900">
                         {item?.publication.name}
                       </h3>
                       <div className="mt-1 flex items-center gap-1">
-                        <img
+                        <Img
                           className="h-3 w-3 rounded-full"
                           src={item?.publication?.author?.image || ""}
-                          referrerPolicy="no-referrer"
                           alt=""
+                          width={24}
+                          height={24}
                         />
                         <p className="text-xs italic text-gray-500">
                           {item?.publication?.author?.name}
@@ -304,10 +308,12 @@ const Item = () => {
                   </a>
                 </Link>
                 <div className="mt-12">
-                  <img
+                  <Img
                     className="h-12 w-12 rounded-full"
                     src={item?.imageUrl || ""}
                     alt=""
+                    height={48}
+                    width={48}
                   />
                   <div className="mt-6 flex gap-3">
                     <a

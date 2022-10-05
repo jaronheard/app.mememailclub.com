@@ -12,6 +12,7 @@ import {
 import { format } from "date-fns";
 import Link from "next/link";
 import DefaultQueryCell from "../../components/DefaultQueryCell";
+import Img from "../../components/Img";
 
 const PublicationsEmpty = () => {
   return (
@@ -77,10 +78,12 @@ const Publications = () => {
                         <div className="flex items-center px-4 py-4 sm:px-6">
                           <div className="flex min-w-0 flex-1 items-center">
                             <div className="flex-shrink-0">
-                              <img
+                              <Img
                                 className="h-12 w-12 rounded-full"
                                 src={publication.imageUrl || ""}
                                 alt=""
+                                height={48}
+                                width={48}
                               />
                             </div>
                             <div className="min-w-0 flex-1 px-4 md:grid md:grid-cols-2 md:gap-4">

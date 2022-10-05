@@ -5,6 +5,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
 import { appRouter } from "../../../server/router";
 import { prisma } from "../../../server/db/client";
+import { RequestHandler } from "next/dist/server/next";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
   // https://github.com/stripe/stripe-node#configuration
@@ -29,6 +30,7 @@ const caller = appRouter.createCaller({ session: null, prisma: prisma });
 const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "POST") {
     const buf = await buffer(req);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const sig = req.headers["stripe-signature"]!;
 
     let event: Stripe.Event;
@@ -42,7 +44,7 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Unknown error";
       // On error, log and return the error message.
-      if (err! instanceof Error) console.log(err);
+      if (err instanceof Error) console.log(err);
       console.log(`❌ Error message: ${errorMessage}`);
       res.status(400).send(`Webhook Error: ${errorMessage}`);
       return;
@@ -138,4 +140,4 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-export default cors(webhookHandler as any);
+export default cors(webhookHandler as RequestHandler);
