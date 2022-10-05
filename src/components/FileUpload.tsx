@@ -1,24 +1,29 @@
 import { useState } from "react";
 import { uploadFile } from "../utils/cloudinary";
-import { FormValues } from "../pages/publications/[id]/items/[iid]";
 import {
+  FieldErrorsImpl,
+  FieldValues,
+  Path,
+  PathValue,
   UseFormGetValues,
   UseFormRegister,
   UseFormSetValue,
 } from "react-hook-form";
 
-type FileUploadProps = {
-  id: keyof FormValues;
+// props interface using generics to pass in FormValues as FieldValues
+interface FileUploadProps<FormValues extends FieldValues> {
+  id: Path<FormValues>;
   label: string;
   required?: boolean;
   accept?: string;
   register: UseFormRegister<FormValues>;
   getValues: UseFormGetValues<FormValues>;
   setValue: UseFormSetValue<FormValues>;
+  errors: FieldErrorsImpl<FormValues>;
   children?: React.ReactNode;
-};
+}
 
-const FileUpload = ({
+function FileUpload<FormValues extends FieldValues>({
   id,
   label,
   required,
@@ -26,12 +31,13 @@ const FileUpload = ({
   register,
   getValues,
   setValue,
+  errors,
   children,
-}: FileUploadProps) => {
+}: FileUploadProps<FormValues>) {
   const [status, setStatus] = useState("idle");
 
   const url = getValues()[id];
-  const setUrl = (value: string) =>
+  const setUrl = (value: PathValue<FormValues, Path<FormValues>>) =>
     setValue(id, value, {
       shouldValidate: true,
       shouldDirty: true,
@@ -85,12 +91,19 @@ const FileUpload = ({
         )}
       </div>
       {children && (
-        <p className="mt-1 text-sm text-gray-500" id="file_input_help">
-          {children}
-        </p>
+        <>
+          {errors[id] && (
+            <p className="mt-1 text-sm text-red-600" id="email-error">
+              {label} is required.
+            </p>
+          )}
+          <p className="mt-1 text-sm text-gray-500" id="file_input_help">
+            {children}
+          </p>
+        </>
       )}
     </div>
   );
-};
+}
 
 export default FileUpload;

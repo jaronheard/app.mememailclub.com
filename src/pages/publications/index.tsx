@@ -84,6 +84,7 @@ const Publications = () => {
                                 alt=""
                                 height={48}
                                 width={48}
+                                autoCrop
                               />
                             </div>
                             <div className="min-w-0 flex-1 px-4 md:grid md:grid-cols-2 md:gap-4">

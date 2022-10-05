@@ -3,7 +3,6 @@ import clsx from "clsx";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import {
   Bars3Icon,
-  BellIcon,
   UserCircleIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
@@ -58,15 +57,17 @@ const Layout = (props: LayoutProps) => {
                 <div className="mx-auto max-w-7xl px-2 sm:px-4 lg:px-8">
                   <div className="relative flex h-16 items-center justify-between lg:border-b lg:border-indigo-400 lg:border-opacity-25">
                     <div className="flex items-center px-2 lg:px-0">
-                      <div className="flex-shrink-0">
-                        <Img
-                          className="block h-8 w-auto"
-                          src="https://res.cloudinary.com/jaronheard/image/upload/v1665000931/mail/Shutterstock_759577369_1_tgmlow.png"
-                          alt="Postage Stamp"
-                          width={150}
-                          height={118}
-                        />
-                      </div>
+                      <Link href="/">
+                        <a className="flex-shrink-0">
+                          <Img
+                            className="block h-8 w-auto"
+                            src="https://res.cloudinary.com/jaronheard/image/upload/v1665000931/mail/Shutterstock_759577369_1_tgmlow.png"
+                            alt="Postage Stamp"
+                            width={150}
+                            height={118}
+                          />
+                        </a>
+                      </Link>
                       <div className="hidden lg:ml-10 lg:block">
                         <div className="flex space-x-4">
                           {navigation.map((item) => (
@@ -106,14 +107,6 @@ const Layout = (props: LayoutProps) => {
                     </div>
                     <div className="hidden lg:ml-4 lg:block">
                       <div className="flex items-center">
-                        <button
-                          type="button"
-                          className="flex-shrink-0 rounded-full bg-indigo-600 p-1 text-indigo-200 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-indigo-600"
-                        >
-                          <span className="sr-only">View notifications</span>
-                          <BellIcon className="h-6 w-6" aria-hidden="true" />
-                        </button>
-
                         {/* Profile dropdown */}
                         <Menu as="div" className="relative ml-3 flex-shrink-0">
                           <div>
@@ -222,13 +215,6 @@ const Layout = (props: LayoutProps) => {
                           </div>
                         </div>
                       )}
-                      <button
-                        type="button"
-                        className="ml-auto flex-shrink-0 rounded-full bg-indigo-600 p-1 text-indigo-200 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-indigo-600"
-                      >
-                        <span className="sr-only">View notifications</span>
-                        <BellIcon className="h-6 w-6" aria-hidden="true" />
-                      </button>
                     </div>
                     <div className="mt-3 space-y-1 px-2">
                       {userNavigation.map((item) =>

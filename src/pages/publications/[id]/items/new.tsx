@@ -6,6 +6,8 @@ import SignIn from "../../../../components/SignIn";
 import { trpc } from "../../../../utils/trpc";
 import clsx from "clsx";
 import { useRouter } from "next/router";
+import { ItemFormValues } from "./[iid]";
+import FileUpload from "../../../../components/FileUpload";
 
 const New = () => {
   const router = useRouter();
@@ -14,8 +16,18 @@ const New = () => {
   const {
     register,
     handleSubmit,
+    getValues,
+    setValue,
     formState: { errors },
-  } = useForm();
+  } = useForm<ItemFormValues>({
+    defaultValues: {
+      name: "",
+      description: "",
+      imageUrl: "",
+      front: "",
+      back: "",
+    },
+  });
   const createItem = trpc.useMutation("items.createItem", {
     onSuccess: () => router.push(`/publications/${id}`),
   });
@@ -94,7 +106,6 @@ const New = () => {
                             "border-gray-300": !errors.name,
                           }
                         )}
-                        defaultValue={""}
                       />
                     </div>
                     {errors.description && (
@@ -108,172 +119,60 @@ const New = () => {
                   </div>
 
                   <div className="sm:col-span-6">
-                    <label
-                      htmlFor="photo"
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      Cover photo
-                    </label>
-                    <div
-                      className={clsx(
-                        "mt-1 flex justify-center rounded-md border-2 border-dashed px-6 pt-5 pb-6",
-                        {
-                          "border-red-300": errors.photo,
-                          "border-gray-300": !errors.photo,
-                        }
-                      )}
-                    >
-                      <div className="space-y-1 text-center">
-                        <svg
-                          className="mx-auto h-12 w-12 text-gray-400"
-                          stroke="currentColor"
-                          fill="none"
-                          viewBox="0 0 48 48"
-                          aria-hidden="true"
-                        >
-                          <path
-                            d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                            strokeWidth={2}
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                        <div className="flex text-sm text-gray-600">
-                          <label
-                            htmlFor="photo"
-                            className="relative cursor-pointer rounded-md bg-white font-medium text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:text-indigo-500"
-                          >
-                            <span>Upload a file</span>
-                            <input
-                              {...register("photo")}
-                              type="file"
-                              className="sr-only"
-                            />
-                          </label>
-                          <p className="pl-1">or drag and drop</p>
-                        </div>
-                        <p className="text-xs text-gray-500">
-                          PNG, JPG, GIF up to 10MB
-                        </p>
-                      </div>
-                    </div>
-                    {errors.photo && (
-                      <p className="mt-2 text-sm text-red-600" id="email-error">
-                        Cover photo is required.
-                      </p>
-                    )}
+                    <FileUpload
+                      id="imageUrl"
+                      label="Image"
+                      accept="image/*"
+                      required
+                      register={register}
+                      getValues={getValues}
+                      setValue={setValue}
+                      errors={errors}
+                    />
                   </div>
                   <div className="sm:col-span-6">
-                    <label
-                      htmlFor="front"
-                      className="block text-sm font-medium text-gray-700"
+                    <FileUpload
+                      id="front"
+                      label="Front"
+                      accept="application/pdf"
+                      required
+                      register={register}
+                      getValues={getValues}
+                      setValue={setValue}
+                      errors={errors}
                     >
-                      Front
-                    </label>
-                    <div
-                      className={clsx(
-                        "mt-1 flex justify-center rounded-md border-2 border-dashed px-6 pt-5 pb-6",
-                        {
-                          "border-red-300": errors.front,
-                          "border-gray-300": !errors.front,
-                        }
-                      )}
-                    >
-                      <div className="space-y-1 text-center">
-                        <svg
-                          className="mx-auto h-12 w-12 text-gray-400"
-                          stroke="currentColor"
-                          fill="none"
-                          viewBox="0 0 48 48"
-                          aria-hidden="true"
-                        >
-                          <path
-                            d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                            strokeWidth={2}
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                        <div className="flex text-sm text-gray-600">
-                          <label
-                            htmlFor="front"
-                            className="relative cursor-pointer rounded-md bg-white font-medium text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:text-indigo-500"
-                          >
-                            <span>Upload a file</span>
-                            <input
-                              {...register("front")}
-                              type="file"
-                              className="sr-only"
-                            />
-                          </label>
-                          <p className="pl-1">or drag and drop</p>
-                        </div>
-                        <p className="text-xs text-gray-500">
-                          PDF (see instructions)
-                        </p>
-                      </div>
-                    </div>
-                    {errors.front && (
-                      <p className="mt-2 text-sm text-red-600" id="email-error">
-                        Front is required.
-                      </p>
-                    )}
+                      6x9 format PDF, PNG, or JPG per{" "}
+                      <a
+                        href="https://docs.google.com/document/d/1cIc0s2P8gMUaHxykxbzpsaK6U4AJHr0UdqjcRYp6xyc/edit?usp=sharing"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-indigo-600 hover:text-indigo-500"
+                      >
+                        instructions
+                      </a>
+                    </FileUpload>
                   </div>
                   <div className="sm:col-span-6">
-                    <label
-                      htmlFor="back"
-                      className="block text-sm font-medium text-gray-700"
+                    <FileUpload
+                      id="back"
+                      label="Back"
+                      required
+                      accept="application/pdf"
+                      register={register}
+                      getValues={getValues}
+                      setValue={setValue}
+                      errors={errors}
                     >
-                      Back
-                    </label>
-                    <div
-                      className={clsx(
-                        "mt-1 flex justify-center rounded-md border-2 border-dashed px-6 pt-5 pb-6",
-                        {
-                          "border-red-300": errors.back,
-                          "border-gray-300": !errors.back,
-                        }
-                      )}
-                    >
-                      <div className="space-y-1 text-center">
-                        <svg
-                          className="mx-auto h-12 w-12 text-gray-400"
-                          stroke="currentColor"
-                          fill="none"
-                          viewBox="0 0 48 48"
-                          aria-hidden="true"
-                        >
-                          <path
-                            d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                            strokeWidth={2}
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                        <div className="flex text-sm text-gray-600">
-                          <label
-                            htmlFor="back"
-                            className="relative cursor-pointer rounded-md bg-white font-medium text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:text-indigo-500"
-                          >
-                            <span>Upload a file</span>
-                            <input
-                              {...register("back")}
-                              type="file"
-                              className="sr-only"
-                            />
-                          </label>
-                          <p className="pl-1">or drag and drop</p>
-                        </div>
-                        <p className="text-xs text-gray-500">
-                          PDF (see instructions)
-                        </p>
-                      </div>
-                    </div>
-                    {errors.back && (
-                      <p className="mt-2 text-sm text-red-600" id="email-error">
-                        Back is required.
-                      </p>
-                    )}
+                      6x9 format PDF, PNG, or JPG per{" "}
+                      <a
+                        href="https://docs.google.com/document/d/1cIc0s2P8gMUaHxykxbzpsaK6U4AJHr0UdqjcRYp6xyc/edit?usp=sharing"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-indigo-600 hover:text-indigo-500"
+                      >
+                        instructions
+                      </a>
+                    </FileUpload>
                   </div>
                 </div>
               </div>
@@ -291,11 +190,9 @@ const New = () => {
                       publicationId: Number(id),
                       name: data.name,
                       description: data.description,
-                      imageUrl:
-                        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-                      front:
-                        "https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/postcards/6x9_postcard.pdf",
-                      back: "https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/postcards/6x9_postcard.pdf",
+                      imageUrl: data.imageUrl,
+                      front: data.front,
+                      back: data.back,
                       status: "DRAFT",
                     });
                   })}
@@ -309,11 +206,9 @@ const New = () => {
                       publicationId: Number(id),
                       name: data.name,
                       description: data.description,
-                      imageUrl:
-                        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-                      front:
-                        "https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/postcards/6x9_postcard.pdf",
-                      back: "https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/postcards/6x9_postcard.pdf",
+                      imageUrl: data.imageUrl,
+                      front: data.front,
+                      back: data.back,
                       status: "PUBLISHED",
                     });
                   })}

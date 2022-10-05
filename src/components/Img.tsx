@@ -18,10 +18,12 @@ interface LoaderArgs {
   keepAspectRatio?: boolean;
   aspectRatio?: number;
   options: CldOptions;
+  autoCrop?: boolean;
 }
 const loader = ({
   src,
   keepAspectRatio,
+  autoCrop,
   aspectRatio,
   options,
 }: LoaderArgs): string => {
@@ -45,15 +47,18 @@ const loader = ({
     options.transformations.resize.height = Math.round(
       Number(options.transformations?.resize?.width) * aspectRatio
     );
+    if (autoCrop) {
+      options.transformations.resize.type = "fill";
+    }
   }
   return buildImageUrl(publicId, options);
 };
 
 interface CustomImageProps {
   keepAspectRatio?: boolean;
+  autoCrop?: boolean;
   cloud?: CloudConfig;
   transformations?: TransformerOption;
-  layout?: "intrinsic" | "fixed" | "responsive" | "fill";
 }
 
 export type NextImageCloudinaryProps = CustomImageProps & ImageProps;
@@ -66,6 +71,7 @@ const Img = ({
   fill,
   className,
   keepAspectRatio = true,
+  autoCrop,
   cloud = CLOUD_OPTIONS,
   transformations,
   ...rest
@@ -79,6 +85,7 @@ const Img = ({
           src: params.src,
           aspectRatio,
           keepAspectRatio,
+          autoCrop,
           options: {
             cloud: {
               cloudName: cloud.cloudName,

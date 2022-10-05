@@ -10,7 +10,7 @@ import FileUpload from "../../../../components/FileUpload";
 import DefaultQueryCell from "../../../../components/DefaultQueryCell";
 import Img from "../../../../components/Img";
 
-export type FormValues = {
+export type ItemFormValues = {
   name: string;
   description: string;
   imageUrl: string;
@@ -29,7 +29,7 @@ const Item = () => {
     getValues,
     setValue,
     formState: { errors },
-  } = useForm<FormValues>({
+  } = useForm<ItemFormValues>({
     defaultValues: {
       name: "",
       description: "",
@@ -171,6 +171,7 @@ const Item = () => {
                           register={register}
                           getValues={getValues}
                           setValue={setValue}
+                          errors={errors}
                         />
                       </div>
                       <div className="sm:col-span-6">
@@ -182,6 +183,7 @@ const Item = () => {
                           register={register}
                           getValues={getValues}
                           setValue={setValue}
+                          errors={errors}
                         >
                           6x9 format PDF, PNG, or JPG per{" "}
                           <a
@@ -203,6 +205,7 @@ const Item = () => {
                           register={register}
                           getValues={getValues}
                           setValue={setValue}
+                          errors={errors}
                         >
                           6x9 format PDF, PNG, or JPG per{" "}
                           <a
@@ -287,6 +290,7 @@ const Item = () => {
                       alt=""
                       height={48}
                       width={48}
+                      autoCrop
                     />
                     <div className="">
                       <h3 className="text-lg font-medium leading-6 text-gray-900">
@@ -314,6 +318,7 @@ const Item = () => {
                     alt=""
                     height={48}
                     width={48}
+                    autoCrop
                   />
                   <div className="mt-6 flex gap-3">
                     <a
