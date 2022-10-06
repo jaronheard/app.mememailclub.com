@@ -9,6 +9,10 @@
     "lint": "next lint",
     "start": "next start"
   },
+  "engines": {
+    "npm": ">=8.0.0 <9.0.0",
+    "node": ">=16.0.0 <17.0.0"
+  },
   "dependencies": {
     "@cld-apis/utils": "^0.2.0",
     "@headlessui/react": "^1.7.2",
