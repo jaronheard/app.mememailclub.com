@@ -37,7 +37,7 @@ const PostcardGallery = () => {
   );
 };
 
-const Address = () => {
+const Explore = () => {
   const { data: session, status } = useSession();
 
   if (status === "loading") {
@@ -66,4 +66,4 @@ const Address = () => {
   );
 };
 
-export default Address;
+export default Explore;
