@@ -6,7 +6,6 @@ import Stripe from "stripe";
 import { appRouter } from "../../../server/router";
 import { prisma } from "../../../server/db/client";
 import { RequestHandler } from "next/dist/server/next";
-import { withSentry } from "@sentry/nextjs";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
   // https://github.com/stripe/stripe-node#configuration
@@ -141,4 +140,4 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-export default withSentry(cors(webhookHandler as RequestHandler));
+export default cors(webhookHandler as RequestHandler);
