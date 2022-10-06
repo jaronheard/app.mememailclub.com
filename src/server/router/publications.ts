@@ -2,21 +2,31 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createRouter } from "./context";
 
+const INCLUDE_RELATIONS = {
+  include: {
+    Items: true,
+    Subscriptions: true,
+  },
+};
+
+const BasePublication = z.object({
+  authorId: z.string(),
+  name: z.string(),
+  description: z.string(),
+  imageUrl: z.string().url(),
+  status: z.enum(["DRAFT", "PUBLISHED"]),
+});
+const HadId = z.object({
+  id: z.number(),
+});
+const CreatePublication = BasePublication;
+const UpdatePublication = BasePublication.merge(HadId);
+
 export const publications = createRouter()
   .query("getAll", {
     async resolve({ ctx }) {
       const publications = await ctx.prisma.publication.findMany({
-        select: {
-          id: true,
-          createdAt: true,
-          name: true,
-          description: true,
-          author: true,
-          imageUrl: true,
-          status: true,
-          Subscriptions: true,
-          Items: true,
-        },
+        ...INCLUDE_RELATIONS,
         orderBy: {
           createdAt: "desc",
         },
@@ -33,17 +43,7 @@ export const publications = createRouter()
         where: {
           id: input.id,
         },
-        select: {
-          id: true,
-          createdAt: true,
-          name: true,
-          description: true,
-          author: true,
-          imageUrl: true,
-          status: true,
-          Subscriptions: true,
-          Items: true,
-        },
+        ...INCLUDE_RELATIONS,
       });
       // handle error
       if (!publication) {
@@ -64,13 +64,7 @@ export const publications = createRouter()
     return next();
   })
   .mutation("createPublication", {
-    input: z.object({
-      authorId: z.string(),
-      name: z.string(),
-      description: z.string(),
-      imageUrl: z.string().url(),
-      status: z.enum(["DRAFT", "PUBLISHED"]),
-    }),
+    input: CreatePublication,
     async resolve({ ctx, input }) {
       const publication = await ctx.prisma.publication.create({
         data: {
@@ -91,13 +85,7 @@ export const publications = createRouter()
     },
   })
   .mutation("updatePublication", {
-    input: z.object({
-      id: z.number(),
-      name: z.string(),
-      description: z.string(),
-      imageUrl: z.string().url(),
-      status: z.enum(["DRAFT", "PUBLISHED"]),
-    }),
+    input: UpdatePublication,
     async resolve({ ctx, input }) {
       const updatedPublication = await ctx.prisma.publication.update({
         where: {
@@ -134,7 +122,7 @@ export const publications = createRouter()
           code: "INTERNAL_SERVER_ERROR",
           message: "Publication not deleted",
         });
-        return deleted;
       }
+      return deleted;
     },
   });
