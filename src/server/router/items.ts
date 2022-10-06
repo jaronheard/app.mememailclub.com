@@ -88,6 +88,30 @@ export const items = createRouter()
       return item;
     },
   })
+  .mutation("updatePostcardPreviewRendered", {
+    input: z.object({
+      postcardPreviewId: z.string(),
+      postcardPreviewRendered: z.boolean(),
+    }),
+    async resolve({ ctx, input }) {
+      const updatedItem = await ctx.prisma.item.update({
+        where: {
+          postcardPreviewId: input.postcardPreviewId,
+        },
+        data: {
+          postcardPreviewRendered: input.postcardPreviewRendered,
+        },
+      });
+      if (!updatedItem) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Item update failed",
+        });
+      }
+
+      return updatedItem;
+    },
+  })
   .middleware(async ({ ctx, next }) => {
     // Any queries or mutations after this middleware will
     // raise an error unless there is a current session
@@ -303,30 +327,6 @@ export const items = createRouter()
         },
       });
 
-      if (!updatedItem) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Item update failed",
-        });
-      }
-
-      return updatedItem;
-    },
-  })
-  .mutation("updatePostcardPreviewRendered", {
-    input: z.object({
-      postcardPreviewId: z.string(),
-      postcardPreviewRendered: z.boolean(),
-    }),
-    async resolve({ ctx, input }) {
-      const updatedItem = await ctx.prisma.item.update({
-        where: {
-          postcardPreviewId: input.postcardPreviewId,
-        },
-        data: {
-          postcardPreviewRendered: input.postcardPreviewRendered,
-        },
-      });
       if (!updatedItem) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
