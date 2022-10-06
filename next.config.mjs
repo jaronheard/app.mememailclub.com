@@ -1,3 +1,4 @@
+import { withSentryConfig } from "@sentry/nextjs";
 import { env } from "./src/env/server.mjs";
 
 /**
@@ -12,18 +13,25 @@ function defineNextConfig(config) {
   return config;
 }
 
-export default defineNextConfig({
-  reactStrictMode: true,
-  swcMinify: true,
-  images: {
-    domains: ["res.cloudinary.com"],
-  },
-  // Next.js i18n docs: https://nextjs.org/docs/advanced-features/i18n-routing
-  // i18n: {
-  //   locales: ["en"],
-  //   defaultLocale: "en",
-  // },
-  async redirects() {
-    return [];
-  },
-});
+export default withSentryConfig(
+  defineNextConfig({
+    reactStrictMode: true,
+    swcMinify: true,
+    images: {
+      domains: ["res.cloudinary.com"],
+    },
+    sentry: {
+      // https://docs.sentry.io/platforms/javascript/guides/nextjs/
+      disableServerWebpackPlugin: true,
+      disableClientWebpackPlugin: true,
+    },
+    // Next.js i18n docs: https://nextjs.org/docs/advanced-features/i18n-routing
+    // i18n: {
+    //   locales: ["en"],
+    //   defaultLocale: "en",
+    // },
+    async redirects() {
+      return [];
+    },
+  })
+);
