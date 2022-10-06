@@ -2,6 +2,16 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createRouter } from "./context";
 import Stripe from "stripe";
+import {
+  Configuration,
+  PostcardEditable,
+  PostcardsApi,
+} from "@lob/lob-typescript-sdk";
+import { env } from "../../env/server.mjs";
+
+const testConfig: Configuration = new Configuration({
+  username: env.LOB_TEST_API_KEY,
+});
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
   apiVersion: "2022-08-01",
@@ -56,9 +66,10 @@ export const items = createRouter()
           select: {
             name: true,
             description: true,
-            imageUrl: true,
             front: true,
             back: true,
+            frontPreview: true,
+            backPreview: true,
             stripePaymentLink: true,
             publication: {
               select: {
@@ -117,20 +128,55 @@ export const items = createRouter()
       publicationId: z.number(),
       name: z.string(),
       description: z.string(),
-      imageUrl: z.string().url(),
       front: z.string().url(),
       back: z.string().url(),
       status: z.enum(["DRAFT", "PUBLISHED"]),
     }),
     async resolve({ ctx, input }) {
       try {
+        // create a postcard using lob
+        const postcardCreate = new PostcardEditable({
+          to: {
+            name: "Jane Doe",
+            address_line1: "123 Main St",
+            address_city: "San Francisco",
+            address_state: "CA",
+            address_zip: "94111",
+          },
+          front: input.front,
+          back: input.back,
+          size: "4x6",
+        });
+        const myPostcard = await new PostcardsApi(testConfig).create(
+          postcardCreate
+        );
+
+        // throw error if postcard creation fails
+        if (!myPostcard) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Postcard creation failed",
+          });
+        }
+
+        const frontPreview = myPostcard.thumbnails?.[0]?.large;
+        const backPreview = myPostcard.thumbnails?.[1]?.large;
+
+        // throw error if postcard preview creation fails
+        if (!frontPreview || !backPreview) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Postcard preview creation failed",
+          });
+        }
+
         // stripe logic
         const product = await stripe.products.create({
           name: input.name,
           active: input.status === "PUBLISHED",
           description: input.description,
           statement_descriptor: `postcard: ${input.name.slice(0, 12)}`,
-          images: [input.imageUrl],
+          images: [frontPreview, backPreview],
           // default item information
           shippable: true,
           tax_code: "txcd_35020200",
@@ -141,7 +187,10 @@ export const items = createRouter()
         });
 
         if (typeof product.default_price !== "string") {
-          throw new Error("No default price id");
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Stripe product creation failed",
+          });
         }
 
         const paymentLink = await stripe.paymentLinks.create({
@@ -162,9 +211,10 @@ export const items = createRouter()
             publicationId: input.publicationId,
             name: input.name,
             description: input.description,
-            imageUrl: input.imageUrl,
             front: input.front,
             back: input.back,
+            frontPreview: frontPreview,
+            backPreview: backPreview,
             status: input.status,
             stripeProductId: product.id,
             stripePaymentLink: paymentLink.url,
@@ -180,13 +230,48 @@ export const items = createRouter()
       id: z.number(),
       name: z.string(),
       description: z.string(),
-      imageUrl: z.string().url(),
       front: z.string().url(),
       back: z.string().url(),
       status: z.enum(["DRAFT", "PUBLISHED"]),
     }),
     async resolve({ ctx, input }) {
       try {
+        // create a postcard using lob
+        const postcardCreate = new PostcardEditable({
+          to: {
+            name: "Jane Doe",
+            address_line1: "123 Main St",
+            address_city: "San Francisco",
+            address_state: "CA",
+            address_zip: "94111",
+          },
+          front: input.front,
+          back: input.back,
+          size: "4x6",
+        });
+        const myPostcard = await new PostcardsApi(testConfig).create(
+          postcardCreate
+        );
+
+        // throw error if postcard creation fails
+        if (!myPostcard) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Postcard creation failed",
+          });
+        }
+
+        const frontPreview = myPostcard.thumbnails?.[0]?.large;
+        const backPreview = myPostcard.thumbnails?.[1]?.large;
+
+        // throw error if postcard preview creation fails
+        if (!frontPreview || !backPreview) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Postcard preview creation failed",
+          });
+        }
+
         const item = await ctx.prisma.item.findUnique({
           where: {
             id: input.id,
@@ -210,7 +295,7 @@ export const items = createRouter()
           active: input.status === "PUBLISHED",
           description: input.description,
           statement_descriptor: `postcard: ${input.name.slice(0, 12)}`,
-          images: [input.imageUrl],
+          // images: [input.imageUrl],
         });
 
         // TODO: update payment link with new price
@@ -222,9 +307,10 @@ export const items = createRouter()
           data: {
             name: input.name,
             description: input.description,
-            imageUrl: input.imageUrl,
             front: input.front,
             back: input.back,
+            frontPreview: frontPreview,
+            backPreview: backPreview,
             status: input.status,
             stripeProductId: product.id,
             // stripePaymentLink: item.stripePaymentLink,

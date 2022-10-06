@@ -13,20 +13,21 @@ const CLOUD_OPTIONS = {
   cloudName: "jaronheard",
 };
 
-interface LoaderArgs {
+interface CloudinaryUrlBuilderArgs {
   src: string;
   keepAspectRatio?: boolean;
   aspectRatio?: number;
-  options: CldOptions;
+  options?: CldOptions;
   autoCrop?: boolean;
 }
-const loader = ({
+
+export const cloudinaryUrlBuilder = ({
   src,
   keepAspectRatio,
   autoCrop,
   aspectRatio,
-  options,
-}: LoaderArgs): string => {
+  options = { cloud: CLOUD_OPTIONS },
+}: CloudinaryUrlBuilderArgs): string => {
   // use remote image loading
   const publicId = src.includes("cloudinary.com") ? extractPublicId(src) : src;
 
@@ -81,7 +82,7 @@ const Img = ({
     <Image
       loader={(params: ImageLoaderProps): string => {
         const { resize, ...restTransformations } = transformations || {};
-        return loader({
+        return cloudinaryUrlBuilder({
           src: params.src,
           aspectRatio,
           keepAspectRatio,

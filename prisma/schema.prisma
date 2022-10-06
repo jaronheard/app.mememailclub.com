@@ -71,9 +71,10 @@ model Item {
     createdAt         DateTime    @default(now())
     name              String
     description       String
-    imageUrl          String
     front             String
+    frontPreview      String
     back              String
+    backPreview       String
     status            Status      @default(DRAFT)
     stripeProductId   String      @unique
     stripePaymentLink String      @unique

@@ -55,6 +55,7 @@ export const lob = createRouter()
       addressId: z.string(),
       itemId: z.number(),
       quantity: z.number(),
+      test: z.boolean().optional(),
     }),
     async resolve({ ctx, input }) {
       try {

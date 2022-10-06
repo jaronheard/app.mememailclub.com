@@ -23,7 +23,6 @@ const New = () => {
     defaultValues: {
       name: "",
       description: "",
-      imageUrl: "",
       front: "",
       back: "",
     },
@@ -117,19 +116,6 @@ const New = () => {
                       Write a few sentences about your item.
                     </p>
                   </div>
-
-                  <div className="sm:col-span-6">
-                    <FileUpload
-                      id="imageUrl"
-                      label="Image"
-                      accept="image/*"
-                      required
-                      register={register}
-                      getValues={getValues}
-                      setValue={setValue}
-                      errors={errors}
-                    />
-                  </div>
                   <div className="sm:col-span-6">
                     <FileUpload
                       id="front"
@@ -190,7 +176,6 @@ const New = () => {
                       publicationId: Number(id),
                       name: data.name,
                       description: data.description,
-                      imageUrl: data.imageUrl,
                       front: data.front,
                       back: data.back,
                       status: "DRAFT",
@@ -206,7 +191,6 @@ const New = () => {
                       publicationId: Number(id),
                       name: data.name,
                       description: data.description,
-                      imageUrl: data.imageUrl,
                       front: data.front,
                       back: data.back,
                       status: "PUBLISHED",

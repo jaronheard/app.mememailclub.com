@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import FileUpload from "../../../../components/FileUpload";
 import DefaultQueryCell from "../../../../components/DefaultQueryCell";
 import Img from "../../../../components/Img";
+import { PostcardPreview } from "../../../../components/PostcardPreview";
 
 export type ItemFormValues = {
   name: string;
@@ -41,7 +42,11 @@ const Item = () => {
   const itemsQuery = trpc.useQuery(["items.getOne", { id: Number(iid) }]);
   const { data: item, isLoading } = itemsQuery;
   const updateItem = trpc.useMutation("items.updateItem", {
-    onSuccess: () => router.push(`/publications/${id}`),
+    onSuccess(data, variables) {
+      variables.status === "DRAFT"
+        ? router.push(`/publications/${id}/items/${iid}`)
+        : router.push(`/publications/${id}`);
+    },
   });
   const deleteItem = trpc.useMutation("items.deleteItem", {
     onSuccess: () => router.push(`/publications/${id}`),
@@ -52,7 +57,6 @@ const Item = () => {
       reset({
         name: item?.name || "",
         description: item?.description || "",
-        imageUrl: item?.imageUrl || "",
         front: item?.front || "",
         back: item?.back || "",
       });
@@ -83,22 +87,56 @@ const Item = () => {
                       <h3 className="text-lg font-medium leading-6 text-gray-900">
                         Item
                       </h3>
-                      <p className="mt-1 text-sm text-gray-500">
-                        This information will be displayed publicly once your
-                        item is published.
-                      </p>
-                      <a
-                        href={item?.stripePaymentLink || "#"}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="mt-3 inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-3 py-2 text-sm font-medium leading-4 text-white shadow-sm focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:bg-indigo-700"
-                      >
-                        View payment link
-                      </a>
                     </div>
 
                     <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
-                      <div className="sm:col-span-4">
+                      <div className="sm:col-span-3" id="front">
+                        <FileUpload
+                          id="front"
+                          label="Front"
+                          accept="application/pdf, image/png, image/jpeg"
+                          required
+                          register={register}
+                          getValues={getValues}
+                          setValue={setValue}
+                          errors={errors}
+                        >
+                          4x6 format PDF, PNG, or JPG per{" "}
+                          <a
+                            href="https://docs.google.com/document/d/1cIc0s2P8gMUaHxykxbzpsaK6U4AJHr0UdqjcRYp6xyc/edit?usp=sharing"
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-indigo-600 hover:text-indigo-500"
+                          >
+                            instructions
+                          </a>
+                        </FileUpload>
+                      </div>
+
+                      <div className="sm:col-span-3" id="back">
+                        <FileUpload
+                          id="back"
+                          label="Back"
+                          required
+                          accept="application/pdf, image/png, image/jpeg"
+                          register={register}
+                          getValues={getValues}
+                          setValue={setValue}
+                          errors={errors}
+                        >
+                          4x6 format PDF, PNG, or JPG per{" "}
+                          <a
+                            href="https://docs.google.com/document/d/1cIc0s2P8gMUaHxykxbzpsaK6U4AJHr0UdqjcRYp6xyc/edit?usp=sharing"
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-indigo-600 hover:text-indigo-500"
+                          >
+                            instructions
+                          </a>
+                        </FileUpload>
+                      </div>
+
+                      <div className="sm:col-span-4" id="name">
                         <label
                           htmlFor="name"
                           className="block text-sm font-medium text-gray-700"
@@ -128,7 +166,7 @@ const Item = () => {
                         )}
                       </div>
 
-                      <div className="sm:col-span-6">
+                      <div className="sm:col-span-6" id="description">
                         <label
                           htmlFor="description"
                           className="block text-sm font-medium text-gray-700"
@@ -162,114 +200,76 @@ const Item = () => {
                           Write a few sentences about your item.
                         </p>
                       </div>
-                      <div className="sm:col-span-6">
-                        <FileUpload
-                          id="imageUrl"
-                          label="Image"
-                          accept="image/*"
-                          required
-                          register={register}
-                          getValues={getValues}
-                          setValue={setValue}
-                          errors={errors}
+                      <div className="sm:col-span-6" id="preview">
+                        <div className="flex justify-start gap-3">
+                          <button
+                            onClick={handleSubmit((data) => {
+                              updateItem.mutate({
+                                id: Number(iid),
+                                name: data.name,
+                                description: data.description,
+                                front: data.front,
+                                back: data.back,
+                                status: "PUBLISHED",
+                              });
+                            })}
+                            className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                          >
+                            Publish
+                          </button>
+                          <button
+                            onClick={handleSubmit((data) => {
+                              updateItem.mutate({
+                                id: Number(iid),
+                                name: data.name,
+                                description: data.description,
+                                front: data.front,
+                                back: data.back,
+                                status: "DRAFT",
+                              });
+                            })}
+                            className="inline-flex items-center rounded-md border border-transparent bg-indigo-100 px-4 py-2 text-sm font-medium text-indigo-700 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                          >
+                            Preview
+                          </button>
+                        </div>
+                      </div>
+                      <div className="pt-6 sm:col-span-6">
+                        <h3 className="text-lg font-medium leading-6 text-gray-900">
+                          Item Preview
+                        </h3>
+                      </div>
+
+                      <div className="sm:col-span-3" id="preview">
+                        <PostcardPreview
+                          id={0}
+                          front={item!.frontPreview}
+                          back={item!.backPreview}
+                          author={item!.publication?.author?.name || ""}
+                          name={item!.name}
+                          description={item!.description}
+                          stripePaymentLink={item!.stripePaymentLink}
                         />
                       </div>
-                      <div className="sm:col-span-6">
-                        <FileUpload
-                          id="front"
-                          label="Front"
-                          accept="application/pdf, image/png, image/jpeg"
-                          required
-                          register={register}
-                          getValues={getValues}
-                          setValue={setValue}
-                          errors={errors}
-                        >
-                          4x6 format PDF, PNG, or JPG per{" "}
-                          <a
-                            href="https://docs.google.com/document/d/1cIc0s2P8gMUaHxykxbzpsaK6U4AJHr0UdqjcRYp6xyc/edit?usp=sharing"
-                            target="_blank"
-                            rel="noreferrer"
-                            className="text-indigo-600 hover:text-indigo-500"
+
+                      <div className="sm:col-span-6" id="delete">
+                        <div className="flex items-center justify-start gap-3">
+                          <button
+                            onClick={() => {
+                              deleteItem.mutate({
+                                id: Number(iid),
+                              });
+                            }}
+                            className="ml-3 inline-flex items-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                           >
-                            instructions
-                          </a>
-                        </FileUpload>
-                      </div>
-                      <div className="sm:col-span-6">
-                        <FileUpload
-                          id="back"
-                          label="Back"
-                          required
-                          accept="application/pdf, image/png, image/jpeg"
-                          register={register}
-                          getValues={getValues}
-                          setValue={setValue}
-                          errors={errors}
-                        >
-                          4x6 format PDF, PNG, or JPG per{" "}
-                          <a
-                            href="https://docs.google.com/document/d/1cIc0s2P8gMUaHxykxbzpsaK6U4AJHr0UdqjcRYp6xyc/edit?usp=sharing"
-                            target="_blank"
-                            rel="noreferrer"
-                            className="text-indigo-600 hover:text-indigo-500"
-                          >
-                            instructions
-                          </a>
-                        </FileUpload>
+                            Delete
+                          </button>
+                          <p className="text-sm font-medium text-red-700">
+                            Warning: this action is irreversable
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-                <div className="pt-5">
-                  <div className="flex justify-end">
-                    <Link href="/">
-                      <a className="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                        Cancel
-                      </a>
-                    </Link>
-                    <button
-                      onClick={() => {
-                        deleteItem.mutate({
-                          id: Number(iid),
-                        });
-                      }}
-                      className="ml-3 inline-flex items-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-                    >
-                      Delete
-                    </button>
-                    <button
-                      onClick={handleSubmit((data) => {
-                        updateItem.mutate({
-                          id: Number(iid),
-                          name: data.name,
-                          description: data.description,
-                          imageUrl: data.imageUrl,
-                          front: data.front,
-                          back: data.back,
-                          status: "DRAFT",
-                        });
-                      })}
-                      className="ml-3 inline-flex items-center rounded-md border border-transparent bg-indigo-100 px-4 py-2 text-sm font-medium text-indigo-700 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                    >
-                      Unpublish
-                    </button>
-                    <button
-                      onClick={handleSubmit((data) => {
-                        updateItem.mutate({
-                          id: Number(iid),
-                          name: data.name,
-                          description: data.description,
-                          imageUrl: data.imageUrl,
-                          front: data.front,
-                          back: data.back,
-                          status: "PUBLISHED",
-                        });
-                      })}
-                      className="ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                    >
-                      Publish
-                    </button>
                   </div>
                 </div>
               </form>
@@ -312,14 +312,6 @@ const Item = () => {
                   </a>
                 </Link>
                 <div className="mt-12">
-                  <Img
-                    className="h-12 w-12 rounded-full"
-                    src={item?.imageUrl || ""}
-                    alt=""
-                    height={48}
-                    width={48}
-                    autoCrop
-                  />
                   <div className="mt-6 flex gap-3">
                     <a
                       href={item?.front || ""}

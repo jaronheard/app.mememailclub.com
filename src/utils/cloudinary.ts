@@ -20,9 +20,3 @@ export async function uploadFile(file: File) {
     console.error(error);
   }
 }
-
-export function gravatarImageUrl(email: string) {
-  return `https://res.cloudinary.com/jaronheard/image/gravatar/${Md5.hashStr(
-    email
-  )}`;
-}
