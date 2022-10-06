@@ -90,17 +90,15 @@ function FileUpload<FormValues extends FieldValues>({
           </a>
         )}
       </div>
+      {errors[id] && (
+        <p className="mt-1 text-sm text-red-600" id="email-error">
+          {label} is required.
+        </p>
+      )}
       {children && (
-        <>
-          {errors[id] && (
-            <p className="mt-1 text-sm text-red-600" id="email-error">
-              {label} is required.
-            </p>
-          )}
-          <p className="mt-1 text-sm text-gray-500" id="file_input_help">
-            {children}
-          </p>
-        </>
+        <p className="mt-1 text-sm text-gray-500" id="file_input_help">
+          {children}
+        </p>
       )}
     </div>
   );

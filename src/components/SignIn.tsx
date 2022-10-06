@@ -20,7 +20,23 @@ export default function SignIn() {
 
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
           <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-            <p className="text-sm font-medium text-gray-700">Sign in with</p>
+            <div className="relative text-lg font-medium text-gray-900 md:flex-grow">
+              <svg
+                className="absolute top-0 left-0 h-8 w-8 -translate-x-3 -translate-y-2 transform text-indigo-100"
+                fill="currentColor"
+                viewBox="0 0 32 32"
+                aria-hidden="true"
+              >
+                <path d="M9.352 4C4.456 7.456 1 13.12 1 19.36c0 5.088 3.072 8.064 6.624 8.064 3.36 0 5.856-2.688 5.856-5.856 0-3.168-2.208-5.472-5.088-5.472-.576 0-1.344.096-1.536.192.48-3.264 3.552-7.104 6.624-9.024L9.352 4zm16.512 0c-4.8 3.456-8.256 9.12-8.256 15.36 0 5.088 3.072 8.064 6.624 8.064 3.264 0 5.856-2.688 5.856-5.856 0-3.168-2.304-5.472-5.184-5.472-.576 0-1.248.096-1.44.192.48-3.264 3.456-7.104 6.528-9.024L25.864 4z" />
+              </svg>
+              <p className="relative">
+                To create is to be human. To share is to be human. To share your
+                creations is to be a Postcard Cartel member.
+              </p>
+            </div>
+            <p className="mt-2 text-sm font-medium text-gray-700">
+              Sign in with
+            </p>
             <div className="mt-1 grid grid-cols-1 gap-3">
               <div>
                 <button

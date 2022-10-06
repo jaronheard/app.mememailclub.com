@@ -13,9 +13,26 @@ export const items = createRouter()
       try {
         return await ctx.prisma.item.findMany({
           select: {
+            id: true,
             name: true,
+            description: true,
             front: true,
             back: true,
+            stripePaymentLink: true,
+            publication: {
+              select: {
+                name: true,
+                description: true,
+                imageUrl: true,
+                author: {
+                  select: {
+                    name: true,
+                    image: true,
+                  },
+                },
+                authorId: true,
+              },
+            },
           },
           orderBy: {
             createdAt: "desc",

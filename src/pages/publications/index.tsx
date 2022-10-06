@@ -13,6 +13,7 @@ import { format } from "date-fns";
 import Link from "next/link";
 import DefaultQueryCell from "../../components/DefaultQueryCell";
 import Img from "../../components/Img";
+import SignIn from "../../components/SignIn";
 
 const PublicationsEmpty = () => {
   return (
@@ -187,7 +188,8 @@ const Home = () => {
         </Layout>
       ) : (
         <Layout>
-          <Publications />
+          <SignIn />
+          {/* <Publications /> */}
         </Layout>
       )}
     </>

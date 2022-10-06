@@ -27,13 +27,13 @@ const Layout = (props: LayoutProps) => {
   const navigation = [
     {
       name: "Explore",
-      href: "/publications",
-      current: ["/publications"].includes(router.asPath),
+      href: "/explore",
+      current: ["/explore"].includes(router.asPath),
     },
     {
       name: "Create",
-      href: "/publications/new",
-      current: ["/publications/new"].includes(router.asPath),
+      href: "/publications",
+      current: ["/publications", "/publications/new"].includes(router.asPath),
     },
   ];
   const userNavigation = props.user

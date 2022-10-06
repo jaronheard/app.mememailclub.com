@@ -41,6 +41,7 @@
   },
   "devDependencies": {
     "@cld-apis/types": "^0.1.6",
+    "@tailwindcss/aspect-ratio": "^0.4.2",
     "@types/micro-cors": "^0.1.2",
     "@types/node": "18.0.0",
     "@types/react": "18.0.14",

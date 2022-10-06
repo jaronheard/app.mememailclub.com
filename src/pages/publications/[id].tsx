@@ -327,8 +327,7 @@ const Publication = () => {
                           id: Number(id),
                           name: data.name,
                           description: data.description,
-                          imageUrl:
-                            "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+                          imageUrl: data.imageUrl,
                           status: "PUBLISHED",
                         });
                       })}
@@ -342,8 +341,7 @@ const Publication = () => {
                           id: Number(id),
                           name: data.name,
                           description: data.description,
-                          imageUrl:
-                            "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+                          imageUrl: data.imageUrl,
                           status: "PUBLISHED",
                         });
                       })}
@@ -370,7 +368,7 @@ const Publication = () => {
                     alt=""
                     height={48}
                     width={48}
-                    autoCrop={true}
+                    autoCrop
                   />
                   <div className="">
                     <h3 className="text-lg font-medium leading-6 text-gray-900">
