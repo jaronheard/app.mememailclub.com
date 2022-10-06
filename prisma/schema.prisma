@@ -67,19 +67,21 @@ model VerificationToken {
 }
 
 model Item {
-    id                Int         @id @default(autoincrement())
-    createdAt         DateTime    @default(now())
-    name              String
-    description       String
-    front             String
-    frontPreview      String
-    back              String
-    backPreview       String
-    status            Status      @default(DRAFT)
-    stripeProductId   String      @unique
-    stripePaymentLink String      @unique
-    publicationId     Int
-    publication       Publication @relation(fields: [publicationId], references: [id])
+    id                      Int         @id @default(autoincrement())
+    createdAt               DateTime    @default(now())
+    name                    String
+    description             String
+    front                   String
+    back                    String
+    status                  Status      @default(DRAFT)
+    stripeProductId         String      @unique
+    stripePaymentLink       String      @unique
+    postcardPreviewId       String      @unique
+    postcardPreviewRendered Boolean?
+    frontPreview            String
+    backPreview             String
+    publicationId           Int
+    publication             Publication @relation(fields: [publicationId], references: [id])
 }
 
 model Publication {

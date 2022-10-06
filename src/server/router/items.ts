@@ -190,6 +190,7 @@ export const items = createRouter()
           status: input.status,
           stripeProductId: product.id,
           stripePaymentLink: paymentLink.url,
+          postcardPreviewId: myPostcard.id,
         },
       });
 
@@ -297,10 +298,35 @@ export const items = createRouter()
           backPreview: backPreview,
           status: input.status,
           stripeProductId: product.id,
+          postcardPreviewId: myPostcard.id,
           // stripePaymentLink: item.stripePaymentLink,
         },
       });
 
+      if (!updatedItem) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Item update failed",
+        });
+      }
+
+      return updatedItem;
+    },
+  })
+  .mutation("updatePostcardPreviewRendered", {
+    input: z.object({
+      postcardPreviewId: z.string(),
+      postcardPreviewRendered: z.boolean(),
+    }),
+    async resolve({ ctx, input }) {
+      const updatedItem = await ctx.prisma.item.update({
+        where: {
+          postcardPreviewId: input.postcardPreviewId,
+        },
+        data: {
+          postcardPreviewRendered: input.postcardPreviewRendered,
+        },
+      });
       if (!updatedItem) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",

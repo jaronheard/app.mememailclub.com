@@ -13,10 +13,17 @@ const caller = appRouter.createCaller({ session: null, prisma: prisma });
 
 const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "POST") {
-    console.log("Lob webhook received, but not yet implemented");
-    console.log(req.body);
+    console.log("Lob webhook received");
+    if (req.body.event_type.id === "postcard.rendered_thumbnails") {
+      console.log("Postcard rendered thumbnails");
+      const { id } = req.body.data;
+      const item = await caller.mutation(
+        "items.updatePostcardPreviewRendered",
+        { postcardPreviewId: id, postcardPreviewRendered: true }
+      );
+      console.log("Updated postcard preview rendered for item", item);
+    }
     res.json({ received: true });
-    console.log("Acknowledged webhook recieved");
   } else {
     res.setHeader("Allow", "POST");
     res.status(405).end("Method Not Allowed");
