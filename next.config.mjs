@@ -25,6 +25,9 @@ export default withSentryConfig(
       disableServerWebpackPlugin: true,
       disableClientWebpackPlugin: true,
     },
+    api: {
+      externalResolver: true,
+    },
     // Next.js i18n docs: https://nextjs.org/docs/advanced-features/i18n-routing
     // i18n: {
     //   locales: ["en"],
