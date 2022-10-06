@@ -44,7 +44,6 @@ export const lob = createRouter()
       try {
         const myAddress = await addressApi.create(addressCreate);
         const myAddressFromApi = await addressApi.get(myAddress.id);
-        console.log("myAddressFromApi", myAddressFromApi);
         return myAddressFromApi;
       } catch (error) {
         console.log(error);

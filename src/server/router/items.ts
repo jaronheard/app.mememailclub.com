@@ -87,7 +87,7 @@ export const items = createRouter()
     }),
     async resolve({ ctx, input }) {
       try {
-        return await ctx.prisma.item.findUnique({
+        const item = await ctx.prisma.item.findUnique({
           where: {
             stripeProductId: input.stripeProductId,
           },
@@ -97,6 +97,8 @@ export const items = createRouter()
             back: true,
           },
         });
+        console.log("item from getOneByStripeProductId", item);
+        return item;
       } catch (error) {
         console.log("error", error);
       }
