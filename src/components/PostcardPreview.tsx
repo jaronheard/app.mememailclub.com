@@ -1,5 +1,8 @@
 import Img from "./Img";
 
+const placeholder6x9 =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 9 6'%3E%3C/svg%3E";
+
 export function PostcardPreview(props: {
   id: number;
   name: string;
@@ -9,6 +12,7 @@ export function PostcardPreview(props: {
   author: string;
   stripePaymentLink: string;
   optimizeImages?: boolean;
+  loadingState?: boolean;
 }): JSX.Element {
   return (
     <div
@@ -18,7 +22,7 @@ export function PostcardPreview(props: {
       <div className="aspect-w-9 aspect-h-6 sm:aspect-none bg-gray-200 group-hover:opacity-75 sm:h-96">
         {props.optimizeImages ? (
           <Img
-            src={props.front}
+            src={props.loadingState ? placeholder6x9 : props.front}
             alt=""
             className="h-full w-full border-b border-gray-100 object-cover object-center sm:h-full sm:w-full"
             width={450}
@@ -26,7 +30,7 @@ export function PostcardPreview(props: {
           />
         ) : (
           <img
-            src={props.front}
+            src={props.loadingState ? placeholder6x9 : props.front}
             alt=""
             className="h-full w-full border-b border-gray-100 object-cover object-center sm:h-full sm:w-full"
             width={450}
@@ -37,7 +41,7 @@ export function PostcardPreview(props: {
       <div className="aspect-w-9 aspect-h-6 sm:aspect-none bg-gray-200 group-hover:opacity-75 sm:h-96">
         {props.optimizeImages ? (
           <Img
-            src={props.back}
+            src={props.loadingState ? placeholder6x9 : props.back}
             alt=""
             className="h-full w-full border-b border-gray-100 object-cover object-center sm:h-full sm:w-full"
             width={450}
@@ -45,7 +49,7 @@ export function PostcardPreview(props: {
           />
         ) : (
           <img
-            src={props.back}
+            src={props.loadingState ? placeholder6x9 : props.back}
             alt=""
             className="h-full w-full border-b border-gray-100 object-cover object-center sm:h-full sm:w-full"
             width={450}

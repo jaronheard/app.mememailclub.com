@@ -241,17 +241,16 @@ const Item = () => {
                       </div>
 
                       <div className="sm:col-span-3" id="preview">
-                        {item?.postcardPreviewRendered && (
-                          <PostcardPreview
-                            id={0}
-                            front={item!.frontPreview}
-                            back={item!.backPreview}
-                            author={item!.publication?.author?.name || ""}
-                            name={item!.name}
-                            description={item!.description}
-                            stripePaymentLink={item!.stripePaymentLink}
-                          />
-                        )}
+                        <PostcardPreview
+                          id={0}
+                          front={item!.frontPreview}
+                          back={item!.backPreview}
+                          author={item!.publication?.author?.name || ""}
+                          name={item!.name}
+                          description={item!.description}
+                          stripePaymentLink={item!.stripePaymentLink}
+                          loadingState={!item?.postcardPreviewRendered}
+                        />
                       </div>
 
                       <div className="sm:col-span-6" id="delete">
