@@ -16,7 +16,6 @@ export const serverSchema = z.object({
   LOB_TEST_API_KEY: z.string(),
   STRIPE_SECRET_KEY: z.string(),
   STRIPE_WEBHOOK_SECRET: z.string(),
-  SENTRY_IGNORE_API_RESOLUTION_ERROR: z.string(),
 });
 
 /**
