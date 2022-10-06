@@ -24,12 +24,6 @@ export default defineNextConfig({
   //   defaultLocale: "en",
   // },
   async redirects() {
-    return [
-      {
-        source: "/",
-        destination: "/publications",
-        permanent: false,
-      },
-    ];
+    return [];
   },
 });
