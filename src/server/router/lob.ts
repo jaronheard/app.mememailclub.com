@@ -72,7 +72,7 @@ export const lob = createRouter()
           to: input.addressId,
           front: item?.front || "",
           back: item?.back || "",
-          size: "6x9",
+          size: "4x6",
           // set to send date in 5 minutes
           // send_date: new Date(Date.now() + 5 * 60000).toISOString(),
           quantity: input.quantity,

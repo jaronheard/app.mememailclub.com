@@ -141,7 +141,7 @@ const New = () => {
                       setValue={setValue}
                       errors={errors}
                     >
-                      6x9 format PDF, PNG, or JPG per{" "}
+                      4x6 format PDF, PNG, or JPG per{" "}
                       <a
                         href="https://docs.google.com/document/d/1cIc0s2P8gMUaHxykxbzpsaK6U4AJHr0UdqjcRYp6xyc/edit?usp=sharing"
                         target="_blank"
@@ -163,7 +163,7 @@ const New = () => {
                       setValue={setValue}
                       errors={errors}
                     >
-                      6x9 format PDF, PNG, or JPG per{" "}
+                      4x6 format PDF, PNG, or JPG per{" "}
                       <a
                         href="https://docs.google.com/document/d/1cIc0s2P8gMUaHxykxbzpsaK6U4AJHr0UdqjcRYp6xyc/edit?usp=sharing"
                         target="_blank"
