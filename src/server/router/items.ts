@@ -9,6 +9,25 @@ import {
 } from "@lob/lob-typescript-sdk";
 import { env } from "../../env/server.mjs";
 
+const INCLUDE_PUBLICATION_FIELDS = {
+  include: {
+    publication: {
+      select: {
+        name: true,
+        description: true,
+        imageUrl: true,
+        author: {
+          select: {
+            name: true,
+            image: true,
+          },
+        },
+        authorId: true,
+      },
+    },
+  },
+};
+
 const testConfig: Configuration = new Configuration({
   username: env.LOB_TEST_API_KEY,
 });
@@ -22,28 +41,7 @@ export const items = createRouter()
     async resolve({ ctx }) {
       try {
         const items = await ctx.prisma.item.findMany({
-          select: {
-            id: true,
-            name: true,
-            description: true,
-            front: true,
-            back: true,
-            stripePaymentLink: true,
-            publication: {
-              select: {
-                name: true,
-                description: true,
-                imageUrl: true,
-                author: {
-                  select: {
-                    name: true,
-                    image: true,
-                  },
-                },
-                authorId: true,
-              },
-            },
-          },
+          ...INCLUDE_PUBLICATION_FIELDS,
           orderBy: {
             createdAt: "asc",
           },
@@ -64,29 +62,7 @@ export const items = createRouter()
           where: {
             id: input.id,
           },
-          select: {
-            name: true,
-            description: true,
-            front: true,
-            back: true,
-            frontPreview: true,
-            backPreview: true,
-            stripePaymentLink: true,
-            publication: {
-              select: {
-                name: true,
-                description: true,
-                imageUrl: true,
-                author: {
-                  select: {
-                    name: true,
-                    image: true,
-                  },
-                },
-                authorId: true,
-              },
-            },
-          },
+          ...INCLUDE_PUBLICATION_FIELDS,
         });
         return item;
       } catch (error) {
@@ -104,11 +80,7 @@ export const items = createRouter()
           where: {
             stripeProductId: input.stripeProductId,
           },
-          select: {
-            id: true,
-            front: true,
-            back: true,
-          },
+          // does not ...INCLUDE_PUBLICATION_FIELDS,
         });
         return item;
       } catch (error) {
