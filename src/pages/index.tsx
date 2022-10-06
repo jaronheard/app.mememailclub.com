@@ -24,9 +24,9 @@ const Home = () => {
                     Explore postcards as art
                   </h2>
                   <p className="mt-4 text-lg text-gray-500">
-                    Memes by mail? Yes, please! We'll send you a postcard with a
-                    meme on it every week. You can also send postcards to your
-                    friends.
+                    Memes by mail? Yes, please! We&apos;ll send you a postcard
+                    with a meme on it every week. You can also send postcards to
+                    your friends.
                   </p>
                   <div className="mt-6">
                     <Link href="/publications">
