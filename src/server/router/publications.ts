@@ -5,27 +5,23 @@ import { createRouter } from "./context";
 export const publications = createRouter()
   .query("getAll", {
     async resolve({ ctx }) {
-      try {
-        const publications = await ctx.prisma.publication.findMany({
-          select: {
-            id: true,
-            createdAt: true,
-            name: true,
-            description: true,
-            author: true,
-            imageUrl: true,
-            status: true,
-            Subscriptions: true,
-            Items: true,
-          },
-          orderBy: {
-            createdAt: "desc",
-          },
-        });
-        return publications;
-      } catch (error) {
-        console.log("error", error);
-      }
+      const publications = await ctx.prisma.publication.findMany({
+        select: {
+          id: true,
+          createdAt: true,
+          name: true,
+          description: true,
+          author: true,
+          imageUrl: true,
+          status: true,
+          Subscriptions: true,
+          Items: true,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+      return publications;
     },
   })
   .query("getOne", {
@@ -33,27 +29,30 @@ export const publications = createRouter()
       id: z.number(),
     }),
     async resolve({ ctx, input }) {
-      try {
-        const publication = await ctx.prisma.publication.findUnique({
-          where: {
-            id: input.id,
-          },
-          select: {
-            id: true,
-            createdAt: true,
-            name: true,
-            description: true,
-            author: true,
-            imageUrl: true,
-            status: true,
-            Subscriptions: true,
-            Items: true,
-          },
+      const publication = await ctx.prisma.publication.findUnique({
+        where: {
+          id: input.id,
+        },
+        select: {
+          id: true,
+          createdAt: true,
+          name: true,
+          description: true,
+          author: true,
+          imageUrl: true,
+          status: true,
+          Subscriptions: true,
+          Items: true,
+        },
+      });
+      // handle error
+      if (!publication) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Publication not found",
         });
-        return publication;
-      } catch (error) {
-        console.log("error", error);
       }
+      return publication;
     },
   })
   .middleware(async ({ ctx, next }) => {
@@ -73,20 +72,22 @@ export const publications = createRouter()
       status: z.enum(["DRAFT", "PUBLISHED"]),
     }),
     async resolve({ ctx, input }) {
-      try {
-        const publication = await ctx.prisma.publication.create({
-          data: {
-            authorId: input.authorId,
-            name: input.name,
-            description: input.description,
-            imageUrl: input.imageUrl,
-            status: input.status,
-          },
+      const publication = await ctx.prisma.publication.create({
+        data: {
+          authorId: input.authorId,
+          name: input.name,
+          description: input.description,
+          imageUrl: input.imageUrl,
+          status: input.status,
+        },
+      });
+      if (!publication) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Publication not created",
         });
-        return publication;
-      } catch (error) {
-        console.log(error);
       }
+      return publication;
     },
   })
   .mutation("updatePublication", {
@@ -98,22 +99,24 @@ export const publications = createRouter()
       status: z.enum(["DRAFT", "PUBLISHED"]),
     }),
     async resolve({ ctx, input }) {
-      try {
-        const updatedPublication = await ctx.prisma.publication.update({
-          where: {
-            id: input.id,
-          },
-          data: {
-            name: input.name,
-            description: input.description,
-            imageUrl: input.imageUrl,
-            status: input.status,
-          },
+      const updatedPublication = await ctx.prisma.publication.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          name: input.name,
+          description: input.description,
+          imageUrl: input.imageUrl,
+          status: input.status,
+        },
+      });
+      if (!updatedPublication) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Publication not updated",
         });
-        return updatedPublication;
-      } catch (error) {
-        console.log(error);
       }
+      return updatedPublication;
     },
   })
   .mutation("deletePublication", {
@@ -121,15 +124,17 @@ export const publications = createRouter()
       id: z.number(),
     }),
     async resolve({ ctx, input }) {
-      try {
-        const deleted = await ctx.prisma.publication.delete({
-          where: {
-            id: input.id,
-          },
+      const deleted = await ctx.prisma.publication.delete({
+        where: {
+          id: input.id,
+        },
+      });
+      if (!deleted) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Publication not deleted",
         });
         return deleted;
-      } catch (error) {
-        console.log(error);
       }
     },
   });

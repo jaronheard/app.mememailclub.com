@@ -8,6 +8,7 @@ import {
   PostcardsApi,
 } from "@lob/lob-typescript-sdk";
 import { env } from "../../env/server.mjs";
+import { TRPCError } from "@trpc/server";
 
 const config: Configuration = new Configuration({
   username: env.LOB_API_KEY,
@@ -41,13 +42,15 @@ export const lob = createRouter()
         address_state: input.address_state,
         address_zip: input.address_zip,
       });
-      try {
-        const myAddress = await addressApi.create(addressCreate);
-        const myAddressFromApi = await addressApi.get(myAddress.id);
-        return myAddressFromApi;
-      } catch (error) {
-        console.log(error);
+      const myAddress = await addressApi.create(addressCreate);
+      const myAddressFromApi = await addressApi.get(myAddress.id);
+      if (!myAddressFromApi) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Address not created from Lob API",
+        });
       }
+      return myAddressFromApi;
     },
   })
   .mutation("createPostcard", {
@@ -58,31 +61,37 @@ export const lob = createRouter()
       test: z.boolean().optional(),
     }),
     async resolve({ ctx, input }) {
-      try {
-        const item = await ctx.prisma.item.findUnique({
-          where: {
-            id: input.itemId,
-          },
-          select: {
-            front: true,
-            back: true,
-          },
+      const item = await ctx.prisma.item.findUnique({
+        where: {
+          id: input.itemId,
+        },
+        select: {
+          front: true,
+          back: true,
+        },
+      });
+      if (!item) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Item not found",
         });
-        const postcardCreate = new PostcardEditable({
-          to: input.addressId,
-          front: item?.front || "",
-          back: item?.back || "",
-          size: "4x6",
-          // set to send date in 5 minutes
-          // send_date: new Date(Date.now() + 5 * 60000).toISOString(),
-          quantity: input.quantity,
-        });
-        const myPostcard = await new PostcardsApi(config).create(
-          postcardCreate
-        );
-        return myPostcard;
-      } catch (error) {
-        console.log(error);
       }
+      const postcardCreate = new PostcardEditable({
+        to: input.addressId,
+        front: item?.front || "",
+        back: item?.back || "",
+        size: "4x6",
+        // set to send date in 5 minutes
+        // send_date: new Date(Date.now() + 5 * 60000).toISOString(),
+        quantity: input.quantity,
+      });
+      const myPostcard = await new PostcardsApi(config).create(postcardCreate);
+      if (!myPostcard) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Postcard not created from Lob API",
+        });
+      }
+      return myPostcard;
     },
   });
