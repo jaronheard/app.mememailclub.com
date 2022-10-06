@@ -21,7 +21,7 @@ export const items = createRouter()
   .query("getAll", {
     async resolve({ ctx }) {
       try {
-        return await ctx.prisma.item.findMany({
+        const items = await ctx.prisma.item.findMany({
           select: {
             id: true,
             name: true,
@@ -45,9 +45,10 @@ export const items = createRouter()
             },
           },
           orderBy: {
-            createdAt: "desc",
+            createdAt: "asc",
           },
         });
+        return items;
       } catch (error) {
         console.log("error", error);
       }
@@ -59,7 +60,7 @@ export const items = createRouter()
     }),
     async resolve({ ctx, input }) {
       try {
-        return await ctx.prisma.item.findUnique({
+        const item = await ctx.prisma.item.findUnique({
           where: {
             id: input.id,
           },
@@ -87,6 +88,7 @@ export const items = createRouter()
             },
           },
         });
+        return item;
       } catch (error) {
         console.log("error", error);
       }
@@ -108,7 +110,6 @@ export const items = createRouter()
             back: true,
           },
         });
-        console.log("item from getOneByStripeProductId", item);
         return item;
       } catch (error) {
         console.log("error", error);
@@ -173,7 +174,7 @@ export const items = createRouter()
         // stripe logic
         const product = await stripe.products.create({
           name: input.name,
-          active: input.status === "PUBLISHED",
+          // active: input.status === "PUBLISHED",
           description: input.description,
           statement_descriptor: `postcard: ${input.name.slice(0, 12)}`,
           images: [frontPreview, backPreview],
@@ -206,7 +207,7 @@ export const items = createRouter()
           },
         });
 
-        await ctx.prisma.item.create({
+        const newItem = await ctx.prisma.item.create({
           data: {
             publicationId: input.publicationId,
             name: input.name,
@@ -220,6 +221,8 @@ export const items = createRouter()
             stripePaymentLink: paymentLink.url,
           },
         });
+
+        return newItem;
       } catch (error) {
         console.log(error);
       }
@@ -295,12 +298,12 @@ export const items = createRouter()
           active: input.status === "PUBLISHED",
           description: input.description,
           statement_descriptor: `postcard: ${input.name.slice(0, 12)}`,
-          // images: [input.imageUrl],
+          images: [frontPreview, backPreview],
         });
 
         // TODO: update payment link with new price
 
-        await ctx.prisma.item.update({
+        const updatedItem = await ctx.prisma.item.update({
           where: {
             id: input.id,
           },
@@ -316,6 +319,7 @@ export const items = createRouter()
             // stripePaymentLink: item.stripePaymentLink,
           },
         });
+        return updatedItem;
       } catch (error) {
         console.log(error);
       }
@@ -362,11 +366,13 @@ export const items = createRouter()
           }
         }
 
-        await ctx.prisma.item.delete({
+        const deleted = await ctx.prisma.item.delete({
           where: {
             id: input.id,
           },
         });
+
+        return deleted;
       } catch (error) {
         console.log(error);
       }

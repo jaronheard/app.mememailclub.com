@@ -28,7 +28,10 @@ const New = () => {
     },
   });
   const createItem = trpc.useMutation("items.createItem", {
-    onSuccess: () => router.push(`/publications/${id}`),
+    // onSuccess: (context, data, ) => router.push(`/publications/${id}/items/`),
+    onSuccess(data) {
+      console.log("data", data);
+    },
   });
 
   if (status === "loading") {

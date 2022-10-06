@@ -44,7 +44,7 @@ const Publication = () => {
   });
   const publicationQuery = trpc.useQuery(
     ["publications.getOne", { id: Number(id) }],
-    { enabled: !!id }
+    { enabled: id !== undefined }
   );
   const { data: publication, isLoading } = publicationQuery;
   const updatePublication = trpc.useMutation("publications.updatePublication", {
@@ -53,20 +53,32 @@ const Publication = () => {
   const deletePublication = trpc.useMutation("publications.deletePublication", {
     onSuccess: () => router.push("/publications"),
   });
+  const createItem = trpc.useMutation("items.createItem", {
+    onSuccess: (data) => router.push(`/publications/${id}/items/${data?.id}`),
+  });
 
   useEffect(() => {
-    if (!isLoading && publication) {
+    if (!isLoading) {
       reset({
-        name: publication.name,
-        description: publication.description,
-        imageUrl: publication.imageUrl,
+        name: publication?.name,
+        description: publication?.description,
+        imageUrl: publication?.imageUrl,
       });
     }
-  }, [reset, publication, isLoading]);
+  }, [
+    reset,
+    isLoading,
+    publication?.name,
+    publication?.description,
+    publication?.imageUrl,
+  ]);
 
   if (status === "loading") {
     return <main className="flex flex-col items-center pt-4">Loading...</main>;
   }
+
+  const randomFront = Math.floor(Math.random() * 1000);
+  const randomBack = Math.floor(Math.random() * 1000);
 
   return (
     <>
@@ -78,11 +90,30 @@ const Publication = () => {
             imageUrl: session.user?.image,
           }}
         >
+          <button
+            onClick={() =>
+              createItem.mutate({
+                publicationId: publication?.id as number,
+                name: "New postcard",
+                description: "New postcard description",
+                front: `https://picsum.photos/id/${randomFront}/1875/1275`,
+                back: `https://picsum.photos/id/${randomBack}/1875/1275`,
+                status: "DRAFT",
+              })
+            }
+            className="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+          >
+            <PlusIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
+            New Postcard
+          </button>
           <DefaultQueryCell
             query={publicationQuery}
             success={({ data: publication }) => (
-              <form>
-                <div className="space-y-8 divide-y divide-gray-200">
+              <form className="mt-6">
+                <div
+                  className="space-y-8 divide-y divide-gray-200"
+                  id="publication"
+                >
                   <div>
                     <div>
                       <h3 className="text-lg font-medium leading-6 text-gray-900">
@@ -175,12 +206,12 @@ const Publication = () => {
                     </div>
                   </div>
                 </div>
-                <div className="my-5">
+                <div className="my-5" id="items">
                   <h3 className="text-lg font-medium leading-6 text-gray-900">
-                    Items
+                    Postcards
                   </h3>
                   <p className="mt-1 text-sm text-gray-500">
-                    These are the available items within your publication
+                    These are the available postcards within your publication
                   </p>
                 </div>
                 {
@@ -208,17 +239,6 @@ const Publication = () => {
                       <p className="mt-1 text-sm text-gray-500">
                         Get started by adding a new item.
                       </p>
-                      <div className="mt-6">
-                        <Link href={`/publications/${id}/items/new`}>
-                          <a className="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                            <PlusIcon
-                              className="-ml-1 mr-2 h-5 w-5"
-                              aria-hidden="true"
-                            />
-                            New Item
-                          </a>
-                        </Link>
-                      </div>
                     </div>
                   )
                 }
@@ -226,15 +246,6 @@ const Publication = () => {
                   // list of items
                   publication && publication?.Items.length > 0 && (
                     <div>
-                      <Link href={`/publications/${id}/items/new`}>
-                        <a className="mb-6 inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                          <PlusIcon
-                            className="-ml-1 mr-2 h-5 w-5"
-                            aria-hidden="true"
-                          />
-                          New Item
-                        </a>
-                      </Link>
                       <div className="overflow-hidden bg-white shadow sm:rounded-md">
                         <ul role="list" className="divide-y divide-gray-200">
                           {publication.Items.map((item) => (

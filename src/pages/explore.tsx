@@ -26,6 +26,7 @@ const PostcardGallery = () => {
                   back={item.back}
                   stripePaymentLink={item.stripePaymentLink}
                   author={item.publication.author.name || "Anonymous"}
+                  optimizeImages={true}
                 />
               ))}
             </div>

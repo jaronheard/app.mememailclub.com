@@ -80,7 +80,7 @@ export const lob = createRouter()
         const myPostcard = await new PostcardsApi(config).create(
           postcardCreate
         );
-        console.log(`🔔 Postcard created: ${myPostcard.id}`);
+        return myPostcard;
       } catch (error) {
         console.log(error);
       }

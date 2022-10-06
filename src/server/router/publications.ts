@@ -6,7 +6,7 @@ export const publications = createRouter()
   .query("getAll", {
     async resolve({ ctx }) {
       try {
-        return await ctx.prisma.publication.findMany({
+        const publications = await ctx.prisma.publication.findMany({
           select: {
             id: true,
             createdAt: true,
@@ -22,6 +22,7 @@ export const publications = createRouter()
             createdAt: "desc",
           },
         });
+        return publications;
       } catch (error) {
         console.log("error", error);
       }
@@ -33,8 +34,7 @@ export const publications = createRouter()
     }),
     async resolve({ ctx, input }) {
       try {
-        console.log("input id", input.id);
-        return await ctx.prisma.publication.findUnique({
+        const publication = await ctx.prisma.publication.findUnique({
           where: {
             id: input.id,
           },
@@ -50,6 +50,7 @@ export const publications = createRouter()
             Items: true,
           },
         });
+        return publication;
       } catch (error) {
         console.log("error", error);
       }
@@ -73,7 +74,7 @@ export const publications = createRouter()
     }),
     async resolve({ ctx, input }) {
       try {
-        await ctx.prisma.publication.create({
+        const publication = await ctx.prisma.publication.create({
           data: {
             authorId: input.authorId,
             name: input.name,
@@ -82,6 +83,7 @@ export const publications = createRouter()
             status: input.status,
           },
         });
+        return publication;
       } catch (error) {
         console.log(error);
       }
@@ -97,7 +99,7 @@ export const publications = createRouter()
     }),
     async resolve({ ctx, input }) {
       try {
-        await ctx.prisma.publication.update({
+        const updatedPublication = await ctx.prisma.publication.update({
           where: {
             id: input.id,
           },
@@ -108,6 +110,7 @@ export const publications = createRouter()
             status: input.status,
           },
         });
+        return updatedPublication;
       } catch (error) {
         console.log(error);
       }
@@ -119,11 +122,12 @@ export const publications = createRouter()
     }),
     async resolve({ ctx, input }) {
       try {
-        await ctx.prisma.publication.delete({
+        const deleted = await ctx.prisma.publication.delete({
           where: {
             id: input.id,
           },
         });
+        return deleted;
       } catch (error) {
         console.log(error);
       }
