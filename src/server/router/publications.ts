@@ -4,22 +4,25 @@ import { createRouter } from "./context";
 
 const INCLUDE_RELATIONS = {
   include: {
+    author: true,
     Items: true,
     Subscriptions: true,
   },
 };
 
 const BasePublication = z.object({
-  authorId: z.string(),
   name: z.string(),
   description: z.string(),
   imageUrl: z.string().url(),
   status: z.enum(["DRAFT", "PUBLISHED"]),
 });
+const HasAuthorId = z.object({
+  authorId: z.string(),
+});
 const HadId = z.object({
   id: z.number(),
 });
-const CreatePublication = BasePublication;
+const CreatePublication = BasePublication.merge(HasAuthorId);
 const UpdatePublication = BasePublication.merge(HadId);
 
 export const publications = createRouter()

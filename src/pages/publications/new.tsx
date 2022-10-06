@@ -51,8 +51,8 @@ const New = () => {
                     Publication
                   </h3>
                   <p className="mt-1 text-sm text-gray-500">
-                    This information will be displayed publicly once your
-                    publication is published.
+                    If you choose to make your postcard collection public, this
+                    information will help others find it.
                   </p>
                 </div>
 
@@ -62,7 +62,7 @@ const New = () => {
                       htmlFor="name"
                       className="block text-sm font-medium text-gray-700"
                     >
-                      Publication name
+                      Name
                     </label>
                     <div className="mt-1">
                       <input
