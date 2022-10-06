@@ -34,7 +34,7 @@ const PublicationsEmpty = () => {
         />
       </svg>
       <h3 className="mt-2 text-sm font-medium text-gray-900">
-        No publications
+        You have no publications
       </h3>
       <p className="mt-1 text-sm text-gray-500">
         Get started by creating a new publication.
@@ -52,8 +52,16 @@ const PublicationsEmpty = () => {
 };
 
 const Publications = () => {
-  const { status } = useSession();
-  const publicationsQuery = trpc.useQuery(["publications.getAll"]);
+  const { data: session } = useSession();
+  const publicationsQuery = trpc.useQuery(
+    [
+      "publications.getAllByAuthor",
+      {
+        authorId: session?.user?.id as string,
+      },
+    ],
+    { enabled: !!session }
+  );
 
   return (
     <DefaultQueryCell
@@ -61,14 +69,12 @@ const Publications = () => {
       empty={() => <PublicationsEmpty />}
       success={({ data: publications }) => (
         <div>
-          {status === "authenticated" && (
-            <Link href="/publications/new">
-              <a className="mb-6 inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                <PlusIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
-                New Publication
-              </a>
-            </Link>
-          )}
+          <Link href="/publications/new">
+            <a className="mb-6 inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+              <PlusIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
+              New Publication
+            </a>
+          </Link>
           <div className="overflow-hidden bg-white shadow sm:rounded-md">
             <ul role="list" className="divide-y divide-gray-200">
               {publications &&
@@ -93,22 +99,27 @@ const Publications = () => {
                                 <p className="truncate text-sm font-medium text-indigo-600">
                                   {publication.name}
                                 </p>
-                                <p className="mt-2 flex items-center text-sm text-gray-500">
-                                  <UsersIcon
+                                <p className="mt-2 flex items-center gap-3 text-sm text-gray-500">
+                                  {/* <UsersIcon
                                     className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
                                     aria-hidden="true"
                                   />
                                   <span className="">
                                     {publication.Subscriptions.length}{" "}
                                     subscribers
-                                  </span>
-                                  <EnvelopeOpenIcon
-                                    className="ml-3 mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
-                                    aria-hidden="true"
-                                  />
-                                  <span className="">
-                                    {publication.Items.length} items
-                                  </span>
+                                  </span> */}
+                                  <div
+                                    className="flex items-center gap-1.5"
+                                    id="postcards"
+                                  >
+                                    <EnvelopeOpenIcon
+                                      className="h-5 w-5 flex-shrink-0 text-gray-400"
+                                      aria-hidden="true"
+                                    />
+                                    <span className="">
+                                      {publication.Items.length} postcards
+                                    </span>
+                                  </div>
                                 </p>
                               </div>
                               <div className="hidden md:block">
@@ -176,7 +187,7 @@ const Home = () => {
 
   return (
     <>
-      {session ? (
+      {session && status === "authenticated" ? (
         <Layout
           user={{
             name: session.user?.name,

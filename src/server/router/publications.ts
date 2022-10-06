@@ -63,6 +63,37 @@ export const publications = createRouter()
     }
     return next();
   })
+  .query("getAllByAuthor", {
+    input: z.object({
+      authorId: z.string(),
+    }),
+    async resolve({ ctx, input }) {
+      const publications = await ctx.prisma.publication.findMany({
+        where: {
+          authorId: input.authorId,
+        },
+        ...INCLUDE_RELATIONS,
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+      return publications;
+    },
+  })
+  .query("getAllForNotAuthor", {
+    async resolve({ ctx }) {
+      const publications = await ctx.prisma.publication.findMany({
+        where: {
+          authorId: { not: ctx.session?.user?.id },
+        },
+        ...INCLUDE_RELATIONS,
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+      return publications;
+    },
+  })
   .mutation("createPublication", {
     input: CreatePublication,
     async resolve({ ctx, input }) {
