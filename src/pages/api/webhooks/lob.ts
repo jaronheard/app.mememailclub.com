@@ -16,7 +16,7 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     console.log("Lob webhook received");
     if (req.body.event_type.id === "postcard.rendered_thumbnails") {
       console.log("Postcard rendered thumbnails");
-      const { id } = req.body.data;
+      const { id } = req.body;
       const item = await caller.mutation(
         "items.updatePostcardPreviewRendered",
         { postcardPreviewId: id, postcardPreviewRendered: true }
