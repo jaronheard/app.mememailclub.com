@@ -18,7 +18,7 @@ export default withSentryConfig(
     reactStrictMode: true,
     swcMinify: true,
     images: {
-      domains: ["res.cloudinary.com"],
+      domains: ["res.cloudinary.com", "lob-assets.com"],
     },
     sentry: {
       // https://docs.sentry.io/platforms/javascript/guides/nextjs/
