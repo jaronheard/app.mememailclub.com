@@ -134,7 +134,7 @@ const New = () => {
                     <FileUpload
                       id="front"
                       label="Front"
-                      accept="application/pdf"
+                      accept="application/pdf, image/png, image/jpeg"
                       required
                       register={register}
                       getValues={getValues}
@@ -157,7 +157,7 @@ const New = () => {
                       id="back"
                       label="Back"
                       required
-                      accept="application/pdf"
+                      accept="application/pdf, image/png, image/jpeg"
                       register={register}
                       getValues={getValues}
                       setValue={setValue}
