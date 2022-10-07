@@ -36,8 +36,13 @@ export function PostcardPreview(props: {
         <span className="absolute top-2 right-2 inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">
           Front
         </span>
+        <div className="absolute right-3 bottom-3 flex h-3/5 w-1/2 place-items-center justify-center rounded-none border-2 border-dashed border-gray-300 bg-white/95 not-italic backdrop-blur-sm">
+          <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">
+            Address & Postage Area
+          </span>
+        </div>
       </div>
-      <div className="aspect-w-9 aspect-h-6 sm:aspect-none relative relative bg-gray-200 group-hover:opacity-75 sm:h-96">
+      <div className="aspect-w-9 aspect-h-6 sm:aspect-none relative bg-gray-200 group-hover:opacity-75 sm:h-96">
         {props.optimizeImages ? (
           <Img
             src={props.loadingState ? placeholder6x9 : props.back}
