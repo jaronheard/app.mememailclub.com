@@ -107,6 +107,7 @@ export const publications = createRouter()
           description: input.description,
           imageUrl: input.imageUrl,
           status: input.status,
+          test: process.env.NODE_ENV === "development",
         },
       });
       if (!publication) {

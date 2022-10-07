@@ -215,6 +215,7 @@ export const items = createRouter()
           stripeProductId: product.id,
           stripePaymentLink: paymentLink.url,
           postcardPreviewId: myPostcard.id,
+          test: process.env.NODE_ENV === "development",
         },
       });
 
