@@ -7,7 +7,9 @@
     "dev": "next dev",
     "postinstall": "prisma generate",
     "lint": "next lint",
-    "start": "next start"
+    "start": "next start",
+    "db": "pscale connect meme-mail-club initial-setup --port 3309",
+    "db-prod": "pscale connect meme-mail-club main --port 3309"
   },
   "engines": {
     "npm": ">=8.0.0 <9.0.0",
