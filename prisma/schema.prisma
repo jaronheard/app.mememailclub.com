@@ -2,17 +2,19 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider      = "prisma-client-js"
-    binaryTargets = ["native"]
+    provider        = "prisma-client-js"
+    binaryTargets   = ["native"]
+    previewFeatures = ["referentialIntegrity"]
 }
 
 datasource db {
-    provider = "postgresql"
+    provider             = "mysql"
     // NOTE: When using postgresql, mysql or sqlserver, uncomment the @db.text annotations in model Account below
     // Further reading: 
     // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
     // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
-    url      = env("DATABASE_URL")
+    url                  = env("DATABASE_URL")
+    referentialIntegrity = "prisma"
 }
 
 model Example {
@@ -51,7 +53,7 @@ model User {
     name          String?
     email         String?        @unique
     emailVerified DateTime?
-    image         String?
+    image         String?        @db.Text
     accounts      Account[]
     sessions      Session[]
     Publications  Publication[]
@@ -70,16 +72,16 @@ model Item {
     id                      Int         @id @default(autoincrement())
     createdAt               DateTime    @default(now())
     name                    String
-    description             String
-    front                   String
-    back                    String
+    description             String      @db.Text
+    front                   String      @db.Text
+    back                    String      @db.Text
     status                  Status      @default(DRAFT)
     stripeProductId         String      @unique
     stripePaymentLink       String      @unique
     postcardPreviewId       String      @unique
     postcardPreviewRendered Boolean?
-    frontPreview            String
-    backPreview             String
+    frontPreview            String      @db.Text
+    backPreview             String      @db.Text
     publicationId           Int
     publication             Publication @relation(fields: [publicationId], references: [id])
 }
@@ -88,8 +90,8 @@ model Publication {
     id            Int            @id @default(autoincrement())
     createdAt     DateTime       @default(now())
     name          String
-    description   String
-    imageUrl      String
+    description   String         @db.Text
+    imageUrl      String         @db.Text
     author        User           @relation(fields: [authorId], references: [id])
     authorId      String
     status        Status         @default(DRAFT)
