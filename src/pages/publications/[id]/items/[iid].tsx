@@ -13,6 +13,7 @@ import { PostcardPreview } from "../../../../components/PostcardPreview";
 import { id } from "date-fns/locale";
 import { z } from "zod";
 import Breadcrumbs from "../../../../components/Breadcrumbs";
+import SignIn from "../../../../components/SignIn";
 
 export type ItemFormValues = {
   name: string;
@@ -39,6 +40,7 @@ const Item = () => {
     reset,
     getValues,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<ItemFormValues>({
     defaultValues: {
@@ -118,7 +120,7 @@ const Item = () => {
                     current: false,
                   },
                   {
-                    name: item.name,
+                    name: watch("name"),
                     href: `/publications/${query.id}/items/${query.iid}`,
                     current: true,
                   },
@@ -295,8 +297,8 @@ const Item = () => {
                       front={item?.frontPreview || ""}
                       back={item?.backPreview || ""}
                       author={item?.publication?.author?.name || ""}
-                      name={item?.name || ""}
-                      description={item?.description || ""}
+                      name={watch("name")}
+                      description={watch("description")}
                       stripePaymentLink={item?.stripePaymentLink || "#"}
                       loadingState={!item?.postcardPreviewRendered}
                     />
@@ -325,7 +327,8 @@ const Item = () => {
         </Layout>
       ) : (
         <Layout>
-          <DefaultQueryCell
+          <SignIn />
+          {/* <DefaultQueryCell
             query={itemsQuery}
             success={({ data: item }) => (
               <>
@@ -378,7 +381,7 @@ const Item = () => {
                 </div>
               </>
             )}
-          />
+          /> */}
         </Layout>
       )}
     </>

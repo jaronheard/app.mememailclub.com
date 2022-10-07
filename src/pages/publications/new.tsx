@@ -186,7 +186,9 @@ const New = () => {
           </form>
         </Layout>
       ) : (
-        <SignIn />
+        <Layout>
+          <SignIn />
+        </Layout>
       )}
     </>
   );

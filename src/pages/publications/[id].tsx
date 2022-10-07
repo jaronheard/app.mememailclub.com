@@ -6,7 +6,6 @@ import { trpc } from "../../utils/trpc";
 import clsx from "clsx";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import Pricing from "../../components/Pricing";
 import {
   ChevronRightIcon,
   EyeIcon,
@@ -19,6 +18,7 @@ import Img from "../../components/Img";
 import FileUpload from "../../components/FileUpload";
 import { z } from "zod";
 import Breadcrumbs from "../../components/Breadcrumbs";
+import SignIn from "../../components/SignIn";
 
 export type PublicationFormValues = {
   name: string;
@@ -150,7 +150,7 @@ const Publication = () => {
             query={publicationQuery}
             success={({ data: publication }) => (
               <>
-                <div className="items">
+                <div className="mt-6" id="items">
                   <div id="items-intro">
                     <h3 className="text-lg font-medium leading-6 text-gray-900">
                       Postcards
@@ -399,7 +399,8 @@ const Publication = () => {
         </Layout>
       ) : (
         <Layout>
-          <DefaultQueryCell
+          <SignIn />
+          {/* <DefaultQueryCell
             query={publicationQuery}
             success={({ data: publication }) => (
               <>
@@ -437,7 +438,7 @@ const Publication = () => {
                 <Pricing />
               </>
             )}
-          />
+          /> */}
         </Layout>
       )}
     </>
