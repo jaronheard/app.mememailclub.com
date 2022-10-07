@@ -11,6 +11,7 @@ import DefaultQueryCell from "../../components/DefaultQueryCell";
 import Img from "../../components/Img";
 import SignIn from "../../components/SignIn";
 import Breadcrumbs from "../../components/Breadcrumbs";
+import LoadingLayout from "../../components/LoadingLayout";
 
 const PublicationsEmpty = () => {
   return (
@@ -183,17 +184,17 @@ const Home = () => {
   const { data: session, status } = useSession();
 
   if (status === "loading") {
-    return <main className="flex flex-col items-center pt-4">Loading...</main>;
+    return <LoadingLayout />;
   }
 
   return (
     <>
-      {session && status === "authenticated" ? (
+      {status === "authenticated" && session.user ? (
         <Layout
           user={{
-            name: session.user?.name,
-            email: session.user?.email,
-            imageUrl: session.user?.image,
+            name: session.user.name,
+            email: session.user.email,
+            imageUrl: session.user.image,
           }}
         >
           <Publications />

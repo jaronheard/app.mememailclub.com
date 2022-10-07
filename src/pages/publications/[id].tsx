@@ -19,6 +19,7 @@ import FileUpload from "../../components/FileUpload";
 import { z } from "zod";
 import Breadcrumbs from "../../components/Breadcrumbs";
 import SignIn from "../../components/SignIn";
+import LoadingLayout from "../../components/LoadingLayout";
 
 export type PublicationFormValues = {
   name: string;
@@ -121,7 +122,7 @@ const Publication = () => {
   ]);
 
   if (status === "loading") {
-    return <main className="flex flex-col items-center pt-4">Loading...</main>;
+    <LoadingLayout />;
   }
 
   const randomFront = Math.floor(Math.random() * 1000);
@@ -129,12 +130,14 @@ const Publication = () => {
 
   return (
     <>
-      {session && session.user?.id === publication?.authorId ? (
+      {status === "authenticated" &&
+      session.user &&
+      session.user.id === publication?.authorId ? (
         <Layout
           user={{
-            name: session.user?.name,
-            email: session.user?.email,
-            imageUrl: session.user?.image,
+            name: session.user.name,
+            email: session.user.email,
+            imageUrl: session.user.image,
           }}
         >
           <Breadcrumbs

@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import FileUpload from "../../components/FileUpload";
 import { PublicationFormValues } from "./[id]";
 import Breadcrumbs from "../../components/Breadcrumbs";
+import LoadingLayout from "../../components/LoadingLayout";
 
 const New = () => {
   const router = useRouter();
@@ -34,12 +35,12 @@ const New = () => {
   });
 
   if (status === "loading") {
-    return <main className="flex flex-col items-center pt-4">Loading...</main>;
+    return <LoadingLayout />;
   }
 
   return (
     <>
-      {session ? (
+      {status === "authenticated" && session.user ? (
         <Layout
           user={{
             name: session.user?.name,

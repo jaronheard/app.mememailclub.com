@@ -14,6 +14,7 @@ import { id } from "date-fns/locale";
 import { z } from "zod";
 import Breadcrumbs from "../../../../components/Breadcrumbs";
 import SignIn from "../../../../components/SignIn";
+import LoadingLayout from "../../../../components/LoadingLayout";
 
 export type ItemFormValues = {
   name: string;
@@ -96,12 +97,14 @@ const Item = () => {
   }, [reset, item, isLoading]);
 
   if (status === "loading" || !query.ready) {
-    return <main className="flex flex-col items-center pt-4">Loading...</main>;
+    return <LoadingLayout />;
   }
 
   return (
     <>
-      {session && session.user?.id === item?.publication.authorId ? (
+      {status === "authenticated" &&
+      session.user &&
+      session.user?.id === item?.publication.authorId ? (
         <Layout
           user={{
             name: session.user?.name,
