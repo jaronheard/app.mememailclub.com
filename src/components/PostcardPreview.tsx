@@ -15,7 +15,7 @@ export function PostcardPreview(props: {
 }): JSX.Element {
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white">
-      <div className="aspect-w-9 aspect-h-6 sm:aspect-none bg-gray-200 group-hover:opacity-75 sm:h-96">
+      <div className="aspect-w-9 aspect-h-6 sm:aspect-none relative bg-gray-200 group-hover:opacity-75 sm:h-96">
         {props.optimizeImages ? (
           <Img
             src={props.loadingState ? placeholder6x9 : props.front}
@@ -33,8 +33,11 @@ export function PostcardPreview(props: {
             height={300}
           />
         )}
+        <span className="absolute top-2 right-2 inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">
+          Front
+        </span>
       </div>
-      <div className="aspect-w-9 aspect-h-6 sm:aspect-none bg-gray-200 group-hover:opacity-75 sm:h-96">
+      <div className="aspect-w-9 aspect-h-6 sm:aspect-none relative relative bg-gray-200 group-hover:opacity-75 sm:h-96">
         {props.optimizeImages ? (
           <Img
             src={props.loadingState ? placeholder6x9 : props.back}
@@ -52,6 +55,9 @@ export function PostcardPreview(props: {
             height={300}
           />
         )}
+        <span className="absolute top-2 right-2 inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">
+          Back
+        </span>
       </div>
       <div className="flex flex-1 flex-col space-y-2 p-4">
         <h3 className="text-sm font-medium text-gray-900">
