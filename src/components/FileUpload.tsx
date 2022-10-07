@@ -9,6 +9,7 @@ import {
   UseFormRegister,
   UseFormSetValue,
 } from "react-hook-form";
+import Img from "./Img";
 
 // props interface using generics to pass in FormValues as FieldValues
 interface FileUploadProps<FormValues extends FieldValues> {
@@ -51,10 +52,27 @@ function FileUpload<FormValues extends FieldValues>({
       >
         {label}
       </label>
-      <div className="flex gap-3">
+      <div className="flex items-center gap-3">
+        <a
+          className="h-20 w-20 rounded-md hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+          href={url || "#"}
+          target="_blank"
+          rel="noreferrer"
+        >
+          {url && status !== "uploading" && (
+            <Img
+              className="h-20 w-20 rounded-md"
+              alt="Open file"
+              src={url}
+              height={80}
+              width={80}
+              autoCrop
+            />
+          )}
+        </a>
         <label
           htmlFor={`${id}-file-upload`}
-          className="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-3 py-2 text-sm font-medium leading-4 text-white shadow-sm focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:bg-indigo-700"
+          className="inline-flex h-[2.125rem] items-center rounded-md border border-transparent bg-indigo-600 px-3 py-2 text-sm font-medium leading-4 text-white shadow-sm focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:bg-indigo-700"
         >
           {status === "uploading" ? "Uploading..." : "Upload File"}
           <input
@@ -79,16 +97,6 @@ function FileUpload<FormValues extends FieldValues>({
             }}
           ></input>
         </label>
-        {url && status !== "uploading" && (
-          <a
-            className="inline-flex items-center rounded-md border border-transparent bg-indigo-100 px-3 py-2 text-sm font-medium leading-4 text-indigo-700 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-            href={url}
-            target="_blank"
-            rel="noreferrer"
-          >
-            View File
-          </a>
-        )}
       </div>
       {errors[id] && (
         <p className="mt-1 text-sm text-red-600" id="email-error">

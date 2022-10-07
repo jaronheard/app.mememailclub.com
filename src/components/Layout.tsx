@@ -10,6 +10,7 @@ import { signOut } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Img from "./Img";
+import { EnvelopeIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -28,12 +29,14 @@ const Layout = (props: LayoutProps) => {
     {
       name: "Explore",
       href: "/explore",
+      Icon: EnvelopeIcon,
       current: ["/explore"].includes(router.asPath),
       title: "Explore postcards",
     },
     {
       name: "Create",
       href: "/publications",
+      Icon: PencilSquareIcon,
       current: router.asPath.includes("/publications"),
       title: "Create postcards",
     },
@@ -83,6 +86,10 @@ const Layout = (props: LayoutProps) => {
                                 )}
                                 aria-current={item.current ? "page" : undefined}
                               >
+                                <item.Icon
+                                  className="mr-1.5 inline-block h-5 w-5 flex-shrink-0"
+                                  aria-hidden="true"
+                                />
                                 {item.name}
                               </a>
                             </Link>

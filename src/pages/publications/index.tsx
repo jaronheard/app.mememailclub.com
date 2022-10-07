@@ -10,6 +10,7 @@ import Link from "next/link";
 import DefaultQueryCell from "../../components/DefaultQueryCell";
 import Img from "../../components/Img";
 import SignIn from "../../components/SignIn";
+import Breadcrumbs from "../../components/Breadcrumbs";
 
 const PublicationsEmpty = () => {
   return (
@@ -61,11 +62,12 @@ const Publications = () => {
 
   return (
     <div>
+      <Breadcrumbs pages={[]} />
       <DefaultQueryCell
         query={publicationsQuery}
         empty={() => <PublicationsEmpty />}
         success={({ data: publications }) => (
-          <div className="overflow-hidden bg-white shadow sm:rounded-md">
+          <div className="mt-6 overflow-hidden bg-white shadow sm:rounded-md">
             <ul role="list" className="divide-y divide-gray-200">
               {publications &&
                 publications.map((publication) => (
@@ -79,8 +81,8 @@ const Publications = () => {
                                 className="h-20 w-20 rounded-md"
                                 src={publication.imageUrl || ""}
                                 alt=""
-                                height={48}
-                                width={48}
+                                height={80}
+                                width={80}
                                 autoCrop
                               />
                             </div>

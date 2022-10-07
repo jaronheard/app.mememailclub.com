@@ -1,4 +1,4 @@
-import { ChevronRightIcon, HomeIcon } from "@heroicons/react/20/solid";
+import { ChevronRightIcon, PencilSquareIcon } from "@heroicons/react/20/solid";
 import Link from "next/link";
 
 const sampleProps = {
@@ -16,9 +16,9 @@ const Breadcrumbs = ({ pages }: BreadcrumbsProps) => {
       <ol role="list" className="flex items-center space-x-4">
         <li>
           <div>
-            <Link href="/">
+            <Link href="/publications">
               <a className="text-gray-400 hover:text-gray-500">
-                <HomeIcon
+                <PencilSquareIcon
                   className="h-5 w-5 flex-shrink-0"
                   aria-hidden="true"
                 />

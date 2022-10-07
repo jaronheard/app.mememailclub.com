@@ -7,6 +7,7 @@ import clsx from "clsx";
 import { useRouter } from "next/router";
 import FileUpload from "../../components/FileUpload";
 import { PublicationFormValues } from "./[id]";
+import Breadcrumbs from "../../components/Breadcrumbs";
 
 const New = () => {
   const router = useRouter();
@@ -16,6 +17,7 @@ const New = () => {
     handleSubmit,
     getValues,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<PublicationFormValues>({
     defaultValues: {
@@ -45,7 +47,16 @@ const New = () => {
             imageUrl: session.user?.image,
           }}
         >
-          <form>
+          <Breadcrumbs
+            pages={[
+              {
+                name: watch("name"),
+                href: "/publications/new",
+                current: false,
+              },
+            ]}
+          />
+          <form className="mt-6">
             <div className="space-y-8 divide-y divide-gray-200">
               <div>
                 <div>

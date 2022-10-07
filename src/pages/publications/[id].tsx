@@ -18,6 +18,7 @@ import DefaultQueryCell from "../../components/DefaultQueryCell";
 import Img from "../../components/Img";
 import FileUpload from "../../components/FileUpload";
 import { z } from "zod";
+import Breadcrumbs from "../../components/Breadcrumbs";
 
 export type PublicationFormValues = {
   name: string;
@@ -42,9 +43,9 @@ const ItemsEmpty = () => (
         d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"
       />
     </svg>
-    <h3 className="mt-2 text-sm font-medium text-gray-900">No items</h3>
+    <h3 className="mt-2 text-sm font-medium text-gray-900">No postcards</h3>
     <p className="mt-1 text-sm text-gray-500">
-      Get started by adding a new item.
+      Get started by creating a new postcard.
     </p>
   </div>
 );
@@ -65,6 +66,7 @@ const Publication = () => {
     reset,
     getValues,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<PublicationFormValues>({
     defaultValues: {
@@ -135,6 +137,15 @@ const Publication = () => {
             imageUrl: session.user?.image,
           }}
         >
+          <Breadcrumbs
+            pages={[
+              {
+                name: watch("name"),
+                href: `/publications/${query.id}`,
+                current: false,
+              },
+            ]}
+          />
           <DefaultQueryCell
             query={publicationQuery}
             success={({ data: publication }) => (
@@ -340,24 +351,9 @@ const Publication = () => {
                     </div>
                   </form>
                 </div>
-                <div className="pt-5">
-                  <div className="flex justify-end">
-                    <Link href="/publications">
-                      <a className="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                        Cancel
-                      </a>
-                    </Link>
-                    <button
-                      onClick={() => {
-                        deletePublication.mutate({
-                          id: query.id,
-                        });
-                      }}
-                      className="ml-3 inline-flex items-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-                    >
-                      Delete
-                    </button>
-                    <button
+                <div className="pt-12">
+                  <div className="flex justify-between">
+                    {/* <button
                       onClick={handleSubmit((data) => {
                         updatePublication.mutate({
                           id: query.id,
@@ -370,7 +366,7 @@ const Publication = () => {
                       className="ml-3 inline-flex items-center rounded-md border border-transparent bg-indigo-100 px-4 py-2 text-sm font-medium text-indigo-700 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                     >
                       Unpublish
-                    </button>
+                    </button> */}
                     <button
                       onClick={handleSubmit((data) => {
                         updatePublication.mutate({
@@ -381,9 +377,19 @@ const Publication = () => {
                           status: "PUBLISHED",
                         });
                       })}
-                      className="ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                      className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                     >
-                      Publish
+                      Update Collection
+                    </button>
+                    <button
+                      onClick={() => {
+                        deletePublication.mutate({
+                          id: query.id,
+                        });
+                      }}
+                      className="inline-flex items-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                    >
+                      Delete (cannot be undone)
                     </button>
                   </div>
                 </div>
