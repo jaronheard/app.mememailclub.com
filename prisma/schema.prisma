@@ -84,6 +84,7 @@ model Item {
     backPreview             String      @db.Text
     publicationId           Int
     publication             Publication @relation(fields: [publicationId], references: [id])
+    test                    Boolean     @default(false)
 }
 
 model Publication {
@@ -97,6 +98,7 @@ model Publication {
     status        Status         @default(DRAFT)
     Items         Item[]
     Subscriptions Subscription[]
+    test          Boolean        @default(false)
 }
 
 model Subscription {
