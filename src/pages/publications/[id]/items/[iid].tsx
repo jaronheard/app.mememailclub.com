@@ -1,6 +1,6 @@
 import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
-import Link from "next/link";
+// import Link from "next/link";
 import Layout from "../../../../components/Layout";
 import { trpc } from "../../../../utils/trpc";
 import clsx from "clsx";
@@ -8,9 +8,9 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import FileUpload from "../../../../components/FileUpload";
 import DefaultQueryCell from "../../../../components/DefaultQueryCell";
-import Img from "../../../../components/Img";
+// import Img from "../../../../components/Img";
 import { PostcardPreview } from "../../../../components/PostcardPreview";
-import { id } from "date-fns/locale";
+// import { id } from "date-fns/locale";
 import { z } from "zod";
 import Breadcrumbs from "../../../../components/Breadcrumbs";
 import SignIn from "../../../../components/SignIn";
@@ -102,9 +102,7 @@ const Item = () => {
 
   return (
     <>
-      {status === "authenticated" &&
-      session.user &&
-      session.user?.id === item?.publication.authorId ? (
+      {status === "authenticated" && session.user ? (
         <Layout
           user={{
             name: session.user?.name,
@@ -205,6 +203,7 @@ const Item = () => {
                             "border-gray-300": !errors.name,
                           }
                         )}
+                        placeholder="Something very pretty"
                       />
                     </div>
                     {errors.name && (
@@ -233,7 +232,9 @@ const Item = () => {
                             "border-gray-300": !errors.name,
                           }
                         )}
-                        defaultValue={""}
+                        placeholder={
+                          "Something beautiful or funny. As you can see, there are no raccoons here."
+                        }
                       />
                     </div>
                     {errors.description && (
@@ -288,6 +289,10 @@ const Item = () => {
                 <h3 className="text-lg font-medium leading-6 text-gray-900">
                   Item Preview
                 </h3>
+                <p className="mt-2 text-sm text-gray-500">
+                  This preview shows exactly how your item will look. It takes a
+                  while to load...
+                </p>
               </div>
             </div>
 
@@ -295,7 +300,7 @@ const Item = () => {
               query={itemsQuery}
               success={() => (
                 <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
-                  <div className="sm:col-span-3" id="preview">
+                  <div className="sm:col-span-6 lg:col-span-3" id="preview">
                     <PostcardPreview
                       front={item?.frontPreview || ""}
                       back={item?.backPreview || ""}
@@ -304,6 +309,7 @@ const Item = () => {
                       description={watch("description")}
                       stripePaymentLink={item?.stripePaymentLink || "#"}
                       loadingState={!item?.postcardPreviewRendered}
+                      hideAddressArea={true}
                     />
                   </div>
                 </div>

@@ -130,9 +130,7 @@ const Publication = () => {
 
   return (
     <>
-      {status === "authenticated" &&
-      session.user &&
-      session.user.id === publication?.authorId ? (
+      {status === "authenticated" && session.user ? (
         <Layout
           user={{
             name: session.user.name,
@@ -165,8 +163,8 @@ const Publication = () => {
                       onClick={() =>
                         createItem.mutate({
                           publicationId: publication?.id as number,
-                          name: "New postcard",
-                          description: "New postcard description",
+                          name: "",
+                          description: "",
                           front: `https://picsum.photos/seed/${randomFront}/1875/1275`,
                           back: `https://picsum.photos/seed/${randomBack}/1875/1275`,
                           status: "DRAFT",
