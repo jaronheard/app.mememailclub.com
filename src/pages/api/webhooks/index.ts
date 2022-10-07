@@ -32,6 +32,11 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     const buf = await buffer(req);
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const sig = req.headers["stripe-signature"]!;
+    const response = {
+      status: "incomplete",
+      postcard: undefined as any,
+      error: undefined as any,
+    };
 
     let event: Stripe.Event;
 
@@ -66,55 +71,66 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
       const charge = event.data.object as Stripe.Charge;
       console.log(`💵 Charge id: ${charge.id}`);
     } else if (event.type === "checkout.session.completed") {
-      const checkoutSession = event.data.object as Stripe.Checkout.Session;
-      console.log(`🔔 Checkout Session completed: ${checkoutSession.id}`);
-      const addressDetails = {
-        // @ts-ignore - Stripe types are wrong
-        name: checkoutSession.shipping.name || "",
-        // @ts-ignore - Stripe types are wrong
-        address_line1: checkoutSession.shipping?.address?.line1 || "",
-        // @ts-ignore - Stripe types are wrong
-        address_line2: checkoutSession.shipping?.address?.line2 || "",
-        // @ts-ignore - Stripe types are wrong
-        address_city: checkoutSession.shipping?.address?.city || "",
-        // @ts-ignore - Stripe types are wrong
-        address_state: checkoutSession.shipping?.address?.state || "",
-        // @ts-ignore - Stripe types are wrong
-        address_zip: checkoutSession.shipping?.address?.postal_code || "",
-        // address_country: checkoutSession.shipping_details?.address?.country || "",
-      };
+      try {
+        const checkoutSession = event.data.object as Stripe.Checkout.Session;
+        console.log(`🔔 Checkout Session completed: ${checkoutSession.id}`);
+        const addressDetails = {
+          // @ts-ignore - Stripe types are wrong
+          name: checkoutSession.shipping.name || "",
+          // @ts-ignore - Stripe types are wrong
+          address_line1: checkoutSession.shipping?.address?.line1 || "",
+          // @ts-ignore - Stripe types are wrong
+          address_line2: checkoutSession.shipping?.address?.line2 || "",
+          // @ts-ignore - Stripe types are wrong
+          address_city: checkoutSession.shipping?.address?.city || "",
+          // @ts-ignore - Stripe types are wrong
+          address_state: checkoutSession.shipping?.address?.state || "",
+          // @ts-ignore - Stripe types are wrong
+          address_zip: checkoutSession.shipping?.address?.postal_code || "",
+          // address_country: checkoutSession.shipping_details?.address?.country || "",
+        };
 
-      // get lob address
-      const address = await caller.mutation(
-        "lob.createAddress",
-        addressDetails
-      );
+        // get lob address
+        const address = await caller.mutation(
+          "lob.createAddress",
+          addressDetails
+        );
 
-      // get line items
-      const checkoutSessionWithLineItems =
-        await stripe.checkout.sessions.retrieve(checkoutSession.id, {
-          expand: ["line_items"],
-        });
-      const lineItems = checkoutSessionWithLineItems?.line_items?.data;
-
-      // create postcards to be sent
-      if (lineItems && address) {
-        console.log("1");
-        lineItems.map(async (lineItem) => {
-          console.log("lineItem", lineItem);
-          const item = await caller.query("items.getOneByStripeProductId", {
-            stripeProductId: lineItem.price?.product as string,
+        // get line items
+        const checkoutSessionWithLineItems =
+          await stripe.checkout.sessions.retrieve(checkoutSession.id, {
+            expand: ["line_items"],
           });
-          console.log("3");
-          if (item) {
-            console.log("4");
-            await caller.mutation("lob.createPostcard", {
-              addressId: address.id,
-              itemId: item.id,
-              quantity: lineItem.quantity || 0,
-            });
-          }
-        });
+        const lineItems = checkoutSessionWithLineItems?.line_items?.data;
+
+        // create postcards to be sent
+        if (lineItems && address) {
+          // await all line items
+          await Promise.all(
+            lineItems.map(async (lineItem) => {
+              console.log("lineItem", lineItem);
+              const item = await caller.query("items.getOneByStripeProductId", {
+                stripeProductId: lineItem.price?.product as string,
+              });
+              console.log("recieved item from db", item);
+              if (item) {
+                console.log("creating postcard");
+                const postcard = await caller.mutation("lob.createPostcard", {
+                  addressId: address.id,
+                  itemId: item.id,
+                  quantity: lineItem.quantity || 0,
+                });
+                console.log("created postcard from lob", postcard);
+                response.postcard = postcard;
+                return postcard;
+              }
+            })
+          );
+          response.status = "success";
+        }
+      } catch (error) {
+        console.log("error creating postcard from purchase", error);
+        response.error = error;
       }
     } else if (event.type === "customer.subscription.created") {
       const subscription = event.data.object as Stripe.Subscription;
@@ -133,7 +149,7 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     // Return a response to acknowledge receipt of the event.
-    res.json({ received: true });
+    res.json(response);
   } else {
     res.setHeader("Allow", "POST");
     res.status(405).end("Method Not Allowed");
