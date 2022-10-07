@@ -15,6 +15,7 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "POST") {
     console.log("Lob webhook received");
     if (req.body.event_type.id === "postcard.rendered_thumbnails") {
+      console.log("Lob webhook processing - req.body", req.body);
       console.log("Postcard rendered thumbnails");
       const { reference_id } = req.body;
       console.log("reference_id", reference_id);
