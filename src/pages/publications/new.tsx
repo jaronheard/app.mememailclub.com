@@ -9,6 +9,7 @@ import FileUpload from "../../components/FileUpload";
 import { PublicationFormValues } from "./[id]";
 import Breadcrumbs from "../../components/Breadcrumbs";
 import LoadingLayout from "../../components/LoadingLayout";
+import { useEffect } from "react";
 
 const New = () => {
   const router = useRouter();
@@ -19,12 +20,12 @@ const New = () => {
     getValues,
     setValue,
     watch,
+    getFieldState,
     formState: { errors },
   } = useForm<PublicationFormValues>({
     defaultValues: {
-      name: "Everything but raccoons 🌈✨💖",
-      description:
-        "My entire collection of postcards, except for my special raccoon meme collection.",
+      name: "",
+      description: "",
       imageUrl: "",
     },
   });
@@ -89,6 +90,7 @@ const New = () => {
                             "border-gray-300": !errors.name,
                           }
                         )}
+                        placeholder="Everything but raccoons"
                       />
                     </div>
                     {errors.name && (
@@ -120,7 +122,7 @@ const New = () => {
                             "border-gray-300": !errors.name,
                           }
                         )}
-                        defaultValue={""}
+                        placeholder="My entire collection of postcards, except for my special raccoon meme collection. 🌈✨💖"
                       />
                     </div>
                     {errors.description && (
