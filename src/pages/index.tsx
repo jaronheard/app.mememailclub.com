@@ -24,8 +24,7 @@ const Home = () => {
                     Explore postcards as art
                   </h2>
                   <p className="mt-4 text-lg text-gray-500">
-                    Memes by mail? Yes, please! We&apos;ll send you a postcard
-                    with a meme on it. You can also send postcards to your
+                    Get any postcard for $1! You can also send postcards to your
                     friends.
                   </p>
                   <div className="mt-6">
@@ -42,7 +41,7 @@ const Home = () => {
               <div className="-mr-48 pl-4 sm:pl-6 md:-mr-16 lg:relative lg:m-0 lg:h-full lg:px-0">
                 <Img
                   className="w-full rounded-xl shadow-xl ring-1 ring-black ring-opacity-5 lg:absolute lg:left-0 lg:h-full lg:w-auto lg:max-w-none"
-                  src="https://res.cloudinary.com/jaronheard/image/upload/v1664946088/mail/meme_mail_1_front_vhxrff.pdf"
+                  src="https://picsum.photos/seed/random/900/600"
                   alt="Postcard sample"
                   width="900"
                   height="600"
