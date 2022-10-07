@@ -40,6 +40,25 @@ export const items = createRouter()
   .query("getAll", {
     async resolve({ ctx }) {
       const items = await ctx.prisma.item.findMany({
+        where: {
+          status: {
+            not: "DELETED",
+          },
+        },
+        ...INCLUDE_PUBLICATION_FIELDS,
+        orderBy: {
+          createdAt: "asc",
+        },
+      });
+      return items;
+    },
+  })
+  .query("getPublished", {
+    async resolve({ ctx }) {
+      const items = await ctx.prisma.item.findMany({
+        where: {
+          status: "PUBLISHED",
+        },
         ...INCLUDE_PUBLICATION_FIELDS,
         orderBy: {
           createdAt: "asc",
@@ -177,7 +196,7 @@ export const items = createRouter()
         shippable: true,
         tax_code: "txcd_35020200",
         default_price_data: {
-          unit_amount_decimal: "200",
+          unit_amount_decimal: "100",
           currency: "usd",
         },
       });
@@ -214,6 +233,7 @@ export const items = createRouter()
           status: input.status,
           stripeProductId: product.id,
           stripePaymentLink: paymentLink.url,
+          stripePaymentLinkId: paymentLink.id,
           postcardPreviewId: myPostcard.id,
           test: process.env.NODE_ENV === "development",
         },
@@ -349,48 +369,49 @@ export const items = createRouter()
         },
         select: {
           stripeProductId: true,
-          stripePaymentLink: true,
+          stripePaymentLinkId: true,
         },
       });
 
-      // delete stripe product if it exists
+      // deactive stripe product if it exists
       if (item?.stripeProductId) {
-        const del = await stripe.products.del(item.stripeProductId);
-        if (!del.deleted) {
-          throw new TRPCError({
-            code: "NOT_FOUND",
-            message: "Stripe product not deleted",
-          });
+        try {
+          const updatedProduct = await stripe.products.update(
+            item.stripeProductId,
+            { active: false }
+          );
+          console.log("updated PaymentLink", updatedProduct);
+        } catch (error) {
+          console.log("❗️error❗️ product not deactivated", error);
         }
       }
 
       // deactivate stripe payment link if it exists
-      if (item?.stripePaymentLink) {
-        const updatedPaymentLink = await stripe.paymentLinks.update(
-          item.stripePaymentLink,
-          { active: false }
-        );
-        if (updatedPaymentLink.active) {
-          throw new TRPCError({
-            code: "NOT_FOUND",
-            message: "Stripe product not deactivated",
-          });
+      if (item?.stripePaymentLinkId) {
+        try {
+          const updatedPaymentLink = await stripe.paymentLinks.update(
+            item.stripePaymentLinkId,
+            { active: false }
+          );
+          console.log("updated PaymentLink", updatedPaymentLink);
+        } catch (error) {
+          console.log("❗️error❗️ payment link not deactivated", error);
         }
       }
 
-      const deleted = await ctx.prisma.item.delete({
+      const deletedItem = await ctx.prisma.item.delete({
         where: {
           id: input.id,
         },
       });
 
-      if (!deleted) {
+      if (!deletedItem) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "Item not deleted",
         });
       }
 
-      return deleted;
+      return deletedItem;
     },
   });

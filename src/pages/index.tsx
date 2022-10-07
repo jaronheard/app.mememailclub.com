@@ -25,8 +25,8 @@ const Home = () => {
                   </h2>
                   <p className="mt-4 text-lg text-gray-500">
                     Memes by mail? Yes, please! We&apos;ll send you a postcard
-                    with a meme on it every week. You can also send postcards to
-                    your friends.
+                    with a meme on it. You can also send postcards to your
+                    friends.
                   </p>
                   <div className="mt-6">
                     <Link href="/explore">
@@ -68,9 +68,8 @@ const Home = () => {
                     Automagically send postcards
                   </h2>
                   <p className="mt-4 text-lg text-gray-500">
-                    Are you a creator? Create a postcard publication and share
-                    your creativity to mailboxes without the hassle of printing
-                    and mailing. Make money while you sleep!
+                    Are you a creator? Create and share your creativity to
+                    mailboxes without the hassle of printing and mailing.
                   </p>
                   <div className="mt-6">
                     <Link href="/publications/new">
@@ -86,7 +85,7 @@ const Home = () => {
               <div className="-ml-48 pr-4 sm:pr-6 md:-ml-16 lg:relative lg:m-0 lg:h-full lg:px-0">
                 <Img
                   className="w-full rounded-xl shadow-xl ring-1 ring-black ring-opacity-5 lg:absolute lg:right-0 lg:h-full lg:w-auto lg:max-w-none"
-                  src="https://res.cloudinary.com/jaronheard/image/upload/v1664946094/mail/meme_mail_1_back_gcxuuo.pdf"
+                  src="https://picsum.photos/id/661/1875/1275"
                   alt="Postcard sample"
                   width="900"
                   height="600"

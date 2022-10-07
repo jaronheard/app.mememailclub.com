@@ -74,8 +74,8 @@ const Publication = () => {
     },
   });
   const publicationQuery = trpc.useQuery(
-    ["publications.getOne", { id: Number(id) }],
-    { enabled: id !== undefined }
+    ["publications.getOne", { id: query.id }],
+    { enabled: query.ready }
   );
   const { data: publication, isLoading } = publicationQuery;
   const updatePublication = trpc.useMutation("publications.updatePublication", {
@@ -85,7 +85,8 @@ const Publication = () => {
     onSuccess: () => router.push("/publications"),
   });
   const createItem = trpc.useMutation("items.createItem", {
-    onSuccess: (data) => router.push(`/publications/${id}/items/${data?.id}`),
+    onSuccess: (data) =>
+      router.push(`/publications/${query.id}/items/${data?.id}`),
   });
 
   useEffect(() => {
@@ -152,8 +153,8 @@ const Publication = () => {
                           publicationId: publication?.id as number,
                           name: "New postcard",
                           description: "New postcard description",
-                          front: `https://picsum.photos/id/${randomFront}/1875/1275`,
-                          back: `https://picsum.photos/id/${randomBack}/1875/1275`,
+                          front: `https://picsum.photos/seed/${randomFront}/1875/1275`,
+                          back: `https://picsum.photos/seed/${randomBack}/1875/1275`,
                           status: "DRAFT",
                         })
                       }
@@ -349,7 +350,7 @@ const Publication = () => {
                     <button
                       onClick={() => {
                         deletePublication.mutate({
-                          id: Number(id),
+                          id: query.id,
                         });
                       }}
                       className="ml-3 inline-flex items-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
@@ -359,7 +360,7 @@ const Publication = () => {
                     <button
                       onClick={handleSubmit((data) => {
                         updatePublication.mutate({
-                          id: Number(id),
+                          id: query.id,
                           name: data.name,
                           description: data.description,
                           imageUrl: data.imageUrl,
@@ -373,7 +374,7 @@ const Publication = () => {
                     <button
                       onClick={handleSubmit((data) => {
                         updatePublication.mutate({
-                          id: Number(id),
+                          id: query.id,
                           name: data.name,
                           description: data.description,
                           imageUrl: data.imageUrl,

@@ -29,11 +29,13 @@ const Layout = (props: LayoutProps) => {
       name: "Explore",
       href: "/explore",
       current: ["/explore"].includes(router.asPath),
+      title: "Explore postcards",
     },
     {
       name: "Create",
       href: "/publications",
-      current: ["/publications", "/publications/new"].includes(router.asPath),
+      current: router.asPath.includes("/publications"),
+      title: "Create postcards",
     },
   ];
   const userNavigation = props.user
@@ -248,7 +250,7 @@ const Layout = (props: LayoutProps) => {
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
               <h1 className="text-3xl font-bold tracking-tight text-white">
                 {props.title ||
-                  navigation.find((item) => item.current)?.name ||
+                  navigation.find((item) => item.current)?.title ||
                   "Postcard Cartel"}
               </h1>
             </div>

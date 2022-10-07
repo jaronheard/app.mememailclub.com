@@ -1,6 +1,5 @@
 import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
-import Link from "next/link";
 import Layout from "../../components/Layout";
 import SignIn from "../../components/SignIn";
 import { trpc } from "../../utils/trpc";
@@ -20,13 +19,16 @@ const New = () => {
     formState: { errors },
   } = useForm<PublicationFormValues>({
     defaultValues: {
-      name: "",
-      description: "",
+      name: "Everything but raccoons 🌈✨💖",
+      description:
+        "My entire collection of postcards, except for my special raccoon meme collection.",
       imageUrl: "",
     },
   });
   const createPublication = trpc.useMutation("publications.createPublication", {
-    onSuccess: () => router.push("/publications"),
+    onSuccess(data) {
+      router.push(`/publications/${data.id}`);
+    },
   });
 
   if (status === "loading") {
@@ -48,11 +50,11 @@ const New = () => {
               <div>
                 <div>
                   <h3 className="text-lg font-medium leading-6 text-gray-900">
-                    Publication
+                    Postcard collection
                   </h3>
                   <p className="mt-1 text-sm text-gray-500">
                     If you choose to make your postcard collection public, this
-                    information will help others find it.
+                    information will help others find it!
                   </p>
                 </div>
 
@@ -79,9 +81,12 @@ const New = () => {
                     </div>
                     {errors.name && (
                       <p className="mt-2 text-sm text-red-600" id="email-error">
-                        Publication name is required.
+                        Name is required.
                       </p>
                     )}
+                    <p className="mt-2 text-sm text-gray-500">
+                      The name of your new postcard collection
+                    </p>
                   </div>
 
                   <div className="sm:col-span-6">
@@ -108,18 +113,18 @@ const New = () => {
                     </div>
                     {errors.description && (
                       <p className="mt-2 text-sm text-red-600" id="email-error">
-                        Description is required.
+                        Description is required
                       </p>
                     )}
                     <p className="mt-2 text-sm text-gray-500">
-                      Write a few sentences about your publication.
+                      A few sentences about your new postcard collection
                     </p>
                   </div>
 
                   <div className="sm:col-span-6">
                     <FileUpload
                       id="imageUrl"
-                      label="Image"
+                      label="Cover Image"
                       accept="image/*"
                       required
                       register={register}
@@ -127,18 +132,16 @@ const New = () => {
                       setValue={setValue}
                       errors={errors}
                     />
+                    <p className="mt-2 text-sm text-gray-500">
+                      A cover photo for your new postcard collection
+                    </p>
                   </div>
                 </div>
               </div>
             </div>
             <div className="pt-5">
               <div className="flex justify-end">
-                <Link href="/">
-                  <a className="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                    Cancel
-                  </a>
-                </Link>
-                <button
+                {/* <button
                   onClick={handleSubmit((data) => {
                     createPublication.mutate({
                       authorId: session.user?.id as string,
@@ -152,7 +155,7 @@ const New = () => {
                   className="ml-3 inline-flex items-center rounded-md border border-transparent bg-indigo-100 px-4 py-2 text-sm font-medium text-indigo-700 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 >
                   Save draft
-                </button>
+                </button> */}
                 <button
                   onClick={handleSubmit((data) => {
                     createPublication.mutate({
@@ -165,7 +168,7 @@ const New = () => {
                   })}
                   className="ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 >
-                  Publish
+                  Create Collection
                 </button>
               </div>
             </div>

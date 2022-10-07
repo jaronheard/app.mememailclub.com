@@ -77,7 +77,8 @@ model Item {
     back                    String      @db.Text
     status                  Status      @default(DRAFT)
     stripeProductId         String      @unique
-    stripePaymentLink       String      @unique
+    stripePaymentLinkId     String      @unique
+    stripePaymentLink       String      @db.Text
     postcardPreviewId       String      @unique
     postcardPreviewRendered Boolean?
     frontPreview            String      @db.Text
@@ -111,6 +112,7 @@ model Subscription {
 }
 
 enum Status {
+    DELETED
     DRAFT
     PUBLISHED
 }

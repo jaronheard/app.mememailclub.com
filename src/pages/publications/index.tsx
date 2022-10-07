@@ -4,11 +4,7 @@ import { trpc } from "../../utils/trpc";
 // Import for PublicationsEmpty
 import { EyeIcon, EyeSlashIcon, PlusIcon } from "@heroicons/react/20/solid";
 //imports for PublicationsList
-import {
-  ChevronRightIcon,
-  UsersIcon,
-  EnvelopeOpenIcon,
-} from "@heroicons/react/20/solid";
+import { ChevronRightIcon, EnvelopeOpenIcon } from "@heroicons/react/20/solid";
 import { format } from "date-fns";
 import Link from "next/link";
 import DefaultQueryCell from "../../components/DefaultQueryCell";
@@ -34,16 +30,16 @@ const PublicationsEmpty = () => {
         />
       </svg>
       <h3 className="mt-2 text-sm font-medium text-gray-900">
-        You have no publications
+        You have no postcard collections
       </h3>
       <p className="mt-1 text-sm text-gray-500">
-        Get started by creating a new publication.
+        Get started by creating a new postcard collection.
       </p>
       <div className="mt-6">
         <Link href="/publications/new">
           <a className="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
             <PlusIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
-            New Publication
+            New Postcard Collection
           </a>
         </Link>
       </div>
@@ -60,21 +56,15 @@ const Publications = () => {
         authorId: session?.user?.id as string,
       },
     ],
-    { enabled: !!session }
+    { enabled: !!session?.user?.id }
   );
 
   return (
-    <DefaultQueryCell
-      query={publicationsQuery}
-      empty={() => <PublicationsEmpty />}
-      success={({ data: publications }) => (
-        <div>
-          <Link href="/publications/new">
-            <a className="mb-6 inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-              <PlusIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
-              New Publication
-            </a>
-          </Link>
+    <div>
+      <DefaultQueryCell
+        query={publicationsQuery}
+        empty={() => <PublicationsEmpty />}
+        success={({ data: publications }) => (
           <div className="overflow-hidden bg-white shadow sm:rounded-md">
             <ul role="list" className="divide-y divide-gray-200">
               {publications &&
@@ -86,7 +76,7 @@ const Publications = () => {
                           <div className="flex min-w-0 flex-1 items-center">
                             <div className="flex-shrink-0">
                               <Img
-                                className="h-12 w-12 rounded-full"
+                                className="h-20 w-20 rounded-md"
                                 src={publication.imageUrl || ""}
                                 alt=""
                                 height={48}
@@ -98,6 +88,9 @@ const Publications = () => {
                               <div>
                                 <p className="truncate text-sm font-medium text-indigo-600">
                                   {publication.name}
+                                </p>
+                                <p className="truncate text-sm text-gray-500">
+                                  {publication.description}
                                 </p>
                                 <p className="mt-2 flex items-center gap-3 text-sm text-gray-500">
                                   {/* <UsersIcon
@@ -172,9 +165,15 @@ const Publications = () => {
                 ))}
             </ul>
           </div>
-        </div>
-      )}
-    />
+        )}
+      />
+      <Link href="/publications/new">
+        <a className="mt-6 inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+          <PlusIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
+          New Postcard Collection
+        </a>
+      </Link>
+    </div>
   );
 };
 
