@@ -5,7 +5,7 @@ import Layout from "../../components/Layout";
 import { trpc } from "../../utils/trpc";
 import clsx from "clsx";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Pricing from "../../components/Pricing";
 import {
   ChevronRightIcon,
@@ -17,6 +17,7 @@ import { format } from "date-fns";
 import DefaultQueryCell from "../../components/DefaultQueryCell";
 import Img from "../../components/Img";
 import FileUpload from "../../components/FileUpload";
+import { z } from "zod";
 
 export type PublicationFormValues = {
   name: string;
@@ -48,8 +49,14 @@ const ItemsEmpty = () => (
   </div>
 );
 
+const ParamsValidator = z.object({
+  id: z.optional(z.string().transform((str) => Number(str))),
+});
+
 const Publication = () => {
   const router = useRouter();
+  const [query, setQuery] = useState({ ready: false, id: 0 });
+
   const { id } = router.query;
   const { data: session, status } = useSession();
   const {
@@ -80,6 +87,19 @@ const Publication = () => {
   const createItem = trpc.useMutation("items.createItem", {
     onSuccess: (data) => router.push(`/publications/${id}/items/${data?.id}`),
   });
+
+  useEffect(() => {
+    if (router.isReady) {
+      const zQuery = ParamsValidator.safeParse(router.query);
+      if (zQuery.success && zQuery.data.id) {
+        setQuery({
+          ready: true,
+          id: zQuery.data.id,
+        });
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.isReady]);
 
   useEffect(() => {
     if (!isLoading) {

@@ -5,11 +5,13 @@ import Layout from "../../../../components/Layout";
 import { trpc } from "../../../../utils/trpc";
 import clsx from "clsx";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import FileUpload from "../../../../components/FileUpload";
 import DefaultQueryCell from "../../../../components/DefaultQueryCell";
 import Img from "../../../../components/Img";
 import { PostcardPreview } from "../../../../components/PostcardPreview";
+import { id } from "date-fns/locale";
+import { z } from "zod";
 
 export type ItemFormValues = {
   name: string;
@@ -19,9 +21,15 @@ export type ItemFormValues = {
   back: string;
 };
 
+const ParamsValidator = z.object({
+  id: z.optional(z.string().transform((str) => Number(str))),
+  iid: z.optional(z.string().transform((str) => Number(str))),
+});
+
 const Item = () => {
   const router = useRouter();
-  const { id, iid } = router.query;
+  const [query, setQuery] = useState({ ready: false, id: 0, iid: 0 });
+
   const { data: session, status } = useSession();
   const {
     register,
@@ -39,18 +47,34 @@ const Item = () => {
       back: "",
     },
   });
-  const itemsQuery = trpc.useQuery(["items.getOne", { id: Number(iid) }]);
+  const itemsQuery = trpc.useQuery(["items.getOne", { id: query.iid }], {
+    enabled: query.ready,
+  });
   const { data: item, isLoading } = itemsQuery;
   const updateItem = trpc.useMutation("items.updateItem", {
     onSuccess(data, variables) {
       variables.status === "DRAFT"
-        ? router.push(`/publications/${id}/items/${iid}`)
-        : router.push(`/publications/${id}`);
+        ? router.push(`/publications/${query.id}/items/${query.iid}`)
+        : router.push(`/publications/${query.id}`);
     },
   });
   const deleteItem = trpc.useMutation("items.deleteItem", {
-    onSuccess: () => router.push(`/publications/${id}`),
+    onSuccess: () => router.push(`/publications/${query.id}`),
   });
+
+  useEffect(() => {
+    if (router.isReady) {
+      const zQuery = ParamsValidator.safeParse(router.query);
+      if (zQuery.success && zQuery.data.id && zQuery.data.iid) {
+        setQuery({
+          ready: true,
+          id: zQuery.data.id,
+          iid: zQuery.data.iid,
+        });
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.isReady]);
 
   useEffect(() => {
     if (!isLoading) {
@@ -63,7 +87,7 @@ const Item = () => {
     }
   }, [reset, item, isLoading]);
 
-  if (status === "loading") {
+  if (status === "loading" || !query.ready) {
     return <main className="flex flex-col items-center pt-4">Loading...</main>;
   }
 
@@ -205,7 +229,7 @@ const Item = () => {
                           <button
                             onClick={handleSubmit((data) => {
                               updateItem.mutate({
-                                id: Number(iid),
+                                id: query.iid,
                                 name: data.name,
                                 description: data.description,
                                 front: data.front,
@@ -220,7 +244,7 @@ const Item = () => {
                           <button
                             onClick={handleSubmit((data) => {
                               updateItem.mutate({
-                                id: Number(iid),
+                                id: query.iid,
                                 name: data.name,
                                 description: data.description,
                                 front: data.front,
@@ -258,7 +282,7 @@ const Item = () => {
                           <button
                             onClick={() => {
                               deleteItem.mutate({
-                                id: Number(iid),
+                                id: query.iid,
                               });
                             }}
                             className="ml-3 inline-flex items-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
