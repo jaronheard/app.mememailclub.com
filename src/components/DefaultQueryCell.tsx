@@ -4,11 +4,7 @@ import { AppRouter } from "../server/router/";
 
 import { createQueryCell } from "../utils/createQueryCell";
 
-const Loading = () => (
-  <div>
-    <em>Loading...</em>
-  </div>
-);
+const Loading = () => <div />;
 type TError = TRPCClientErrorLike<AppRouter>;
 const DefaultQueryCell = createQueryCell<TError>({
   error: (result) => (
