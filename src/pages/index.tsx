@@ -40,7 +40,7 @@ const Home = () => {
             <div className="mt-12 sm:mt-16 lg:mt-0">
               <div className="-mr-48 pl-4 sm:pl-6 md:-mr-16 lg:relative lg:m-0 lg:h-full lg:px-0">
                 <Img
-                  className="w-full rounded-xl shadow-xl ring-1 ring-black ring-opacity-5 lg:absolute lg:left-0 lg:h-full lg:w-auto lg:max-w-none"
+                  className="rounded-xl w-full shadow-xl ring-1 ring-black ring-opacity-5 lg:absolute lg:left-0 lg:h-full lg:w-auto lg:max-w-none"
                   src="https://picsum.photos/seed/random/900/600"
                   alt="Postcard sample"
                   width="900"
@@ -83,7 +83,7 @@ const Home = () => {
             <div className="mt-12 sm:mt-16 lg:col-start-1 lg:mt-0">
               <div className="-ml-48 pr-4 sm:pr-6 md:-ml-16 lg:relative lg:m-0 lg:h-full lg:px-0">
                 <Img
-                  className="w-full rounded-xl shadow-xl ring-1 ring-black ring-opacity-5 lg:absolute lg:right-0 lg:h-full lg:w-auto lg:max-w-none"
+                  className="rounded-xl w-full shadow-xl ring-1 ring-black ring-opacity-5 lg:absolute lg:right-0 lg:h-full lg:w-auto lg:max-w-none"
                   src="https://picsum.photos/id/661/1875/1275"
                   alt="Postcard sample"
                   width="900"

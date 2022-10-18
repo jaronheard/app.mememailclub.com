@@ -20,6 +20,11 @@ module.exports = {
       md: "0",
       lg: "0",
     },
+    extend: {
+      fontFamily: {
+        cursive: ['"Annie Use Your Telescope"', "cursive"],
+      },
+    },
   },
   plugins: [
     // ...

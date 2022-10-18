@@ -254,7 +254,7 @@ const Layout = (props: LayoutProps) => {
         </Disclosure>
         <header className="mb-32 py-10 pt-[6.5rem]">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <h1 className="text-3xl font-bold tracking-tight text-white">
+            <h1 className="font-cursive text-3xl font-bold tracking-tight text-white">
               {props.title ||
                 navigation.find((item) => item.current)?.title ||
                 "Post-postcard"}
