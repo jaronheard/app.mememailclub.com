@@ -189,7 +189,7 @@ export const items = createRouter()
       const product = await stripe.products.create({
         name: input.name || "Postcard",
         // active: input.status === "PUBLISHED",
-        description: input.description || "By Postcard Cartel",
+        description: input.description || "By Post-postcard",
         statement_descriptor: `postcard: ${input.name.slice(0, 12)}`,
         images: [frontPreview, backPreview],
         // default item information

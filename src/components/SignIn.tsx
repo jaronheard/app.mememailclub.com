@@ -14,7 +14,7 @@ export default function SignIn() {
             height={118}
           />
           <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-white">
-            Postcard Cartel
+            Post-postcard
           </h2>
         </div>
 
@@ -31,7 +31,7 @@ export default function SignIn() {
               </svg>
               <p className="relative">
                 To create is to be human. To share is to be human. To share your
-                creations is to be a Postcard Cartel member.
+                creations is to be a Post-postcard member.
               </p>
             </div>
             <p className="mt-2 text-sm font-medium text-gray-700">
