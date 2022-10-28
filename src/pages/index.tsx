@@ -20,10 +20,10 @@ const Home = () => {
                   </span>
                 </div>
                 <div className="mt-6">
-                  <h2 className="text-3xl font-bold tracking-tight text-gray-900">
+                  <h2 className="text-gray-900 text-3xl font-bold tracking-tight">
                     Explore postcards as art
                   </h2>
-                  <p className="mt-4 text-lg text-gray-500">
+                  <p className="text-gray-500 mt-4 text-lg">
                     Get any postcard for $1! You can also send postcards to your
                     friends.
                   </p>
@@ -41,7 +41,7 @@ const Home = () => {
               <div className="-mr-48 pl-4 sm:pl-6 md:-mr-16 lg:relative lg:m-0 lg:h-full lg:px-0">
                 <Img
                   className="rounded-xl w-full shadow-xl ring-1 ring-black ring-opacity-5 lg:absolute lg:left-0 lg:h-full lg:w-auto lg:max-w-none"
-                  src="https://picsum.photos/seed/random/900/600"
+                  src="https://images.unsplash.com/photo-1557717398-f6a5f68cd158?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1625&q=80"
                   alt="Postcard sample"
                   width="900"
                   height="600"
@@ -63,10 +63,10 @@ const Home = () => {
                   </span>
                 </div>
                 <div className="mt-6">
-                  <h2 className="text-3xl font-bold tracking-tight text-gray-900">
+                  <h2 className="text-gray-900 text-3xl font-bold tracking-tight">
                     Automagically send postcards
                   </h2>
-                  <p className="mt-4 text-lg text-gray-500">
+                  <p className="text-gray-500 mt-4 text-lg">
                     Are you a creator? Create and share your creativity to
                     mailboxes without the hassle of printing and mailing.
                   </p>
@@ -84,7 +84,7 @@ const Home = () => {
               <div className="-ml-48 pr-4 sm:pr-6 md:-ml-16 lg:relative lg:m-0 lg:h-full lg:px-0">
                 <Img
                   className="rounded-xl w-full shadow-xl ring-1 ring-black ring-opacity-5 lg:absolute lg:right-0 lg:h-full lg:w-auto lg:max-w-none"
-                  src="https://picsum.photos/id/661/1875/1275"
+                  src="https://images.unsplash.com/photo-1636971828014-0f3493cba88a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80"
                   alt="Postcard sample"
                   width="900"
                   height="600"
