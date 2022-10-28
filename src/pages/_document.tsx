@@ -2,10 +2,10 @@ import { Html, Head, Main, NextScript } from "next/document";
 
 export default function Document() {
   return (
-    <Html className="h-full bg-gray-100">
+    <Html className="bg-gray-100 h-full">
       <Head>
         <link
-          href="https://fonts.googleapis.com/css2?family=Annie+Use+Your+Telescope&display=optional"
+          href="https://fonts.googleapis.com/css2?family=Sen:wght@400;700;800&display=swap"
           rel="stylesheet"
         />
       </Head>
