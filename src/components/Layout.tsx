@@ -121,7 +121,7 @@ const Layout = (props: LayoutProps) => {
                   </div>
                   <div className="flex lg:hidden">
                     {/* Mobile menu button */}
-                    <Disclosure.Button className="inline-flex items-center justify-center rounded-md bg-transparent p-2 text-indigo-200 hover:bg-indigo-500 hover:bg-opacity-90 hover:text-white hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-indigo-900">
+                    <Disclosure.Button className="inline-flex items-center justify-center rounded-md bg-transparent p-2 text-indigo-200 hover:bg-indigo-500 hover:bg-opacity-90 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-700 hover:focus:ring-white">
                       <span className="sr-only">Open main menu</span>
                       {open ? (
                         <XMarkIcon
@@ -221,7 +221,7 @@ const Layout = (props: LayoutProps) => {
                     </Disclosure.Button>
                   ))}
                 </div>
-                <div className="border-t border-indigo-700 pt-4 pb-3">
+                <div className="border-t border-gray-300 pt-4 pb-3">
                   <div className="flex items-center px-5">
                     <div className="flex-shrink-0">
                       {props.user ? (
@@ -277,7 +277,7 @@ const Layout = (props: LayoutProps) => {
         </Disclosure>
         <header className="mb-32 py-10 pt-[6.5rem]">
           <div className="relative mx-auto max-w-7xl bg-yellow px-4 sm:px-6 lg:px-8">
-            <h1 className="bg-yellow text-5xl font-extrabold tracking-tighter">
+            <h1 className="text-5xl font-extrabold tracking-tighter">
               <span className="text-indigo">p</span>
               <span className="text-[#2385F8]">o</span>
               <span className="text-[#FC5825]">s</span>
