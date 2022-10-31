@@ -11,16 +11,8 @@ const Home = () => {
           <div className="lg:mx-auto lg:grid lg:max-w-7xl lg:grid-flow-col-dense lg:grid-cols-2 lg:gap-24 lg:px-8">
             <div className="mx-auto max-w-xl px-4 sm:px-6 lg:mx-0 lg:max-w-none lg:py-16 lg:px-0">
               <div>
-                <div>
-                  <span className="flex h-12 w-12 items-center justify-center rounded-md bg-indigo-600">
-                    <EnvelopeIcon
-                      className="h-6 w-6 text-white"
-                      aria-hidden="true"
-                    />
-                  </span>
-                </div>
                 <div className="mt-6">
-                  <h2 className="text-gray-900 text-3xl font-bold tracking-tight">
+                  <h2 className="text-gray-900 text-4xl font-extrabold">
                     Explore postcards as art
                   </h2>
                   <p className="text-gray-500 mt-4 text-lg">
@@ -29,7 +21,7 @@ const Home = () => {
                   </p>
                   <div className="mt-6">
                     <Link href="/explore">
-                      <a className="inline-flex rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700">
+                      <a className="inline-flex rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-bold text-white shadow-sm hover:bg-indigo-700">
                         Explore
                       </a>
                     </Link>
@@ -54,16 +46,8 @@ const Home = () => {
           <div className="lg:mx-auto lg:grid lg:max-w-7xl lg:grid-flow-col-dense lg:grid-cols-2 lg:gap-24 lg:px-8">
             <div className="mx-auto max-w-xl px-4 sm:px-6 lg:col-start-2 lg:mx-0 lg:max-w-none lg:py-32 lg:px-0">
               <div>
-                <div>
-                  <span className="flex h-12 w-12 items-center justify-center rounded-md bg-indigo-600">
-                    <SparklesIcon
-                      className="h-6 w-6 text-white"
-                      aria-hidden="true"
-                    />
-                  </span>
-                </div>
                 <div className="mt-6">
-                  <h2 className="text-gray-900 text-3xl font-bold tracking-tight">
+                  <h2 className="text-gray-900 text-4xl font-extrabold">
                     Automagically send postcards
                   </h2>
                   <p className="text-gray-500 mt-4 text-lg">
@@ -72,7 +56,7 @@ const Home = () => {
                   </p>
                   <div className="mt-6">
                     <Link href="/publications/new">
-                      <a className="inline-flex rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700">
+                      <a className="inline-flex rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-bold text-white shadow-sm hover:bg-indigo-700">
                         Create
                       </a>
                     </Link>
