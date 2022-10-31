@@ -59,7 +59,7 @@ const Layout = (props: LayoutProps) => {
           {({ open }) => (
             <>
               <div className="mx-auto max-w-7xl px-2 sm:px-4 lg:px-8">
-                <div className="relative flex h-16 items-center justify-between lg:border-b lg:border-indigo-400 lg:border-opacity-25">
+                <div className="relative flex h-16 items-center justify-between bg-yellow">
                   <div className="flex items-center px-2 lg:px-0">
                     <Link href="/">
                       <a className="flex-shrink-0">
@@ -174,7 +174,7 @@ const Layout = (props: LayoutProps) => {
                                       href={item.href}
                                       className={clsx(
                                         active ? "bg-gray-100" : "",
-                                        "text-gray-700 block py-2 px-4 text-sm"
+                                        "block py-2 px-4 text-sm text-gray-700"
                                       )}
                                     >
                                       {item.name}
@@ -184,7 +184,7 @@ const Layout = (props: LayoutProps) => {
                                       type="button"
                                       className={clsx(
                                         active ? "bg-gray-100" : "",
-                                        "text-gray-700 block w-full py-2 px-4 text-left text-sm"
+                                        "block w-full py-2 px-4 text-left text-sm text-gray-700"
                                       )}
                                       onClick={item.onClick}
                                     >
@@ -276,8 +276,8 @@ const Layout = (props: LayoutProps) => {
           )}
         </Disclosure>
         <header className="mb-32 py-10 pt-[6.5rem]">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <h1 className="text-5xl font-extrabold tracking-tighter">
+          <div className="relative mx-auto max-w-7xl bg-yellow px-4 sm:px-6 lg:px-8">
+            <h1 className="bg-yellow text-5xl font-extrabold tracking-tighter">
               <span className="text-indigo">p</span>
               <span className="text-[#2385F8]">o</span>
               <span className="text-[#FC5825]">s</span>
@@ -291,7 +291,7 @@ const Layout = (props: LayoutProps) => {
 
         <main className="-mt-32">
           <div className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
-            <div className="rounded-lg bg-white px-5 py-6 shadow sm:px-6">
+            <div className="rounded-lg bg-postcard px-5 py-6 drop-shadow-sm sm:px-6">
               {props.children}
             </div>
           </div>

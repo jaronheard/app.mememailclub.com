@@ -21,7 +21,7 @@ const Home = () => {
                   </p>
                   <div className="mt-6">
                     <Link href="/explore">
-                      <a className="inline-flex rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-bold text-white shadow-sm hover:bg-indigo-700">
+                      <a className="inline-flex rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-bold text-white shadow-button hover:bg-indigo-700">
                         Explore
                       </a>
                     </Link>
@@ -56,7 +56,7 @@ const Home = () => {
                   </p>
                   <div className="mt-6">
                     <Link href="/publications/new">
-                      <a className="inline-flex rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-bold text-white shadow-sm hover:bg-indigo-700">
+                      <a className="inline-flex rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-bold text-white shadow-button hover:bg-indigo-700">
                         Create
                       </a>
                     </Link>
