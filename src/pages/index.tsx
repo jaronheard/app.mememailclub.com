@@ -2,6 +2,7 @@ import Layout from "../components/Layout";
 import { EnvelopeIcon, SparklesIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import Img from "../components/Img";
+import Button from "../components/Button";
 
 const Home = () => {
   return (
@@ -12,19 +13,15 @@ const Home = () => {
             <div className="mx-auto max-w-xl px-4 sm:px-6 lg:mx-0 lg:max-w-none lg:py-16 lg:px-0">
               <div>
                 <div className="mt-6">
-                  <h2 className="text-gray-900 text-4xl font-extrabold">
+                  <h2 className="text-4xl font-extrabold text-gray-900">
                     Explore postcards as art
                   </h2>
-                  <p className="text-gray-500 mt-4 text-lg">
+                  <p className="mt-4 text-lg text-gray-500">
                     Get any postcard for $1! You can also send postcards to your
                     friends.
                   </p>
                   <div className="mt-6">
-                    <Link href="/explore">
-                      <a className="inline-flex rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-bold text-white shadow-button hover:bg-indigo-700">
-                        Explore
-                      </a>
-                    </Link>
+                    <Button href="/explore">Explore</Button>
                   </div>
                 </div>
               </div>
@@ -47,19 +44,15 @@ const Home = () => {
             <div className="mx-auto max-w-xl px-4 sm:px-6 lg:col-start-2 lg:mx-0 lg:max-w-none lg:py-32 lg:px-0">
               <div>
                 <div className="mt-6">
-                  <h2 className="text-gray-900 text-4xl font-extrabold">
+                  <h2 className="text-4xl font-extrabold text-gray-900">
                     Automagically send postcards
                   </h2>
-                  <p className="text-gray-500 mt-4 text-lg">
+                  <p className="mt-4 text-lg text-gray-500">
                     Are you a creator? Create and share your creativity to
                     mailboxes without the hassle of printing and mailing.
                   </p>
                   <div className="mt-6">
-                    <Link href="/publications/new">
-                      <a className="inline-flex rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-bold text-white shadow-button hover:bg-indigo-700">
-                        Create
-                      </a>
-                    </Link>
+                    <Button href="/publications/new">Create</Button>
                   </div>
                 </div>
               </div>

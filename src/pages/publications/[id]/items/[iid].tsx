@@ -15,6 +15,7 @@ import { z } from "zod";
 import Breadcrumbs from "../../../../components/Breadcrumbs";
 import SignIn from "../../../../components/SignIn";
 import LoadingLayout from "../../../../components/LoadingLayout";
+import Button from "../../../../components/Button";
 
 export type ItemFormValues = {
   name: string;
@@ -197,7 +198,7 @@ const Item = () => {
                         {...register("name", { required: true })}
                         autoComplete="off"
                         className={clsx(
-                          "block w-full rounded-md border p-3 shadow-sm focus:border-indigo-500  focus:ring-indigo-500 sm:text-sm",
+                          "block w-full rounded-md border p-3 shadow-sm placeholder:text-gray-300  focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
                           {
                             "border-red-300": errors.name,
                             "border-gray-300": !errors.name,
@@ -226,7 +227,7 @@ const Item = () => {
                         autoComplete="off"
                         rows={3}
                         className={clsx(
-                          "block w-full rounded-md shadow-sm focus:border-indigo-500  focus:ring-indigo-500 sm:text-sm",
+                          "block w-full rounded-md shadow-sm placeholder:text-gray-300  focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
                           {
                             "border-red-300": errors.name,
                             "border-gray-300": !errors.name,
@@ -253,7 +254,7 @@ const Item = () => {
             <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
               <div className="sm:col-span-6" id="actions">
                 <div className="flex justify-start gap-3">
-                  <button
+                  <Button
                     onClick={handleSubmit((data) => {
                       updateItem.mutate({
                         id: query.iid,
@@ -264,11 +265,11 @@ const Item = () => {
                         status: "PUBLISHED",
                       });
                     })}
-                    className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    size="sm"
                   >
                     Publish
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onClick={handleSubmit((data) => {
                       updateItem.mutate({
                         id: query.iid,
@@ -279,10 +280,11 @@ const Item = () => {
                         status: "DRAFT",
                       });
                     })}
-                    className="inline-flex items-center rounded-md border border-transparent bg-indigo-100 px-4 py-2 text-sm font-medium text-indigo-700 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    size="sm"
+                    variant="secondary"
                   >
                     Preview
-                  </button>
+                  </Button>
                 </div>
               </div>
               <div className="pt-6 sm:col-span-6">
@@ -318,16 +320,18 @@ const Item = () => {
           </form>
           <div className="mt-6 sm:col-span-6" id="delete">
             <div className="flex items-center justify-start gap-3">
-              <button
+              <Button
                 onClick={() => {
                   deleteItem.mutate({
                     id: query.iid,
                   });
                 }}
-                className="ml-3 inline-flex items-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                className="ml-3"
+                size="sm"
+                variant="danger"
               >
                 Delete
-              </button>
+              </Button>
               <p className="text-sm font-medium text-red-700">
                 Warning: this action is irreversable
               </p>
@@ -337,60 +341,6 @@ const Item = () => {
       ) : (
         <Layout>
           <SignIn />
-          {/* <DefaultQueryCell
-            query={itemsQuery}
-            success={({ data: item }) => (
-              <>
-                <Link href={`/publications/${id}`}>
-                  <a className="flex gap-3">
-                    <Img
-                      className="h-12 w-12 rounded-full"
-                      src={item.publication.imageUrl || ""}
-                      alt=""
-                      height={48}
-                      width={48}
-                      autoCrop
-                    />
-                    <div className="">
-                      <h3 className="text-lg font-medium leading-6 text-gray-900">
-                        {item.publication.name}
-                      </h3>
-                      <div className="mt-1 flex items-center gap-1">
-                        <Img
-                          className="h-3 w-3 rounded-full"
-                          src={item.publication.author.image || ""}
-                          alt=""
-                          width={24}
-                          height={24}
-                        />
-                        <p className="text-xs italic text-gray-500">
-                          {item?.publication?.author?.name}
-                        </p>
-                      </div>
-                    </div>
-                  </a>
-                </Link>
-                <div className="mt-12">
-                  <div className="mt-6 flex gap-3">
-                    <a
-                      href={item?.front || ""}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      Front
-                    </a>
-                    <a href={item?.back || ""} target="_blank" rel="noreferrer">
-                      Back
-                    </a>
-                  </div>
-                  <h3 className="mt-6 text-lg font-medium leading-6 text-gray-900">
-                    {item?.name}
-                  </h3>
-                  <p className="mt-3 text-gray-700">{item?.description}</p>
-                </div>
-              </>
-            )}
-          /> */}
         </Layout>
       )}
     </>

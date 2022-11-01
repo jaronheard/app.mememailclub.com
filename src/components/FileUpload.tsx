@@ -72,7 +72,7 @@ function FileUpload<FormValues extends FieldValues>({
         </a>
         <label
           htmlFor={`${id}-file-upload`}
-          className="inline-flex h-[2.125rem] items-center rounded-md border border-transparent bg-indigo-600 px-3 py-2 text-sm font-medium leading-4 text-white shadow-sm focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:bg-indigo-700"
+          className="inline-flex h-[2.125rem] items-center rounded-md border border-transparent bg-indigo-600 px-3 py-2 text-sm font-bold leading-4 text-white shadow-button focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:bg-indigo-700"
         >
           {status === "uploading" ? "Uploading..." : "Upload File"}
           <input

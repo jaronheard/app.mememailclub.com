@@ -20,6 +20,7 @@ import { z } from "zod";
 import Breadcrumbs from "../../components/Breadcrumbs";
 import SignIn from "../../components/SignIn";
 import LoadingLayout from "../../components/LoadingLayout";
+import Button from "../../components/Button";
 
 export type PublicationFormValues = {
   name: string;
@@ -159,7 +160,7 @@ const Publication = () => {
                     <p className="mt-1 text-sm text-gray-500">
                       Add postcards to your collection.
                     </p>
-                    <button
+                    <Button
                       onClick={() =>
                         createItem.mutate({
                           publicationId: publication?.id as number,
@@ -170,14 +171,15 @@ const Publication = () => {
                           status: "DRAFT",
                         })
                       }
-                      className="mt-5 inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                      size="sm"
+                      className="mt-5"
                     >
                       <PlusIcon
                         className="-ml-1 mr-2 h-5 w-5"
                         aria-hidden="true"
                       />
                       New Postcard
-                    </button>
+                    </Button>
                   </div>
                   <div className="my-8" id="items-list">
                     {publication?.Items.length === 0 && <ItemsEmpty />}
@@ -285,7 +287,7 @@ const Publication = () => {
                           {...register("name", { required: true })}
                           autoComplete="off"
                           className={clsx(
-                            "block w-full rounded-md border p-3 shadow-sm focus:border-indigo-500  focus:ring-indigo-500 sm:text-sm",
+                            "block w-full rounded-md border p-3 shadow-sm placeholder:text-gray-300  focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
                             {
                               "border-red-300": errors.name,
                               "border-gray-300": !errors.name,
@@ -316,7 +318,7 @@ const Publication = () => {
                           autoComplete="off"
                           rows={3}
                           className={clsx(
-                            "block w-full rounded-md shadow-sm focus:border-indigo-500  focus:ring-indigo-500 sm:text-sm",
+                            "block w-full rounded-md shadow-sm placeholder:text-gray-300  focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
                             {
                               "border-red-300": errors.name,
                               "border-gray-300": !errors.name,
@@ -368,7 +370,7 @@ const Publication = () => {
                     >
                       Unpublish
                     </button> */}
-                    <button
+                    <Button
                       onClick={handleSubmit((data) => {
                         updatePublication.mutate({
                           id: query.id,
@@ -378,20 +380,21 @@ const Publication = () => {
                           status: "PUBLISHED",
                         });
                       })}
-                      className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                      size="sm"
                     >
                       Update Collection
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                       onClick={() => {
                         deletePublication.mutate({
                           id: query.id,
                         });
                       }}
-                      className="inline-flex items-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                      size="sm"
+                      variant="danger"
                     >
                       Delete (cannot be undone)
-                    </button>
+                    </Button>
                   </div>
                 </div>
               </>

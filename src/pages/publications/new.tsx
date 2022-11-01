@@ -9,7 +9,7 @@ import FileUpload from "../../components/FileUpload";
 import { PublicationFormValues } from "./[id]";
 import Breadcrumbs from "../../components/Breadcrumbs";
 import LoadingLayout from "../../components/LoadingLayout";
-import { useEffect } from "react";
+import Button from "../../components/Button";
 
 const New = () => {
   const router = useRouter();
@@ -20,7 +20,6 @@ const New = () => {
     getValues,
     setValue,
     watch,
-    getFieldState,
     formState: { errors },
   } = useForm<PublicationFormValues>({
     defaultValues: {
@@ -84,7 +83,7 @@ const New = () => {
                         {...register("name", { required: true })}
                         autoComplete="off"
                         className={clsx(
-                          "block w-full rounded-md border p-3 shadow-sm focus:border-indigo-500  focus:ring-indigo-500 sm:text-sm",
+                          "block w-full rounded-md border p-3 shadow-sm placeholder:text-gray-300  focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
                           {
                             "border-red-300": errors.name,
                             "border-gray-300": !errors.name,
@@ -116,7 +115,7 @@ const New = () => {
                         autoComplete="off"
                         rows={3}
                         className={clsx(
-                          "block w-full rounded-md shadow-sm focus:border-indigo-500  focus:ring-indigo-500 sm:text-sm",
+                          "block w-full rounded-md shadow-sm placeholder:text-gray-300  focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
                           {
                             "border-red-300": errors.name,
                             "border-gray-300": !errors.name,
@@ -170,7 +169,8 @@ const New = () => {
                 >
                   Save draft
                 </button> */}
-                <button
+
+                <Button
                   onClick={handleSubmit((data) => {
                     createPublication.mutate({
                       authorId: session.user?.id as string,
@@ -180,10 +180,10 @@ const New = () => {
                       status: "PUBLISHED",
                     });
                   })}
-                  className="ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  className="ml-3"
                 >
                   Create Collection
-                </button>
+                </Button>
               </div>
             </div>
           </form>

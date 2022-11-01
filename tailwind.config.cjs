@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 // eslint-disable-next-line @typescript-eslint/no-var-requires
+const colors = require("tailwindcss/colors");
 
 module.exports = {
   content: ["./src/**/*.{js,ts,jsx,tsx}"],
@@ -36,6 +37,7 @@ module.exports = {
         800: "#15151B",
         900: "#0E0E12",
       },
+      red: colors.red,
       yellow: "#F7D832",
       brandIndigo: "#5520F8",
       brandTeal: "#00B4D8",
