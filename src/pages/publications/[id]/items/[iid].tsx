@@ -16,6 +16,7 @@ import Breadcrumbs from "../../../../components/Breadcrumbs";
 import SignIn from "../../../../components/SignIn";
 import LoadingLayout from "../../../../components/LoadingLayout";
 import Button from "../../../../components/Button";
+import { ItemSizeOpts, itemSizeToClient } from "../../../../utils/itemSizeToDB";
 
 export type ItemFormValues = {
   name: string;
@@ -23,6 +24,7 @@ export type ItemFormValues = {
   imageUrl: string;
   front: string;
   back: string;
+  size: ItemSizeOpts;
 };
 
 const ParamsValidator = z.object({
@@ -51,6 +53,7 @@ const Item = () => {
       imageUrl: "",
       front: "",
       back: "",
+      size: "4x6",
     },
   });
   const itemsQuery = trpc.useQuery(["items.getOne", { id: query.iid }], {
@@ -93,6 +96,7 @@ const Item = () => {
         description: item?.description || "",
         front: item?.front || "",
         back: item?.back || "",
+        size: item?.size ? itemSizeToClient(item.size) : "4x6",
       });
     }
   }, [reset, item, isLoading]);
@@ -140,6 +144,24 @@ const Item = () => {
               query={itemsQuery}
               success={() => (
                 <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+                  <div className="sm:col-span-6" id="size">
+                    {/* Size field with options for 4x6, 6x9, and 9x11 */}
+                    <label
+                      htmlFor="size"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Size
+                    </label>
+                    <select
+                      id="size"
+                      className="mt-1 block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                      {...register("size")}
+                    >
+                      <option value="4x6">4x6</option>
+                      <option value="6x9">6x9</option>
+                      <option value="9x11">9x11</option>
+                    </select>
+                  </div>
                   <div className="sm:col-span-3" id="front">
                     <FileUpload
                       id="front"
@@ -151,7 +173,7 @@ const Item = () => {
                       setValue={setValue}
                       errors={errors}
                     >
-                      4x6 format PDF, PNG, or JPG per{" "}
+                      {watch("size")} format PDF, PNG, or JPG per{" "}
                       <a
                         href="https://docs.google.com/document/d/1cIc0s2P8gMUaHxykxbzpsaK6U4AJHr0UdqjcRYp6xyc/edit?usp=sharing"
                         target="_blank"
@@ -174,7 +196,7 @@ const Item = () => {
                       setValue={setValue}
                       errors={errors}
                     >
-                      4x6 format PDF, PNG, or JPG per{" "}
+                      {watch("size")} format PDF, PNG, or JPG per{" "}
                       <a
                         href="https://docs.google.com/document/d/1cIc0s2P8gMUaHxykxbzpsaK6U4AJHr0UdqjcRYp6xyc/edit?usp=sharing"
                         target="_blank"
@@ -263,6 +285,7 @@ const Item = () => {
                         front: data.front,
                         back: data.back,
                         status: "PUBLISHED",
+                        size: data.size,
                       });
                     })}
                     size="sm"
@@ -278,6 +301,7 @@ const Item = () => {
                         front: data.front,
                         back: data.back,
                         status: "DRAFT",
+                        size: data.size,
                       });
                     })}
                     size="sm"

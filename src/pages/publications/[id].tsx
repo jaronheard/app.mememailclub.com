@@ -169,6 +169,7 @@ const Publication = () => {
                           front: `https://picsum.photos/seed/${randomFront}/1875/1275`,
                           back: `https://picsum.photos/seed/${randomBack}/1875/1275`,
                           status: "DRAFT",
+                          size: "4x6",
                         })
                       }
                       size="sm"

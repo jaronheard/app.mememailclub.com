@@ -8,6 +8,7 @@ import {
   PostcardsApi,
 } from "@lob/lob-typescript-sdk";
 import { env } from "../../env/server.mjs";
+import { itemSizeToDB } from "../../utils/itemSizeToDB";
 
 const INCLUDE_PUBLICATION_FIELDS = {
   include: {
@@ -147,6 +148,7 @@ export const items = createRouter()
       front: z.string().url(),
       back: z.string().url(),
       status: z.enum(["DRAFT", "PUBLISHED"]),
+      size: z.enum(["4x6", "6x9", "9x11"]),
     }),
     async resolve({ ctx, input }) {
       // create a postcard using lob
@@ -160,7 +162,7 @@ export const items = createRouter()
         },
         front: input.front,
         back: input.back,
-        size: "4x6",
+        size: input.size,
       });
       const myPostcard = await new PostcardsApi(testConfig).create(
         postcardCreate
@@ -235,6 +237,7 @@ export const items = createRouter()
           stripePaymentLink: paymentLink.url,
           stripePaymentLinkId: paymentLink.id,
           postcardPreviewId: myPostcard.id,
+          size: itemSizeToDB(input.size),
           test: process.env.NODE_ENV === "development",
         },
       });
@@ -257,6 +260,7 @@ export const items = createRouter()
       front: z.string().url(),
       back: z.string().url(),
       status: z.enum(["DRAFT", "PUBLISHED"]),
+      size: z.enum(["4x6", "6x9", "9x11"]),
     }),
     async resolve({ ctx, input }) {
       // create a postcard using lob
@@ -270,7 +274,7 @@ export const items = createRouter()
         },
         front: input.front,
         back: input.back,
-        size: "4x6",
+        size: input.size,
       });
       const myPostcard = await new PostcardsApi(testConfig).create(
         postcardCreate
@@ -344,6 +348,7 @@ export const items = createRouter()
           status: input.status,
           stripeProductId: product.id,
           postcardPreviewId: myPostcard.id,
+          size: itemSizeToDB(input.size),
           // stripePaymentLink: item.stripePaymentLink,
         },
       });

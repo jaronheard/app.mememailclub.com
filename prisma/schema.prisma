@@ -78,6 +78,7 @@ model Item {
   publicationId           Int
   publication             Publication @relation(fields: [publicationId], references: [id])
   test                    Boolean     @default(false)
+  size                    ItemSize    @default(sz_4x6)
 }
 
 model Publication {
@@ -113,4 +114,10 @@ enum PublicationStatus {
   DELETED
   DRAFT
   PUBLISHED
+}
+
+enum ItemSize {
+  sz_4x6
+  sz_6x9
+  sz_9x11
 }
