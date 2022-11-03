@@ -56,6 +56,29 @@ const Item = () => {
       size: "4x6",
     },
   });
+
+  const resizeImageUrl = (url: string, size: ItemSizeOpts) => {
+    const dpi = 300;
+    const heightInches = size === "4x6" ? 4 : size === "6x9" ? 6 : 9;
+    const widthInches = size === "4x6" ? 6 : size === "6x9" ? 9 : 11;
+    const heightInchesWithMargin = heightInches - 0.25;
+    const widthInchesWithMargin = widthInches - 0.25;
+    const heightPixels = heightInchesWithMargin * dpi;
+    const widthPixels = widthInchesWithMargin * dpi;
+
+    // if url is from picsum, resize it
+    if (url.includes("picsum")) {
+      // split url at second to last slash
+      const splitUrl = url.split("/");
+      splitUrl.pop();
+      splitUrl.pop();
+      const newUrl = splitUrl.join("/") + `/${widthPixels}/${heightPixels}`;
+      return newUrl;
+    }
+    // else return original url
+    return url;
+  };
+
   const itemsQuery = trpc.useQuery(["items.getOne", { id: query.iid }], {
     enabled: query.ready,
   });
@@ -155,7 +178,18 @@ const Item = () => {
                     <select
                       id="size"
                       className="mt-1 block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                      {...register("size")}
+                      {...register("size", {
+                        onChange: () => {
+                          setValue(
+                            "front",
+                            resizeImageUrl(watch("front"), watch("size"))
+                          );
+                          setValue(
+                            "back",
+                            resizeImageUrl(watch("back"), watch("size"))
+                          );
+                        },
+                      })}
                     >
                       <option value="4x6">4x6</option>
                       <option value="6x9">6x9</option>
