@@ -59,6 +59,7 @@ export const lob = createRouter()
       itemId: z.number(),
       quantity: z.number(),
       test: z.boolean().optional(),
+      size: z.enum(["4x6", "6x9", "6x11"]),
     }),
     async resolve({ ctx, input }) {
       const item = await ctx.prisma.item.findUnique({
@@ -68,6 +69,7 @@ export const lob = createRouter()
         select: {
           front: true,
           back: true,
+          size: true,
         },
       });
       if (!item) {
@@ -80,7 +82,7 @@ export const lob = createRouter()
         to: input.addressId,
         front: item?.front || "",
         back: item?.back || "",
-        size: "4x6",
+        size: item.size,
         // set to send date in 5 minutes
         // send_date: new Date(Date.now() + 5 * 60000).toISOString(),
         quantity: input.quantity,
