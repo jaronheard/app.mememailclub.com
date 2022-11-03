@@ -9,6 +9,7 @@ import {
 } from "@lob/lob-typescript-sdk";
 import { env } from "../../env/server.mjs";
 import { TRPCError } from "@trpc/server";
+import { itemSizeToClient } from "../../utils/itemSizeToDB";
 
 const config: Configuration = new Configuration({
   username: env.LOB_API_KEY,
@@ -82,7 +83,7 @@ export const lob = createRouter()
         to: input.addressId,
         front: item?.front || "",
         back: item?.back || "",
-        size: item.size,
+        size: itemSizeToClient(item.size),
         // set to send date in 5 minutes
         // send_date: new Date(Date.now() + 5 * 60000).toISOString(),
         quantity: input.quantity,
