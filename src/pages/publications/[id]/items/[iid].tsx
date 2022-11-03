@@ -61,8 +61,8 @@ const Item = () => {
     const dpi = 300;
     const heightInches = size === "4x6" ? 4 : size === "6x9" ? 6 : 6;
     const widthInches = size === "4x6" ? 6 : size === "6x9" ? 9 : 11;
-    const heightInchesWithMargin = heightInches - 0.25;
-    const widthInchesWithMargin = widthInches - 0.25;
+    const heightInchesWithMargin = heightInches + 0.25;
+    const widthInchesWithMargin = widthInches + 0.25;
     const heightPixels = heightInchesWithMargin * dpi;
     const widthPixels = widthInchesWithMargin * dpi;
 
