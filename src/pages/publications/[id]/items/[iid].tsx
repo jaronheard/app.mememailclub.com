@@ -59,7 +59,7 @@ const Item = () => {
 
   const resizeImageUrl = (url: string, size: ItemSizeOpts) => {
     const dpi = 300;
-    const heightInches = size === "4x6" ? 4 : size === "6x9" ? 6 : 9;
+    const heightInches = size === "4x6" ? 4 : size === "6x9" ? 6 : 6;
     const widthInches = size === "4x6" ? 6 : size === "6x9" ? 9 : 11;
     const heightInchesWithMargin = heightInches - 0.25;
     const widthInchesWithMargin = widthInches - 0.25;
@@ -168,7 +168,7 @@ const Item = () => {
               success={() => (
                 <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
                   <div className="sm:col-span-6" id="size">
-                    {/* Size field with options for 4x6, 6x9, and 9x11 */}
+                    {/* Size field with options for 4x6, 6x9, and 6x11 */}
                     <label
                       htmlFor="size"
                       className="block text-sm font-medium text-gray-700"
@@ -193,7 +193,7 @@ const Item = () => {
                     >
                       <option value="4x6">4x6</option>
                       <option value="6x9">6x9</option>
-                      <option value="9x11">9x11</option>
+                      <option value="6x11">6x11</option>
                     </select>
                   </div>
                   <div className="sm:col-span-3" id="front">

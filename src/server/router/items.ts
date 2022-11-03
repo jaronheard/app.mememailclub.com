@@ -148,7 +148,7 @@ export const items = createRouter()
       front: z.string().url(),
       back: z.string().url(),
       status: z.enum(["DRAFT", "PUBLISHED"]),
-      size: z.enum(["4x6", "6x9", "9x11"]),
+      size: z.enum(["4x6", "6x9", "6x11"]),
     }),
     async resolve({ ctx, input }) {
       // create a postcard using lob
@@ -260,7 +260,7 @@ export const items = createRouter()
       front: z.string().url(),
       back: z.string().url(),
       status: z.enum(["DRAFT", "PUBLISHED"]),
-      size: z.enum(["4x6", "6x9", "9x11"]),
+      size: z.enum(["4x6", "6x9", "6x11"]),
     }),
     async resolve({ ctx, input }) {
       // create a postcard using lob

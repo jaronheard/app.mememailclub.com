@@ -119,5 +119,5 @@ enum PublicationStatus {
 enum ItemSize {
   sz_4x6
   sz_6x9
-  sz_9x11
+  sz_6x11
 }
