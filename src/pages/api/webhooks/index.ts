@@ -6,6 +6,7 @@ import Stripe from "stripe";
 import { appRouter } from "../../../server/router";
 import { prisma } from "../../../server/db/client";
 import { RequestHandler } from "next/dist/server/next";
+import { itemSizeToClient } from "../../../utils/itemSizeToDB";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
   // https://github.com/stripe/stripe-node#configuration
@@ -119,6 +120,7 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
                   addressId: address.id,
                   itemId: item.id,
                   quantity: lineItem.quantity || 0,
+                  size: itemSizeToClient(item.size),
                 });
                 console.log("created postcard from lob", postcard);
                 response.postcard = postcard;
