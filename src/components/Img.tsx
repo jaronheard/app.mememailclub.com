@@ -1,5 +1,5 @@
 import * as React from "react";
-import Image, { ImageLoaderProps, ImageProps } from "next/future/image";
+import Image, { ImageLoaderProps, ImageProps } from "next/image";
 // docs: https://cloudinary-build-url.netlify.app/
 import { buildImageUrl, extractPublicId } from "cloudinary-build-url";
 import type {
