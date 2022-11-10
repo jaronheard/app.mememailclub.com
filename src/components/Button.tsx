@@ -23,26 +23,26 @@ function Button({
   }
   if (href) {
     return (
-      <Link href={href}>
-        <a
-          className={clsx(
-            "inline-flex rounded-md border px-4 py-2 font-bold shadow-button",
-            {
-              "text-sm": size === "sm",
-              "text-base": size === "base",
-            },
-            {
-              "border-transparent bg-indigo-600 text-white hover:bg-indigo-700":
-                variant === "primary",
-              "border-indigo-700 bg-white text-indigo-700 hover:bg-gray-100":
-                variant === "secondary",
-            },
-            className
-          )}
-        >
-          {children}
-        </a>
-      </Link>
+      (<Link
+        href={href}
+        className={clsx(
+          "inline-flex rounded-md border px-4 py-2 font-bold shadow-button",
+          {
+            "text-sm": size === "sm",
+            "text-base": size === "base",
+          },
+          {
+            "border-transparent bg-indigo-600 text-white hover:bg-indigo-700":
+              variant === "primary",
+            "border-indigo-700 bg-white text-indigo-700 hover:bg-gray-100":
+              variant === "secondary",
+          },
+          className
+        )}>
+
+        {children}
+
+      </Link>)
     );
   }
   if (onClick) {
