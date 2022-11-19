@@ -66,7 +66,7 @@ export function PostcardPreview(props: {
           Front
         </span>
         {!props.hideAddressArea && (
-          <div className="border-gray-height absolute right-3 bottom-3 flex h-3/5 w-1/2 place-items-center justify-center rounded-none border-2 border-dashed bg-white/95 not-italic backdrop-blur-sm">
+          <div className="absolute right-3 bottom-3 flex h-3/5 w-1/2 place-items-center justify-center rounded-none border-2 border-dashed border-gray-300 bg-white/95 not-italic backdrop-blur-sm">
             <span className="rounded-full inline-flex items-center bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">
               Address & Postage Area
             </span>
