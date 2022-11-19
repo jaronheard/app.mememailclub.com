@@ -58,14 +58,6 @@ export const publications = createRouter()
       return publication;
     },
   })
-  .middleware(async ({ ctx, next }) => {
-    // Any queries or mutations after this middleware will
-    // raise an error unless there is a current session
-    if (!ctx.session) {
-      throw new TRPCError({ code: "UNAUTHORIZED" });
-    }
-    return next();
-  })
   .query("getAllByAuthor", {
     input: z.object({
       authorId: z.string(),
@@ -83,11 +75,14 @@ export const publications = createRouter()
       return publications;
     },
   })
-  .query("getAllForNotAuthor", {
-    async resolve({ ctx }) {
+  .query("getAllByNotAuthor", {
+    input: z.object({
+      authorId: z.string(),
+    }),
+    async resolve({ ctx, input }) {
       const publications = await ctx.prisma.publication.findMany({
         where: {
-          authorId: { not: ctx.session?.user?.id },
+          authorId: input.authorId,
         },
         ...INCLUDE_RELATIONS,
         orderBy: {
@@ -96,6 +91,14 @@ export const publications = createRouter()
       });
       return publications;
     },
+  })
+  .middleware(async ({ ctx, next }) => {
+    // Any queries or mutations after this middleware will
+    // raise an error unless there is a current session
+    if (!ctx.session) {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
+    return next();
   })
   .mutation("createPublication", {
     input: CreatePublication,
