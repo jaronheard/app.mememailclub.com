@@ -1,7 +1,12 @@
+import clsx from "clsx";
 import Img from "./Img";
 
 const placeholder6x9 =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 9 6'%3E%3C/svg%3E";
+const placeholder4x6 =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 6 4'%3E%3C/svg%3E";
+const placeholder6x11 =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 11 6'%3E%3C/svg%3E";
 
 export function PostcardPreview(props: {
   name: string;
@@ -13,57 +18,85 @@ export function PostcardPreview(props: {
   optimizeImages?: boolean;
   loadingState?: boolean;
   hideAddressArea?: boolean;
+  size?: "4x6" | "6x9" | "6x11";
 }): JSX.Element {
+  let width = 600;
+  let height = 400;
+  let aspectRatio = "aspect-[6/4]";
+  let placeholderSrc = placeholder4x6;
+
+  if (props.size === "6x9") {
+    width = 900;
+    height = 600;
+    aspectRatio = "aspect-[9/6]";
+    placeholderSrc = placeholder6x9;
+  } else if (props.size === "6x11") {
+    width = 1100;
+    height = 600;
+    aspectRatio = "aspect-[11/6]";
+    placeholderSrc = placeholder6x11;
+  }
+
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white">
-      <div className="aspect-w-9 aspect-h-6 sm:aspect-none relative bg-gray-200 group-hover:opacity-75 sm:h-96">
+      <div
+        className={clsx(
+          "sm:aspect-none relative bg-gray-200 group-hover:opacity-75",
+          aspectRatio
+        )}
+      >
         {props.optimizeImages ? (
           <Img
-            src={props.loadingState ? placeholder6x9 : props.front}
+            src={props.loadingState ? placeholderSrc : props.front}
             alt=""
             className="h-full w-full border-b border-gray-100 object-cover object-center sm:h-full sm:w-full"
-            width={450}
-            height={300}
+            width={width}
+            height={height}
           />
         ) : (
           <img
-            src={props.loadingState ? placeholder6x9 : props.front}
+            src={props.loadingState ? placeholderSrc : props.front}
             alt=""
             className="h-full w-full border-b border-gray-100 object-cover object-center sm:h-full sm:w-full"
-            width={450}
-            height={300}
+            width={width}
+            height={height}
           />
         )}
-        <span className="absolute top-2 right-2 inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">
+        <span className="rounded-full absolute top-2 right-2 inline-flex items-center bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">
           Front
         </span>
         {!props.hideAddressArea && (
           <div className="absolute right-3 bottom-3 flex h-3/5 w-1/2 place-items-center justify-center rounded-none border-2 border-dashed border-gray-300 bg-white/95 not-italic backdrop-blur-sm">
-            <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">
+            <span className="rounded-full inline-flex items-center bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">
               Address & Postage Area
             </span>
           </div>
         )}
       </div>
-      <div className="aspect-w-9 aspect-h-6 sm:aspect-none relative bg-gray-200 group-hover:opacity-75 sm:h-96">
+      <div
+        className={clsx(
+          "sm:aspect-none relative bg-gray-200 group-hover:opacity-75",
+          aspectRatio
+        )}
+      >
         {props.optimizeImages ? (
           <Img
-            src={props.loadingState ? placeholder6x9 : props.back}
+            src={props.loadingState ? placeholderSrc : props.back}
             alt=""
             className="h-full w-full border-b border-gray-100 object-cover object-center sm:h-full sm:w-full"
-            width={450}
-            height={300}
+            width={width}
+            height={height}
           />
         ) : (
           <img
-            src={props.loadingState ? placeholder6x9 : props.back}
+            src={props.loadingState ? placeholderSrc : props.back}
             alt=""
             className="h-full w-full border-b border-gray-100 object-cover object-center sm:h-full sm:w-full"
-            width={450}
-            height={300}
+            width={width}
+            height={height}
           />
         )}
-        <span className="absolute top-2 right-2 inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">
+        <span className="rounded-full absolute top-2 right-2 inline-flex items-center bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">
           Back
         </span>
       </div>
