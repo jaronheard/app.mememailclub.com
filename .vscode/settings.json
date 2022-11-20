@@ -2,5 +2,5 @@
   "typescript.tsserver.experimental.enableProjectDiagnostics": true,
   "files.autoSave": "afterDelay",
   "editor.quickSuggestionsDelay": 0,
-  "files.autoSaveDelay": 250
+  "files.autoSaveDelay": 1000
 }

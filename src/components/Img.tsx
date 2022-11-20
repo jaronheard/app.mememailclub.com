@@ -6,6 +6,8 @@ import type {
   CldOptions,
   CloudConfig,
   TransformerOption,
+  TextArea,
+  TextStyle,
 } from "@cld-apis/types";
 import { STORAGE_TYPES } from "@cld-apis/utils";
 
@@ -60,6 +62,8 @@ interface CustomImageProps {
   autoCrop?: boolean;
   cloud?: CloudConfig;
   transformations?: TransformerOption;
+  text?: string;
+  textStyle?: string;
 }
 
 export type NextImageCloudinaryProps = CustomImageProps & ImageProps;
@@ -75,13 +79,18 @@ const Img = ({
   autoCrop,
   cloud = CLOUD_OPTIONS,
   transformations,
+  text,
+  textStyle,
   ...rest
 }: NextImageCloudinaryProps): JSX.Element => {
   const aspectRatio = Number(height) / Number(width);
+  const lorem =
+    "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed ut debitis ipsam, neque mollitia laborum iure sunt dolores ea fuga at, officia quis non? Debitis mollitia quia facere est voluptates.";
   return (
     <Image
       loader={(params: ImageLoaderProps): string => {
         const { resize, ...restTransformations } = transformations || {};
+
         return cloudinaryUrlBuilder({
           src: params.src,
           aspectRatio,
@@ -92,12 +101,40 @@ const Img = ({
               cloudName: cloud.cloudName,
             },
             transformations: {
-              quality: params.quality,
-              resize: {
-                ...(resize || {}),
-                width: params.width,
-              },
-              ...(restTransformations || {}),
+              chaining: text
+                ? [
+                    {
+                      quality: params.quality,
+                      resize: {
+                        ...(resize || {}),
+                        width: params.width,
+                      },
+                    },
+                    {
+                      background: "white",
+                      border: "20px_solid_white",
+                      resize: {
+                        type: "fit",
+                        width: 350,
+                      },
+                      gravity: "west",
+                      position: {
+                        x: 80,
+                      },
+                      flags: "layer_apply",
+                      // overlay: `text:${textStyle}:${text}`,
+                      overlay: `text:Futura_18:${escape(text)}`,
+                    },
+                  ]
+                : [
+                    {
+                      quality: params.quality,
+                      resize: {
+                        ...(resize || {}),
+                        width: params.width,
+                      },
+                    },
+                  ],
             },
           },
         });
@@ -111,6 +148,11 @@ const Img = ({
       {...rest}
     />
   );
+};
+
+// double escape special characters for cloudinary
+const escape = (text: string): string => {
+  return encodeURIComponent(text.replace(/\,/g, "%2C").replace(/\//g, "%2F"));
 };
 
 export default Img;
