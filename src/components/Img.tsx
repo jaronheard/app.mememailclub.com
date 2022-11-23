@@ -130,6 +130,7 @@ const Img = ({
                         width: params.width,
                       },
                     },
+                    { ...(restTransformations || {}) },
                   ],
             },
           },
