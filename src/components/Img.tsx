@@ -55,6 +55,24 @@ export const cloudinaryUrlBuilder = ({
   return buildImageUrl(publicId, options);
 };
 
+export function textTransformations(text: string): TransformerOption {
+  return {
+    background: "white",
+    border: "20px_solid_white",
+    resize: {
+      type: "fit",
+      width: 350,
+    },
+    gravity: "west",
+    position: {
+      x: 80,
+    },
+    flags: "layer_apply",
+    // overlay: `text:${textStyle}:${text}`,
+    overlay: `text:Futura_18:${escape(text)}`,
+  };
+}
+
 interface CustomImageProps {
   keepAspectRatio?: boolean;
   autoCrop?: boolean;
@@ -105,21 +123,7 @@ const Img = ({
                         width: params.width,
                       },
                     },
-                    {
-                      background: "white",
-                      border: "20px_solid_white",
-                      resize: {
-                        type: "fit",
-                        width: 350,
-                      },
-                      gravity: "west",
-                      position: {
-                        x: 80,
-                      },
-                      flags: "layer_apply",
-                      // overlay: `text:${textStyle}:${text}`,
-                      overlay: `text:Futura_18:${escape(text)}`,
-                    },
+                    textTransformations(text),
                     { ...(restTransformations || {}) },
                   ]
                 : [
