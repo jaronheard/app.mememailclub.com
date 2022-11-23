@@ -122,6 +122,7 @@ const Img = ({
                       // overlay: `text:${textStyle}:${text}`,
                       overlay: `text:Futura_18:${escape(text)}`,
                     },
+                    { ...(restTransformations || {}) },
                   ]
                 : [
                     {
