@@ -6,8 +6,6 @@ import type {
   CldOptions,
   CloudConfig,
   TransformerOption,
-  TextArea,
-  TextStyle,
 } from "@cld-apis/types";
 import { STORAGE_TYPES } from "@cld-apis/utils";
 
@@ -80,7 +78,6 @@ const Img = ({
   cloud = CLOUD_OPTIONS,
   transformations,
   text,
-  textStyle,
   ...rest
 }: NextImageCloudinaryProps): JSX.Element => {
   const aspectRatio = Number(height) / Number(width);
