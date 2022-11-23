@@ -81,8 +81,6 @@ const Img = ({
   ...rest
 }: NextImageCloudinaryProps): JSX.Element => {
   const aspectRatio = Number(height) / Number(width);
-  const lorem =
-    "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed ut debitis ipsam, neque mollitia laborum iure sunt dolores ea fuga at, officia quis non? Debitis mollitia quia facere est voluptates.";
   return (
     <Image
       loader={(params: ImageLoaderProps): string => {
