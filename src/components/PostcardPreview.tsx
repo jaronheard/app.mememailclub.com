@@ -1,4 +1,5 @@
 import { Message } from "@prisma/client";
+import { useSession } from "next-auth/react";
 import { useState } from "react";
 import Button from "./Button";
 import Img from "./Img";
@@ -21,8 +22,12 @@ export function PostcardPreview(props: {
   showAddMessage?: boolean;
   messages?: Message[];
 }): JSX.Element {
+  const { data: session } = useSession();
+
   const msg =
-    props?.messages?.find((el) => el.itemId === props.itemId)?.message || "";
+    props?.messages?.find(
+      (el) => el.itemId === props.itemId && el.userId === session?.user?.id
+    )?.message || "";
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState(msg);
 

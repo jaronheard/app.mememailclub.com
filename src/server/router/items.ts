@@ -26,7 +26,7 @@ const INCLUDE_PUBLICATION_FIELDS = {
         authorId: true,
       },
     },
-    Messages: true
+    Messages: true,
   },
 };
 
