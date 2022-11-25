@@ -23,6 +23,7 @@ export function PostcardPreview(props: {
   messages?: Message[];
 }): JSX.Element {
   const { data: session } = useSession();
+  const authed = session?.user?.email;
 
   const msg =
     props?.messages?.find(
@@ -33,13 +34,15 @@ export function PostcardPreview(props: {
 
   return (
     <>
-      <PostcardMessageOverlay
-        itemId={props.itemId}
-        open={open}
-        setOpen={setOpen}
-        message={message}
-        setMessage={setMessage}
-      />
+      {authed && (
+        <PostcardMessageOverlay
+          itemId={props.itemId}
+          open={open}
+          setOpen={setOpen}
+          message={message}
+          setMessage={setMessage}
+        />
+      )}
       <div className="group relative flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white">
         <div className="aspect-w-9 aspect-h-6 sm:aspect-none relative bg-gray-200 group-hover:opacity-75 sm:h-96">
           {props.optimizeImages ? (
@@ -49,7 +52,7 @@ export function PostcardPreview(props: {
               className="h-full w-full border-b border-gray-100 object-cover object-center sm:h-full sm:w-full"
               width={450}
               height={300}
-              text={message}
+              text={(authed && message) || ""}
             />
           ) : (
             <img
@@ -107,11 +110,18 @@ export function PostcardPreview(props: {
               <p className="text-base font-medium text-gray-900">$1</p>
             </div>
           </div>
-          <div className="z-50 flex h-full place-items-center p-4">
-            <Button onClick={() => setOpen(!open)}>
-              {message ? "Edit Message" : "Add Message"}
-            </Button>
-          </div>
+          {authed && (
+            <div className="z-50 flex h-full place-items-center p-4">
+              <Button onClick={() => setOpen(!open)}>
+                {message ? "Edit Message" : "Add Message"}
+              </Button>
+            </div>
+          )}
+          {!authed && (
+            <div className="z-50 flex h-full place-items-center p-4">
+              <Button href="/login?next=/explore">Add Message</Button>
+            </div>
+          )}
         </div>
       </div>
     </>
