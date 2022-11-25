@@ -1,15 +1,18 @@
 import { Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { CheckIcon, PencilIcon } from "@heroicons/react/24/outline";
+import { PencilIcon } from "@heroicons/react/24/outline";
 import Button from "./Button";
 import { useForm } from "react-hook-form";
 import clsx from "clsx";
+import { trpc } from "../utils/trpc";
+import { useSession } from "next-auth/react";
 
 export type PostcardMessageOverlayFormValues = {
   msg: string;
 };
 
 export default function PostcardMessageOverlay(props: {
+  itemId: number;
   open: boolean;
   setOpen: (open: boolean) => void;
   message: string;
@@ -23,6 +26,15 @@ export default function PostcardMessageOverlay(props: {
   } = useForm<PostcardMessageOverlayFormValues>({
     defaultValues: {
       msg: message,
+    },
+  });
+
+  const { data: session } = useSession();
+  const utils = trpc.useContext();
+  const createMessage = trpc.useMutation("messages.createMessage", {
+    onSuccess() {
+      // TODO: invalidate queries
+      utils.invalidateQueries("items.getAll");
     },
   });
 
@@ -87,6 +99,12 @@ export default function PostcardMessageOverlay(props: {
                 <div className="mt-5 flex justify-center">
                   <Button
                     onClick={handleSubmit((data) => {
+                      session?.user &&
+                        createMessage.mutate({
+                          message: data.msg,
+                          itemId: props.itemId,
+                          userId: session.user.id,
+                        });
                       setMessage(data.msg);
                       setOpen(false);
                     })}

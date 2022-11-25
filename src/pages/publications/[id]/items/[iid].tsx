@@ -362,6 +362,7 @@ const Item = () => {
                 <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
                   <div className="sm:col-span-6 lg:col-span-3" id="preview">
                     <PostcardPreview
+                      itemId={item?.id || 0}
                       front={item?.frontPreview || ""}
                       back={item?.backPreview || ""}
                       author={item?.publication?.author?.name || ""}

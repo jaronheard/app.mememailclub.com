@@ -1,3 +1,4 @@
+import { Message } from "@prisma/client";
 import { useState } from "react";
 import Button from "./Button";
 import Img from "./Img";
@@ -7,6 +8,7 @@ const placeholder6x9 =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 9 6'%3E%3C/svg%3E";
 
 export function PostcardPreview(props: {
+  itemId: number;
   name: string;
   description: string;
   front: string;
@@ -17,13 +19,17 @@ export function PostcardPreview(props: {
   loadingState?: boolean;
   hideAddressArea?: boolean;
   showAddMessage?: boolean;
+  messages?: Message[];
 }): JSX.Element {
+  const msg =
+    props?.messages?.find((el) => el.itemId === props.itemId)?.message || "";
   const [open, setOpen] = useState(false);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState(msg);
 
   return (
     <>
       <PostcardMessageOverlay
+        itemId={props.itemId}
         open={open}
         setOpen={setOpen}
         message={message}

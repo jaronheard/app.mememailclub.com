@@ -11,6 +11,42 @@ export const messages = createRouter()
     }
     return next();
   })
+  .query("getOne", {
+    input: z.object({
+      id: z.number(),
+    }),
+    async resolve({ ctx, input }) {
+      const publication = await ctx.prisma.publication.findUnique({
+        where: {
+          id: input.id,
+        },
+      });
+      // handle error
+      if (!publication) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Publication not found",
+        });
+      }
+      return publication;
+    },
+  })
+  .query("getAllByAuthor", {
+    input: z.object({
+      userId: z.string(),
+    }),
+    async resolve({ ctx, input }) {
+      const publications = await ctx.prisma.message.findMany({
+        where: {
+          userId: input.userId,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+      return publications;
+    },
+  })
   .mutation("createMessage", {
     input: z.object({
       message: z.string(),
