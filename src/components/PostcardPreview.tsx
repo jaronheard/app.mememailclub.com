@@ -29,6 +29,12 @@ export function PostcardPreview(props: {
     props?.messages?.find(
       (el) => el.itemId === props.itemId && el.userId === session?.user?.id
     )?.message || "";
+  const msgId = props?.messages?.find(
+    (el) => el.itemId === props.itemId && el.userId === session?.user?.id
+  )?.id;
+  const stripePaymentLinkWithMessage = msgId
+    ? `${props.stripePaymentLink}?client_reference_id=${msgId}`
+    : props.stripePaymentLink;
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState(msg);
 
@@ -99,7 +105,7 @@ export function PostcardPreview(props: {
         <div className="flex justify-between">
           <div className="flex flex-1 flex-col space-y-2 p-4">
             <h3 className="text-sm font-medium text-gray-900">
-              <a href={props.stripePaymentLink}>
+              <a href={stripePaymentLinkWithMessage}>
                 <span aria-hidden="true" className="absolute inset-0" />
                 {props.name}
               </a>
