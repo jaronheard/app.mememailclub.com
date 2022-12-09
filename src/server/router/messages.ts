@@ -16,19 +16,19 @@ export const messages = createRouter()
       id: z.number(),
     }),
     async resolve({ ctx, input }) {
-      const publication = await ctx.prisma.publication.findUnique({
+      const message = await ctx.prisma.message.findUnique({
         where: {
           id: input.id,
         },
       });
       // handle error
-      if (!publication) {
+      if (!message) {
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: "Publication not found",
+          message: "Message not found",
         });
       }
-      return publication;
+      return message;
     },
   })
   .query("getAllByAuthor", {
@@ -36,7 +36,7 @@ export const messages = createRouter()
       userId: z.string(),
     }),
     async resolve({ ctx, input }) {
-      const publications = await ctx.prisma.message.findMany({
+      const messages = await ctx.prisma.message.findMany({
         where: {
           userId: input.userId,
         },
@@ -44,7 +44,7 @@ export const messages = createRouter()
           createdAt: "desc",
         },
       });
-      return publications;
+      return messages;
     },
   })
   .mutation("createMessage", {

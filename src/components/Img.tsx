@@ -21,6 +21,11 @@ interface CloudinaryUrlBuilderArgs {
   autoCrop?: boolean;
 }
 
+// extend CloudinaryUrlBuilderArgs with a text property
+interface CloudinaryUrlBuilderArgsWithText extends CloudinaryUrlBuilderArgs {
+  text: string;
+}
+
 export const cloudinaryUrlBuilder = ({
   src,
   keepAspectRatio,
@@ -52,6 +57,7 @@ export const cloudinaryUrlBuilder = ({
       options.transformations.resize.type = "fill";
     }
   }
+
   return buildImageUrl(publicId, options);
 };
 
@@ -71,6 +77,34 @@ export function textTransformations(text: string): TransformerOption {
     // overlay: `text:${textStyle}:${text}`,
     overlay: `text:Futura_18:${escape(text)}`,
   };
+}
+
+export function addTextTransformationToURL({
+  src,
+  options = { cloud: CLOUD_OPTIONS },
+  text,
+}: CloudinaryUrlBuilderArgsWithText): string {
+  // use remote image loading
+  const publicId = src.includes("cloudinary.com") ? extractPublicId(src) : src;
+  const { ...restTransformations } = options.transformations || {};
+
+  if (!src.includes("cloudinary.com")) {
+    options.cloud = {
+      ...CLOUD_OPTIONS,
+      storageType: STORAGE_TYPES.FETCH,
+    };
+  }
+
+  const chaining = text
+    ? [textTransformations(text), { ...(restTransformations || {}) }]
+    : [{ ...(restTransformations || {}) }];
+
+  // add chaining to options.transforations
+  options.transformations = {
+    chaining: chaining as TransformerOption[],
+  };
+
+  return buildImageUrl(publicId, options);
 }
 
 interface CustomImageProps {
