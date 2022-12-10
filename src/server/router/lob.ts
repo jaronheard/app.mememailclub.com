@@ -91,17 +91,17 @@ export const lob = createRouter()
         });
       }
 
-      const frontWithText = message
+      const backWithText = message
         ? addTextTransformationToURL({
-            src: item.front,
+            src: item.back,
             text: message.message,
           })
-        : item.front;
+        : item.back;
 
       const postcardCreate = new PostcardEditable({
         to: input.addressId,
-        front: frontWithText,
-        back: item.back,
+        front: item.front,
+        back: backWithText,
         size: itemSizeToClient(item.size),
         // set to send date in 5 minutes
         // send_date: new Date(Date.now() + 5 * 60000).toISOString(),
