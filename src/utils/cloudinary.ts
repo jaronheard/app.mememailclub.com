@@ -1,5 +1,3 @@
-import { Md5 } from "ts-md5";
-
 const url = "https://api.cloudinary.com/v1_1/jaronheard/auto/upload";
 
 export async function uploadFile(file: File) {
