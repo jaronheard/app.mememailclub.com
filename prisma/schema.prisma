@@ -50,6 +50,7 @@ model User {
   sessions      Session[]
   Publications  Publication[]
   Subscriptions Subscription[]
+  Messages      Message[]
 }
 
 model VerificationToken {
@@ -79,6 +80,7 @@ model Item {
   publication             Publication @relation(fields: [publicationId], references: [id])
   test                    Boolean     @default(false)
   size                    ItemSize    @default(sz_4x6)
+  Messages                Message[]
 }
 
 model Publication {
@@ -102,6 +104,17 @@ model Subscription {
   publication   Publication @relation(fields: [publicationId], references: [id])
   subscriberId  String
   subscriber    User        @relation(fields: [subscriberId], references: [id])
+}
+
+// model for custom messages based on the user, item, and message
+model Message {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  message   String   @db.Text
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  itemId    Int
+  item      Item     @relation(fields: [itemId], references: [id])
 }
 
 enum ItemStatus {

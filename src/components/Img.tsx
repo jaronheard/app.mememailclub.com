@@ -21,6 +21,11 @@ interface CloudinaryUrlBuilderArgs {
   autoCrop?: boolean;
 }
 
+// extend CloudinaryUrlBuilderArgs with a text property
+interface CloudinaryUrlBuilderArgsWithText extends CloudinaryUrlBuilderArgs {
+  text: string;
+}
+
 export const cloudinaryUrlBuilder = ({
   src,
   keepAspectRatio,
@@ -52,14 +57,63 @@ export const cloudinaryUrlBuilder = ({
       options.transformations.resize.type = "fill";
     }
   }
+
   return buildImageUrl(publicId, options);
 };
+
+export function textTransformations(text: string): TransformerOption {
+  return {
+    background: "white",
+    border: "20px_solid_white",
+    resize: {
+      type: "fit",
+      width: 350,
+    },
+    gravity: "west",
+    position: {
+      x: 80,
+    },
+    flags: "layer_apply",
+    // overlay: `text:${textStyle}:${text}`,
+    overlay: `text:Futura_18:${escape(text)}`,
+  };
+}
+
+export function addTextTransformationToURL({
+  src,
+  options = { cloud: CLOUD_OPTIONS },
+  text,
+}: CloudinaryUrlBuilderArgsWithText): string {
+  // use remote image loading
+  const publicId = src.includes("cloudinary.com") ? extractPublicId(src) : src;
+  const { ...restTransformations } = options.transformations || {};
+
+  if (!src.includes("cloudinary.com")) {
+    options.cloud = {
+      ...CLOUD_OPTIONS,
+      storageType: STORAGE_TYPES.FETCH,
+    };
+  }
+
+  const chaining = text
+    ? [textTransformations(text), { ...(restTransformations || {}) }]
+    : [{ ...(restTransformations || {}) }];
+
+  // add chaining to options.transforations
+  options.transformations = {
+    chaining: chaining as TransformerOption[],
+  };
+
+  return buildImageUrl(publicId, options);
+}
 
 interface CustomImageProps {
   keepAspectRatio?: boolean;
   autoCrop?: boolean;
   cloud?: CloudConfig;
   transformations?: TransformerOption;
+  text?: string;
+  textStyle?: string;
 }
 
 export type NextImageCloudinaryProps = CustomImageProps & ImageProps;
@@ -75,6 +129,7 @@ const Img = ({
   autoCrop,
   cloud = CLOUD_OPTIONS,
   transformations,
+  text,
   ...rest
 }: NextImageCloudinaryProps): JSX.Element => {
   const aspectRatio = Number(height) / Number(width);
@@ -82,6 +137,7 @@ const Img = ({
     <Image
       loader={(params: ImageLoaderProps): string => {
         const { resize, ...restTransformations } = transformations || {};
+
         return cloudinaryUrlBuilder({
           src: params.src,
           aspectRatio,
@@ -92,12 +148,28 @@ const Img = ({
               cloudName: cloud.cloudName,
             },
             transformations: {
-              quality: params.quality,
-              resize: {
-                ...(resize || {}),
-                width: params.width,
-              },
-              ...(restTransformations || {}),
+              chaining: text
+                ? [
+                    {
+                      quality: params.quality,
+                      resize: {
+                        ...(resize || {}),
+                        width: params.width,
+                      },
+                    },
+                    textTransformations(text),
+                    { ...(restTransformations || {}) },
+                  ]
+                : [
+                    {
+                      quality: params.quality,
+                      resize: {
+                        ...(resize || {}),
+                        width: params.width,
+                      },
+                    },
+                    { ...(restTransformations || {}) },
+                  ],
             },
           },
         });
@@ -111,6 +183,11 @@ const Img = ({
       {...rest}
     />
   );
+};
+
+// double escape special characters for cloudinary
+const escape = (text: string): string => {
+  return encodeURIComponent(text.replace(/\,/g, "%2C").replace(/\//g, "%2F"));
 };
 
 export default Img;

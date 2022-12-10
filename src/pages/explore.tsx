@@ -33,6 +33,7 @@ const PostcardGallery = () => {
               {items.map((item) => (
                 <PostcardPreview
                   key={item.id}
+                  itemId={item.id}
                   name={item.name}
                   description={item.description}
                   front={item.front}
@@ -40,6 +41,7 @@ const PostcardGallery = () => {
                   stripePaymentLink={item.stripePaymentLink}
                   author={item.publication.author.name || "Anonymous"}
                   optimizeImages={true}
+                  messages={item.Messages}
                 />
               ))}
             </div>

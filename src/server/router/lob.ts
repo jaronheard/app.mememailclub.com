@@ -10,6 +10,7 @@ import {
 import { env } from "../../env/server.mjs";
 import { TRPCError } from "@trpc/server";
 import { itemSizeToClient } from "../../utils/itemSizeToDB";
+import { addTextTransformationToURL } from "../../components/Img";
 
 const config: Configuration = new Configuration({
   username: env.LOB_API_KEY,
@@ -61,8 +62,15 @@ export const lob = createRouter()
       quantity: z.number(),
       test: z.boolean().optional(),
       size: z.enum(["4x6", "6x9", "6x11"]),
+      client_reference_id: z.string().optional(), // not here
     }),
     async resolve({ ctx, input }) {
+      const message = await ctx.prisma.message.findUnique({
+        where: {
+          id: Number(input.client_reference_id),
+        },
+      });
+
       const item = await ctx.prisma.item.findUnique({
         where: {
           id: input.itemId,
@@ -79,10 +87,18 @@ export const lob = createRouter()
           message: "Item not found",
         });
       }
+
+      const frontWithText = message
+        ? addTextTransformationToURL({
+            src: item.front,
+            text: message.message,
+          })
+        : item.front;
+
       const postcardCreate = new PostcardEditable({
         to: input.addressId,
-        front: item?.front || "",
-        back: item?.back || "",
+        front: frontWithText,
+        back: item.back,
         size: itemSizeToClient(item.size),
         // set to send date in 5 minutes
         // send_date: new Date(Date.now() + 5 * 60000).toISOString(),

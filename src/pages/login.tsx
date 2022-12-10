@@ -9,7 +9,11 @@ const Login = () => {
 
   useEffect(() => {
     if (status === "authenticated") {
-      void router.push("/");
+      if (router.query.next) {
+        router.push(router.query.next as string);
+      } else {
+        router.push("/");
+      }
     }
   }, [status, router]);
 
