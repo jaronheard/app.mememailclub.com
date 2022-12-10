@@ -89,8 +89,6 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
           // @ts-ignore - Stripe types are wrong
           address_zip: checkoutSession.shipping?.address?.postal_code || "",
           // address_country: checkoutSession.shipping_details?.address?.country || "",
-          // @ts-ignore - Stripe types are wrong
-          client_reference_id: checkoutSession.client_reference_id || "",
         };
 
         // get lob address
@@ -123,6 +121,8 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
                   itemId: item.id,
                   quantity: lineItem.quantity || 0,
                   size: itemSizeToClient(item.size),
+                  client_reference_id:
+                    checkoutSession.client_reference_id || "",
                 });
                 console.log("created postcard from lob", postcard);
                 response.postcard = postcard;
