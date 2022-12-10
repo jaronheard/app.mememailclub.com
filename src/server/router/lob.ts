@@ -65,11 +65,14 @@ export const lob = createRouter()
       client_reference_id: z.string().optional(), // not here
     }),
     async resolve({ ctx, input }) {
-      const message = await ctx.prisma.message.findUnique({
-        where: {
-          id: Number(input.client_reference_id),
-        },
-      });
+      const message = input.client_reference_id
+        ? await ctx.prisma.message.findUnique({
+            where: {
+              // use client_reference_id to find message as integer
+              id: parseInt(input.client_reference_id),
+            },
+          })
+        : null;
 
       const item = await ctx.prisma.item.findUnique({
         where: {
