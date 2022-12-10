@@ -363,6 +363,7 @@ const Item = () => {
                   <div className="sm:col-span-6 lg:col-span-3" id="preview">
                     <PostcardPreview
                       itemId={item?.id || 0}
+                      size={item?.size ? itemSizeToClient(item.size) : "4x6"}
                       front={item?.frontPreview || ""}
                       back={item?.backPreview || ""}
                       author={item?.publication?.author?.name || ""}

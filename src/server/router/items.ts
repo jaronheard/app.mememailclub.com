@@ -349,6 +349,7 @@ export const items = createRouter()
           status: input.status,
           stripeProductId: product.id,
           postcardPreviewId: myPostcard.id,
+          postcardPreviewRendered: false,
           size: itemSizeToDB(input.size),
           // stripePaymentLink: item.stripePaymentLink,
         },

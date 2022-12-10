@@ -2,11 +2,16 @@ import { Message } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import Button from "./Button";
+import clsx from "clsx";
 import Img from "./Img";
 import PostcardMessageOverlay from "./PostcardMessageOverlay";
 
 const placeholder6x9 =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 9 6'%3E%3C/svg%3E";
+const placeholder4x6 =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 6 4'%3E%3C/svg%3E";
+const placeholder6x11 =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 11 6'%3E%3C/svg%3E";
 
 export function PostcardPreview(props: {
   itemId: number;
@@ -21,7 +26,25 @@ export function PostcardPreview(props: {
   hideAddressArea?: boolean;
   showAddMessage?: boolean;
   messages?: Message[];
+  size?: "4x6" | "6x9" | "6x11";
 }): JSX.Element {
+  let width = 600;
+  let height = 400;
+  let aspectRatio = "aspect-[6/4]";
+  let placeholderSrc = placeholder4x6;
+
+  if (props.size === "6x9") {
+    width = 900;
+    height = 600;
+    aspectRatio = "aspect-[9/6]";
+    placeholderSrc = placeholder6x9;
+  } else if (props.size === "6x11") {
+    width = 1100;
+    height = 600;
+    aspectRatio = "aspect-[11/6]";
+    placeholderSrc = placeholder6x11;
+  }
+
   const { data: session } = useSession();
   const authed = session?.user?.email;
 
@@ -50,23 +73,28 @@ export function PostcardPreview(props: {
         />
       )}
       <div className="group relative flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white">
-        <div className="aspect-w-9 aspect-h-6 sm:aspect-none relative bg-gray-200 group-hover:opacity-75 sm:h-96">
+        <div
+          className={clsx(
+            "sm:aspect-none relative bg-gray-200 group-hover:opacity-75",
+            aspectRatio
+          )}
+        >
           {props.optimizeImages ? (
             <Img
-              src={props.loadingState ? placeholder6x9 : props.front}
+              src={props.loadingState ? placeholderSrc : props.front}
               alt=""
               className="h-full w-full border-b border-gray-100 object-cover object-center sm:h-full sm:w-full"
-              width={450}
-              height={300}
+              width={width}
+              height={height}
               text={(authed && message) || ""}
             />
           ) : (
             <img
-              src={props.loadingState ? placeholder6x9 : props.front}
+              src={props.loadingState ? placeholderSrc : props.front}
               alt=""
               className="h-full w-full border-b border-gray-100 object-cover object-center sm:h-full sm:w-full"
-              width={450}
-              height={300}
+              width={width}
+              height={height}
             />
           )}
           <span className="rounded-full absolute top-2 right-2 inline-flex items-center bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">
@@ -80,22 +108,27 @@ export function PostcardPreview(props: {
             </div>
           )}
         </div>
-        <div className="aspect-w-9 aspect-h-6 sm:aspect-none relative bg-gray-200 group-hover:opacity-75 sm:h-96">
+        <div
+          className={clsx(
+            "sm:aspect-none relative bg-gray-200 group-hover:opacity-75",
+            aspectRatio
+          )}
+        >
           {props.optimizeImages ? (
             <Img
-              src={props.loadingState ? placeholder6x9 : props.back}
+              src={props.loadingState ? placeholderSrc : props.back}
               alt=""
               className="h-full w-full border-b border-gray-100 object-cover object-center sm:h-full sm:w-full"
-              width={450}
-              height={300}
+              width={width}
+              height={height}
             />
           ) : (
             <img
-              src={props.loadingState ? placeholder6x9 : props.back}
+              src={props.loadingState ? placeholderSrc : props.back}
               alt=""
               className="h-full w-full border-b border-gray-100 object-cover object-center sm:h-full sm:w-full"
-              width={450}
-              height={300}
+              width={width}
+              height={height}
             />
           )}
           <span className="rounded-full absolute top-2 right-2 inline-flex items-center bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">
