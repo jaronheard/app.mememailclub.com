@@ -8,6 +8,7 @@ import type {
   TransformerOption,
 } from "@cld-apis/types";
 import { STORAGE_TYPES } from "@cld-apis/utils";
+import { ItemSizeOpts, SIZES } from "../utils/itemSize";
 
 const CLOUD_OPTIONS = {
   cloudName: "jaronheard",
@@ -24,6 +25,7 @@ interface CloudinaryUrlBuilderArgs {
 // extend CloudinaryUrlBuilderArgs with a text property
 interface CloudinaryUrlBuilderArgsWithText extends CloudinaryUrlBuilderArgs {
   text: string;
+  size: ItemSizeOpts;
 }
 
 export const cloudinaryUrlBuilder = ({
@@ -61,21 +63,26 @@ export const cloudinaryUrlBuilder = ({
   return buildImageUrl(publicId, options);
 };
 
-export function textTransformations(text: string): TransformerOption {
+// params of text, type string, and size of type itemSizeOpts with default value of "4x6"
+
+export function textTransformations(
+  text: string,
+  size: ItemSizeOpts = "4x6"
+): TransformerOption {
   return {
     background: "white",
-    border: "20px_solid_white",
+    border: `${SIZES[size].textMargin}px_solid_white`,
     resize: {
       type: "fit",
-      width: 350,
+      width: SIZES[size].textWidth,
     },
     gravity: "west",
     position: {
-      x: 80,
+      x: SIZES[size].textX,
     },
     flags: "layer_apply",
     // overlay: `text:${textStyle}:${text}`,
-    overlay: `text:Futura_18:${escape(text)}`,
+    overlay: `text:Futura_${SIZES[size].textSize}:${escape(text)}`,
   };
 }
 
@@ -83,6 +90,7 @@ export function addTextTransformationToURL({
   src,
   options = { cloud: CLOUD_OPTIONS },
   text,
+  size,
 }: CloudinaryUrlBuilderArgsWithText): string {
   // use remote image loading
   const publicId = src.includes("cloudinary.com") ? extractPublicId(src) : src;
@@ -96,7 +104,7 @@ export function addTextTransformationToURL({
   }
 
   const chaining = text
-    ? [textTransformations(text), { ...(restTransformations || {}) }]
+    ? [textTransformations(text, size), { ...(restTransformations || {}) }]
     : [{ ...(restTransformations || {}) }];
 
   // add chaining to options.transforations
@@ -157,7 +165,7 @@ const Img = ({
                         width: params.width,
                       },
                     },
-                    textTransformations(text),
+                    textTransformations(text, "4x6"), // TODO: make this dynamic
                     { ...(restTransformations || {}) },
                   ]
                 : [
