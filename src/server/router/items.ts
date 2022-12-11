@@ -49,7 +49,7 @@ export const items = createRouter()
         },
         ...INCLUDE_PUBLICATION_FIELDS,
         orderBy: {
-          createdAt: "asc",
+          createdAt: "desc",
         },
       });
       return items;
