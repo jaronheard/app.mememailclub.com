@@ -9,7 +9,7 @@ import {
 } from "@lob/lob-typescript-sdk";
 import { env } from "../../env/server.mjs";
 import { TRPCError } from "@trpc/server";
-import { itemSizeToClient } from "../../utils/itemSizeToDB";
+import { itemSizeToClient } from "../../utils/itemSize";
 import { addTextTransformationToURL } from "../../components/Img";
 
 const config: Configuration = new Configuration({
@@ -95,6 +95,7 @@ export const lob = createRouter()
         ? addTextTransformationToURL({
             src: item.back,
             text: message.message,
+            size: itemSizeToClient(item.size),
           })
         : item.back;
 

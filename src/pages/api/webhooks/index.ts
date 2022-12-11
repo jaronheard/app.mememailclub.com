@@ -6,7 +6,7 @@ import Stripe from "stripe";
 import { appRouter } from "../../../server/router";
 import { prisma } from "../../../server/db/client";
 import { RequestHandler } from "next/dist/server/next";
-import { itemSizeToClient } from "../../../utils/itemSizeToDB";
+import { itemSizeToClient } from "../../../utils/itemSize";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
   // https://github.com/stripe/stripe-node#configuration

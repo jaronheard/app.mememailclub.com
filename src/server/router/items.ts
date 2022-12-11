@@ -8,7 +8,7 @@ import {
   PostcardsApi,
 } from "@lob/lob-typescript-sdk";
 import { env } from "../../env/server.mjs";
-import { itemSizeToDB } from "../../utils/itemSizeToDB";
+import { itemSizeToDB } from "../../utils/itemSize";
 
 const INCLUDE_PUBLICATION_FIELDS = {
   include: {

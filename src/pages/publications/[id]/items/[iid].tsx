@@ -16,7 +16,7 @@ import Breadcrumbs from "../../../../components/Breadcrumbs";
 import SignIn from "../../../../components/SignIn";
 import LoadingLayout from "../../../../components/LoadingLayout";
 import Button from "../../../../components/Button";
-import { ItemSizeOpts, itemSizeToClient } from "../../../../utils/itemSizeToDB";
+import { ItemSizeOpts, itemSizeToClient } from "../../../../utils/itemSize";
 
 export type ItemFormValues = {
   name: string;
