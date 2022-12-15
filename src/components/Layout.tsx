@@ -11,6 +11,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import Img from "./Img";
 import { Sen } from "@next/font/google";
+import Banner from "./Banner";
 
 const sen = Sen({
   variable: "--font-sen",
@@ -293,6 +294,7 @@ const Layout = (props: LayoutProps) => {
 
         <main className="-mt-32">
           <div className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
+            <Banner />
             <div className="rounded-lg bg-postcard px-5 py-6 drop-shadow-sm sm:px-6">
               {props.children}
             </div>
