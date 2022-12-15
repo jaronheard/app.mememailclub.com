@@ -3,8 +3,10 @@ import { useState } from "react";
 
 export default function Banner() {
   const [show, setShow] = useState(true);
-  return (
-    show && (
+
+  if (!show) return null;
+  else
+    return (
       <div className="relative bg-indigo-600">
         <div className="mx-auto max-w-7xl py-3 px-3 sm:px-6 lg:px-8">
           <div className="pr-16 sm:px-16 sm:text-center">
@@ -32,6 +34,5 @@ export default function Banner() {
           </div>
         </div>
       </div>
-    )
-  );
+    );
 }
