@@ -2,24 +2,24 @@ import { useState } from "react";
 import { uploadFile } from "../utils/cloudinary";
 import {
   FieldErrorsImpl,
+  FieldPath,
   FieldValues,
   Path,
   PathValue,
-  UseFormGetValues,
   UseFormRegister,
-  UseFormSetValue,
 } from "react-hook-form";
 import Img from "./Img";
 
 // props interface using generics to pass in FormValues as FieldValues
 interface FileUploadProps<FormValues extends FieldValues> {
-  id: Path<FormValues>;
+  id: FieldPath<FormValues>;
   label: string;
   required?: boolean;
   accept?: string;
   register: UseFormRegister<FormValues>;
-  getValues: UseFormGetValues<FormValues>;
-  setValue: UseFormSetValue<FormValues>;
+  // getValues and setValue are from react-hook-form
+  getValues: any;
+  setValue: any;
   errors: FieldErrorsImpl<FormValues>;
   children?: React.ReactNode;
 }

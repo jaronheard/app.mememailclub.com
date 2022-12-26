@@ -86,7 +86,7 @@ const Item = () => {
   const itemsQuery = trpc.useQuery(["items.getOne", { id: query.iid }], {
     enabled: query.ready,
   });
-  const { data: item, isLoading } = itemsQuery;
+  const { data: item } = itemsQuery;
   const updateItem = trpc.useMutation("items.updateItem", {
     onSuccess(data, variables) {
       utils.invalidateQueries(["items.getAll"]);
