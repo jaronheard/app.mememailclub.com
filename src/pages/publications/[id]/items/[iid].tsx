@@ -35,7 +35,11 @@ const ParamsValidator = z.object({
 const Item = () => {
   const router = useRouter();
   const utils = trpc.useContext();
-  const [query, setQuery] = useState({ ready: false, id: 0, iid: 0 });
+  const [query, setQuery] = useState({
+    ready: false,
+    id: 0,
+    iid: 0,
+  });
 
   const { data: session, status } = useSession();
   const {
@@ -113,16 +117,18 @@ const Item = () => {
   }, [router.isReady, router.query]);
 
   useEffect(() => {
-    if (!isLoading) {
+    // set form to form values is item is loaded
+    if (item) {
       reset({
-        name: item?.name || "",
-        description: item?.description || "",
-        front: item?.front || "",
-        back: item?.back || "",
-        size: item?.size ? itemSizeToClient(item.size) : "4x6",
+        name: item.name,
+        description: item.description,
+        front: item.front,
+        back: item.back,
+        size: itemSizeToClient(item.size),
       });
     }
-  }, [reset, item, isLoading]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [item?.id, reset]);
 
   if (status === "loading" || !query.ready) {
     return <LoadingLayout />;

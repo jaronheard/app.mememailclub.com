@@ -16,6 +16,7 @@ import Banner from "./Banner";
 const sen = Sen({
   variable: "--font-sen",
   weight: ["400", "700", "800"],
+  subsets: ["latin"],
 });
 interface LayoutProps {
   children: React.ReactNode;
