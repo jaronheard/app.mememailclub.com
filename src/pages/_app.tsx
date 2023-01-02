@@ -8,6 +8,7 @@ import type { AppType } from "next/app";
 import type { AppRouter } from "../server/router";
 import type { Session } from "next-auth";
 import "../styles/globals.css";
+import ChatwootWidget from "../components/Chatwoot";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -15,6 +16,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <SessionProvider session={session}>
+      <ChatwootWidget />
       <Component {...pageProps} />
     </SessionProvider>
   );
