@@ -4,6 +4,7 @@ import Layout from "../components/Layout";
 import { trpc } from "../utils/trpc";
 import { PostcardPreview } from "../components/PostcardPreview";
 import LoadingLayout from "../components/LoadingLayout";
+import { itemSizeToClient } from "../utils/itemSize";
 
 const PostcardGallery = () => {
   const itemsQuery = trpc.useQuery(["items.getAll"]);
@@ -42,6 +43,7 @@ const PostcardGallery = () => {
                   author={item.publication.author.name || "Anonymous"}
                   optimizeImages={true}
                   messages={item.Messages}
+                  size={itemSizeToClient(item.size)}
                 />
               ))}
             </div>

@@ -30,17 +30,23 @@ export function PostcardPreview(props: {
 }): JSX.Element {
   let width = 600;
   let height = 400;
+  let addressWidth = "w-[50%]"; // 300
+  let addressHeight = "h-[60%]"; // 160
   let aspectRatio = "aspect-[6/4]";
   let placeholderSrc = placeholder4x6;
 
   if (props.size === "6x9") {
     width = 900;
     height = 600;
+    addressWidth = "w-[33.33%]"; // 300
+    addressHeight = "h-[26.66%]"; // 160
     aspectRatio = "aspect-[9/6]";
     placeholderSrc = placeholder6x9;
   } else if (props.size === "6x11") {
     width = 1100;
     height = 600;
+    addressWidth = "w-[27.27%]"; // 300
+    addressHeight = "h-[26.66%]"; // 160
     aspectRatio = "aspect-[11/6]";
     placeholderSrc = placeholder6x11;
   }
@@ -101,7 +107,13 @@ export function PostcardPreview(props: {
             Front
           </span>
           {!props.hideAddressArea && (
-            <div className="absolute right-3 bottom-3 flex h-3/5 w-1/2 place-items-center justify-center rounded-none border-2 border-dashed border-gray-300 bg-white/95 not-italic backdrop-blur-sm">
+            <div
+              className={clsx(
+                "absolute right-3 bottom-3 flex place-items-center justify-center rounded-none border-2 border-dashed border-gray-300 bg-white/95 not-italic backdrop-blur-sm",
+                addressHeight,
+                addressWidth
+              )}
+            >
               <span className="rounded-full inline-flex items-center bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">
                 Address & Postage Area
               </span>
