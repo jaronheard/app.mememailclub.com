@@ -215,7 +215,7 @@ const Layout = (props: LayoutProps) => {
                       href={item.href}
                       className={clsx(
                         item.current
-                          ? "bg-indigo-700 text-black"
+                          ? "bg-indigo-700 text-white"
                           : "text-black hover:bg-indigo-500 hover:bg-opacity-90 hover:text-white",
                         "block rounded-md py-2 px-3 text-base font-bold"
                       )}

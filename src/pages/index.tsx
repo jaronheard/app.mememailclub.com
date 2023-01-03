@@ -2,6 +2,7 @@ import Layout from "../components/Layout";
 import Img from "../components/Img";
 import Button from "../components/Button";
 import { useSession } from "next-auth/react";
+import ComingSoon from "../components/ComingSoon";
 
 const Index = () => {
   return (
@@ -38,37 +39,39 @@ const Index = () => {
           </div>
         </div>
       </div>
-      <div className="mt-24">
-        <div className="lg:mx-auto lg:grid lg:max-w-7xl lg:grid-flow-col-dense lg:grid-cols-2 lg:gap-24 lg:px-8">
-          <div className="mx-auto max-w-xl px-4 sm:px-6 lg:col-start-2 lg:mx-0 lg:max-w-none lg:py-32 lg:px-0">
-            <div>
-              <div className="mt-6">
-                <h2 className="text-4xl font-extrabold text-gray-900">
-                  Automagically send postcards
-                </h2>
-                <p className="mt-4 text-lg text-gray-500">
-                  Are you a creator? Create and share your creativity to
-                  mailboxes without the hassle of printing and mailing.
-                </p>
+      <ComingSoon>
+        <div className="mt-24">
+          <div className="lg:mx-auto lg:grid lg:max-w-7xl lg:grid-flow-col-dense lg:grid-cols-2 lg:gap-24 lg:px-8">
+            <div className="mx-auto max-w-xl px-4 sm:px-6 lg:col-start-2 lg:mx-0 lg:max-w-none lg:py-32 lg:px-0">
+              <div>
                 <div className="mt-6">
-                  <Button href="/publications/new">Create</Button>
+                  <h2 className="text-4xl font-extrabold text-gray-900">
+                    Create your own postcards
+                  </h2>
+                  <p className="mt-4 text-lg text-gray-500">
+                    Create postcard designs that anyone can use. Share your
+                    creativity with the world!
+                  </p>
+                  <div className="mt-6">
+                    <Button href="/publications/new">Create</Button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div className="mt-12 sm:mt-16 lg:col-start-1 lg:mt-0">
-            <div className="-ml-48 pr-4 sm:pr-6 md:-ml-16 lg:relative lg:m-0 lg:h-full lg:px-0">
-              <Img
-                className="rounded-xl w-full shadow-xl ring-1 ring-black ring-opacity-5 lg:absolute lg:right-0 lg:h-full lg:w-auto lg:max-w-none"
-                src="https://images.unsplash.com/photo-1636971828014-0f3493cba88a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80"
-                alt="Postcard sample"
-                width="900"
-                height="600"
-              />
+            <div className="mt-12 sm:mt-16 lg:col-start-1 lg:mt-0">
+              <div className="-ml-48 pr-4 sm:pr-6 md:-ml-16 lg:relative lg:m-0 lg:h-full lg:px-0">
+                <Img
+                  className="rounded-xl w-full shadow-xl ring-1 ring-black ring-opacity-5 lg:absolute lg:right-0 lg:h-full lg:w-auto lg:max-w-none"
+                  src="https://images.unsplash.com/photo-1636971828014-0f3493cba88a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80"
+                  alt="Postcard sample"
+                  width="900"
+                  height="600"
+                />
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </ComingSoon>
     </div>
   );
 };
