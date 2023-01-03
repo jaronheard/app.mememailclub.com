@@ -12,14 +12,15 @@ const Index = () => {
             <div>
               <div className="mt-6">
                 <h2 className="text-4xl font-extrabold text-gray-900">
-                  Explore postcards as art
+                  Send artful postcards
                 </h2>
                 <p className="mt-4 text-lg text-gray-500">
-                  Get any postcard for $1! You can also send postcards to your
-                  friends.
+                  Send a huge 6&quot; x 9&quot; postcard to your friends and
+                  family, and add a custom message. All without touching pen or
+                  paper!
                 </p>
                 <div className="mt-6">
-                  <Button href="/explore">Explore</Button>
+                  <Button href="/send">Send</Button>
                 </div>
               </div>
             </div>

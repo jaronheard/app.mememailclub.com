@@ -33,11 +33,11 @@ const Layout = (props: LayoutProps) => {
   const router = useRouter();
   const navigation = [
     {
-      name: "Explore",
-      href: "/explore",
+      name: "Send",
+      href: "/send",
       Icon: null,
-      current: ["/explore"].includes(router.asPath),
-      title: "Explore postcards",
+      current: ["/send"].includes(router.asPath),
+      title: "Send postcards",
     },
     {
       name: "Create",

@@ -52,7 +52,7 @@ const PostcardGallery = () => {
   );
 };
 
-const Explore = () => {
+const Send = () => {
   const { data: session, status } = useSession();
 
   if (status === "loading") {
@@ -80,4 +80,4 @@ const Explore = () => {
   );
 };
 
-export default Explore;
+export default Send;
