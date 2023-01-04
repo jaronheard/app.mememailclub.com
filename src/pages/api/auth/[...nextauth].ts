@@ -25,7 +25,6 @@ export const authOptions: NextAuthOptions = {
     }),
     // ...add more providers here
   ],
-  debug: true,
 };
 
 export default NextAuth(authOptions);
