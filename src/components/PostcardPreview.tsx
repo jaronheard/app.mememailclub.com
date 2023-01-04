@@ -36,11 +36,11 @@ export function PostcardPreview(props: {
   let placeholderSrc = placeholder4x6;
 
   if (props.size === "6x9") {
-    width = 900;
-    height = 600;
-    addressWidth = "w-[33.33%]"; // 300
-    addressHeight = "h-[26.66%]"; // 160
-    aspectRatio = "aspect-[9/6]";
+    width = 925;
+    height = 625;
+    addressWidth = "w-[43.10%]"; // 4" / 9.25" = 0.431
+    addressHeight = "h-[37.5%]"; // 2.375" / 6.25" = 0.375
+    aspectRatio = "aspect-[925/625]";
     placeholderSrc = placeholder6x9;
   } else if (props.size === "6x11") {
     width = 1100;
@@ -170,7 +170,7 @@ export function PostcardPreview(props: {
           )}
           {!authed && (
             <div className="z-50 flex h-full place-items-center p-4">
-              <Button href="/login?next=/explore">Add Message</Button>
+              <Button href="/login?next=/send">Add Message</Button>
             </div>
           )}
         </div>
