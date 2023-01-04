@@ -17,8 +17,9 @@ export default function PostcardMessageOverlay(props: {
   setOpen: (open: boolean) => void;
   message: string;
   setMessage: (message: string) => void;
+  msgId?: number;
 }): JSX.Element {
-  const { open, setOpen, message, setMessage } = props;
+  const { open, setOpen, message, setMessage, msgId } = props;
   const {
     register,
     handleSubmit,
@@ -32,6 +33,12 @@ export default function PostcardMessageOverlay(props: {
   const { data: session } = useSession();
   const utils = trpc.useContext();
   const createMessage = trpc.useMutation("messages.createMessage", {
+    onSuccess() {
+      // TODO: invalidate queries
+      utils.invalidateQueries("items.getAll");
+    },
+  });
+  const updateMessage = trpc.useMutation("messages.updateMessage", {
     onSuccess() {
       // TODO: invalidate queries
       utils.invalidateQueries("items.getAll");
@@ -100,10 +107,17 @@ export default function PostcardMessageOverlay(props: {
                   <Button
                     onClick={handleSubmit((data) => {
                       session?.user &&
+                        !msgId &&
                         createMessage.mutate({
                           message: data.msg,
                           itemId: props.itemId,
                           userId: session.user.id,
+                        });
+                      session?.user &&
+                        msgId &&
+                        updateMessage.mutate({
+                          id: msgId,
+                          message: data.msg,
                         });
                       setMessage(data.msg);
                       setOpen(false);

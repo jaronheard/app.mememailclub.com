@@ -76,6 +76,7 @@ export function PostcardPreview(props: {
           setOpen={setOpen}
           message={message}
           setMessage={setMessage}
+          msgId={msgId}
         />
       )}
       <div className="group relative flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white">
