@@ -13,7 +13,7 @@ const Index = () => {
             <div>
               <div className="mt-6">
                 <h2 className="text-4xl font-extrabold text-gray-900">
-                  Send artful postcards
+                  Send weird postcards
                 </h2>
                 <p className="mt-4 text-lg text-gray-500">
                   Send a huge 6&quot; x 9&quot; postcard to your friends and
