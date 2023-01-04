@@ -9,6 +9,8 @@ import {
   UseFormRegister,
 } from "react-hook-form";
 import Img from "./Img";
+import { ItemSizeOpts, SIZES } from "../utils/itemSize";
+import clsx from "clsx";
 
 // props interface using generics to pass in FormValues as FieldValues
 interface FileUploadProps<FormValues extends FieldValues> {
@@ -21,6 +23,7 @@ interface FileUploadProps<FormValues extends FieldValues> {
   getValues: any;
   setValue: any;
   errors: FieldErrorsImpl<FormValues>;
+  size?: ItemSizeOpts;
   children?: React.ReactNode;
 }
 
@@ -34,6 +37,7 @@ function FileUpload<FormValues extends FieldValues>({
   setValue,
   errors,
   children,
+  size,
 }: FileUploadProps<FormValues>) {
   const [status, setStatus] = useState("idle");
 
@@ -54,18 +58,21 @@ function FileUpload<FormValues extends FieldValues>({
       </label>
       <div className="flex items-center gap-3">
         <a
-          className="h-20 w-20 rounded-md hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+          className={clsx(
+            "hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2",
+            size ? SIZES[size].previewClassNames : "h-20 w-20"
+          )}
           href={url || "#"}
           target="_blank"
           rel="noreferrer"
         >
           {url && status !== "uploading" && (
             <Img
-              className="h-20 w-20 rounded-md"
+              className={size ? SIZES[size].previewClassNames : "h-20 w-20"}
               alt="Open file"
               src={url}
-              height={80}
-              width={80}
+              height={size ? SIZES[size].previewWidth : 80}
+              width={size ? SIZES[size].previewHeight : 80}
               autoCrop
             />
           )}

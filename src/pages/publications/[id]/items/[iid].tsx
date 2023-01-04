@@ -16,7 +16,11 @@ import Breadcrumbs from "../../../../components/Breadcrumbs";
 import SignIn from "../../../../components/SignIn";
 import LoadingLayout from "../../../../components/LoadingLayout";
 import Button from "../../../../components/Button";
-import { ItemSizeOpts, itemSizeToClient } from "../../../../utils/itemSize";
+import {
+  ItemSizeOpts,
+  itemSizeToClient,
+  SIZES,
+} from "../../../../utils/itemSize";
 
 export type ItemFormValues = {
   name: string;
@@ -212,39 +216,29 @@ const Item = () => {
                       getValues={getValues}
                       setValue={setValue}
                       errors={errors}
+                      size={watch("size")}
                     >
-                      {watch("size")} format PDF, PNG, or JPG per{" "}
-                      <a
-                        href="https://docs.google.com/document/d/1cIc0s2P8gMUaHxykxbzpsaK6U4AJHr0UdqjcRYp6xyc/edit?usp=sharing"
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-indigo-600 hover:text-indigo-500"
-                      >
-                        instructions
-                      </a>
+                      Must be exactly {SIZES[watch("size")].widthPx}px by{" "}
+                      {SIZES[watch("size")].heightPx}px in PDF, PNG, or JPG
+                      format
                     </FileUpload>
                   </div>
 
                   <div className="sm:col-span-3" id="back">
                     <FileUpload
                       id="back"
-                      label="Back"
+                      label="Back (address and message side)"
                       required
                       accept="application/pdf, image/png, image/jpeg"
                       register={register}
                       getValues={getValues}
                       setValue={setValue}
                       errors={errors}
+                      size={watch("size")}
                     >
-                      {watch("size")} format PDF, PNG, or JPG per{" "}
-                      <a
-                        href="https://docs.google.com/document/d/1cIc0s2P8gMUaHxykxbzpsaK6U4AJHr0UdqjcRYp6xyc/edit?usp=sharing"
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-indigo-600 hover:text-indigo-500"
-                      >
-                        instructions
-                      </a>
+                      Must be exactly {SIZES[watch("size")].widthPx}px by{" "}
+                      {SIZES[watch("size")].heightPx}px in PDF, PNG, or JPG
+                      format.
                     </FileUpload>
                   </div>
 

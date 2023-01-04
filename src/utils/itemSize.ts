@@ -17,6 +17,9 @@ export const SIZES = {
     textWidth: 650,
     textSize: 24,
     textMargin: 20,
+    previewClassNames: "w-[187.5px] h-[127.5px]",
+    previewWidth: 187.5,
+    previewHeight: 127.5,
   },
   "6x9": {
     widthPx: 2775,
@@ -25,6 +28,9 @@ export const SIZES = {
     textWidth: 975,
     textSize: 36,
     textMargin: 30,
+    previewClassNames: "w-[277.5px] h-[187.5px]",
+    previewWidth: 277.5,
+    previewHeight: 187.5,
   },
   "6x11": {
     widthPx: 3375,
@@ -33,5 +39,8 @@ export const SIZES = {
     textWidth: 975,
     textSize: 36,
     textMargin: 30,
+    previewClassNames: "w-[337.5px] h-[187.5px]",
+    previewWidth: 337.5,
+    previewHeight: 187.5,
   },
 };
