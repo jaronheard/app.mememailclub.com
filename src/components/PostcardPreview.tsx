@@ -106,19 +106,6 @@ export function PostcardPreview(props: {
           <span className="rounded-full absolute top-2 right-2 inline-flex items-center bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">
             Front
           </span>
-          {!props.hideAddressArea && (
-            <div
-              className={clsx(
-                "absolute right-3 bottom-3 flex place-items-center justify-center rounded-none border-2 border-dashed border-gray-300 bg-white/95 not-italic backdrop-blur-sm",
-                addressHeight,
-                addressWidth
-              )}
-            >
-              <span className="rounded-full inline-flex items-center bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">
-                Address & Postage Area
-              </span>
-            </div>
-          )}
         </div>
         <div
           className={clsx(
@@ -146,6 +133,19 @@ export function PostcardPreview(props: {
           <span className="rounded-full absolute top-2 right-2 inline-flex items-center bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">
             Back
           </span>
+          {!props.hideAddressArea && (
+            <div
+              className={clsx(
+                "absolute right-3 bottom-3 flex place-items-center justify-center rounded-none border-2 border-dashed border-gray-300 bg-white/95 not-italic backdrop-blur-sm",
+                addressHeight,
+                addressWidth
+              )}
+            >
+              <span className="rounded-full inline-flex items-center bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">
+                Address & Postage Area
+              </span>
+            </div>
+          )}
         </div>
         <div className="flex justify-between">
           <div className="flex flex-1 flex-col space-y-2 p-4">
