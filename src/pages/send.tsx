@@ -18,7 +18,7 @@ const PostcardGallery = () => {
             Let&apos;s get physical (mail)
           </p>
           <p className="mx-auto mt-5 max-w-xl text-xl text-gray-500">
-            All postcards are{" "}
+            Huge 6&quot;x9&quot; postcards are{" "}
             <span className="font-semibold text-indigo-600">only $1</span>{" "}
             printed and mailed to anywhere in the US!
           </p>
