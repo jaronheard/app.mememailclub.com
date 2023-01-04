@@ -92,7 +92,6 @@ export function PostcardPreview(props: {
               className="h-full w-full border-b border-gray-100 object-cover object-center sm:h-full sm:w-full"
               width={width}
               height={height}
-              text={(authed && message) || ""}
             />
           ) : (
             <img
@@ -120,6 +119,7 @@ export function PostcardPreview(props: {
               className="h-full w-full border-b border-gray-100 object-cover object-center sm:h-full sm:w-full"
               width={width}
               height={height}
+              text={(authed && message) || ""}
             />
           ) : (
             <img
