@@ -30,7 +30,7 @@ const Index = () => {
             <div className="-mr-48 pl-4 sm:pl-6 md:-mr-16 lg:relative lg:m-0 lg:h-full lg:px-0">
               <Img
                 className="rounded-xl w-full shadow-xl ring-1 ring-black ring-opacity-5 lg:absolute lg:left-0 lg:h-full lg:w-auto lg:max-w-none"
-                src="https://images.unsplash.com/photo-1557717398-f6a5f68cd158?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1625&q=80"
+                src="https://res.cloudinary.com/jaronheard/image/upload/v1672891693/mail/postcards_2_ywp9uz.png"
                 alt="Postcard sample"
                 width="900"
                 height="600"
@@ -62,7 +62,7 @@ const Index = () => {
               <div className="-ml-48 pr-4 sm:pr-6 md:-ml-16 lg:relative lg:m-0 lg:h-full lg:px-0">
                 <Img
                   className="rounded-xl w-full shadow-xl ring-1 ring-black ring-opacity-5 lg:absolute lg:right-0 lg:h-full lg:w-auto lg:max-w-none"
-                  src="https://images.unsplash.com/photo-1636971828014-0f3493cba88a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80"
+                  src="https://res.cloudinary.com/jaronheard/image/upload/v1672891829/mail/photo-1572044162444-ad60f128bdea_f7qimm.avif"
                   alt="Postcard sample"
                   width="900"
                   height="600"
