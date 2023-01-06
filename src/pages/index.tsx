@@ -3,6 +3,7 @@ import Img from "../components/Img";
 import Button from "../components/Button";
 import { useSession } from "next-auth/react";
 import ComingSoon from "../components/ComingSoon";
+import Link from "next/link";
 
 const Index = () => {
   return (
@@ -28,13 +29,15 @@ const Index = () => {
           </div>
           <div className="mt-12 sm:mt-16 lg:mt-0">
             <div className="-mr-48 pl-4 sm:pl-6 md:-mr-16 lg:relative lg:m-0 lg:h-full lg:px-0">
-              <Img
-                className="rounded-xl w-full shadow-xl ring-1 ring-black ring-opacity-5 lg:absolute lg:left-0 lg:h-full lg:w-auto lg:max-w-none"
-                src="https://res.cloudinary.com/jaronheard/image/upload/v1672891693/mail/postcards_2_ywp9uz.png"
-                alt="Postcard sample"
-                width="900"
-                height="600"
-              />
+              <Link href="/send">
+                <Img
+                  className="rounded-xl w-full shadow-xl ring-1 ring-black ring-opacity-5 lg:absolute lg:left-0 lg:h-full lg:w-auto lg:max-w-none"
+                  src="https://res.cloudinary.com/jaronheard/image/upload/v1672891693/mail/postcards_2_ywp9uz.png"
+                  alt="Postcard sample"
+                  width="900"
+                  height="600"
+                />
+              </Link>
             </div>
           </div>
         </div>
