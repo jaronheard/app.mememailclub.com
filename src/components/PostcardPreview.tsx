@@ -148,7 +148,7 @@ export function PostcardPreview(props: {
             </div>
           )}
         </div>
-        <div className="flex justify-between">
+        <div className="flex flex-col-reverse justify-between sm:flex-row">
           <div className="flex flex-1 flex-col space-y-2 p-4">
             <h3 className="text-sm font-medium text-gray-900">
               <a href={stripePaymentLinkWithMessage}>
