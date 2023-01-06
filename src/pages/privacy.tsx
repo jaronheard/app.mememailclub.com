@@ -67,6 +67,15 @@ const Privacy: NextPage = () => {
           with specific web browsers, it can be found at the browsers'
           respective websites.
         </p>
+        <h2>Google OAuth</h2>
+        <p>
+          Postpostcard's use and transfer to any other app of information
+          received from Google APIs will adhere to the{" "}
+          <a href="https://developers.google.com/terms/api-services-user-data-policy#additional_requirements_for_specific_api_scopes">
+            Google API Services User Data Policy
+          </a>
+          , including the Limited Use requirements.
+        </p>
         <h2>Children's Information</h2>
         <p>
           Another part of our priority is adding protection for children while
