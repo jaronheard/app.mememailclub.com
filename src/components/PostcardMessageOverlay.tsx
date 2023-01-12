@@ -98,7 +98,7 @@ export default function PostcardMessageOverlay(props: {
                             "border-gray-300": !errors.msg,
                           }
                         )}
-                        placeholder="Write something very sweet..."
+                        placeholder="If you don't know what to write, try writing about where you are and what's around you and go from there. You can also write about what you're doing, what you're thinking, or what you're feeling."
                       />
                     </div>
                   </div>
