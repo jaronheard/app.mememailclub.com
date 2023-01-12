@@ -193,9 +193,11 @@ const Img = ({
   );
 };
 
-// double escape special characters for cloudinary
+// double escape special characters and emoji for cloudinary
 const escape = (text: string): string => {
-  return encodeURIComponent(text.replace(/\,/g, "%2C").replace(/\//g, "%2F"));
+  return encodeURIComponent(
+    text.replace(/\,/g, "%2C").replace(/\//g, "%2F").replace(/\:/g, "%3A")
+  );
 };
 
 export default Img;
