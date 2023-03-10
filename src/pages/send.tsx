@@ -5,6 +5,7 @@ import { trpc } from "../utils/trpc";
 import { PostcardPreview } from "../components/PostcardPreview";
 import LoadingLayout from "../components/LoadingLayout";
 import { itemSizeToClient } from "../utils/itemSize";
+import Head from "next/head";
 
 const PostcardGallery = () => {
   const itemsQuery = trpc.useQuery(["items.getAll"]);
@@ -71,10 +72,16 @@ const Send = () => {
             imageUrl: session.user?.image,
           }}
         >
+          <Head>
+            <title>Send unique postcards - PostPostcard</title>
+          </Head>
           <PostcardGallery />
         </Layout>
       ) : (
         <Layout>
+          <Head>
+            <title>Send unique postcards - PostPostcard</title>
+          </Head>
           <PostcardGallery />
         </Layout>
       )}

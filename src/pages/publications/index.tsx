@@ -13,6 +13,7 @@ import SignIn from "../../components/SignIn";
 import Breadcrumbs from "../../components/Breadcrumbs";
 import LoadingLayout from "../../components/LoadingLayout";
 import Button from "../../components/Button";
+import Head from "next/head";
 
 const PublicationsEmpty = () => {
   return (
@@ -41,9 +42,10 @@ const PublicationsEmpty = () => {
       <div className="mt-6">
         <Link
           href="/publications/new"
-          className="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-
-          <PlusIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />New Postcard Collection
+          className="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+        >
+          <PlusIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
+          New Postcard Collection
         </Link>
       </div>
     </div>
@@ -76,8 +78,8 @@ const Publications = () => {
                   <li key={publication.id}>
                     <Link
                       href={`/publications/${publication.id}`}
-                      className="block hover:bg-gray-50">
-
+                      className="block hover:bg-gray-50"
+                    >
                       <div className="flex items-center px-4 py-4 sm:px-6">
                         <div className="flex min-w-0 flex-1 items-center">
                           <div className="flex-shrink-0">
@@ -165,7 +167,6 @@ const Publications = () => {
                           />
                         </div>
                       </div>
-
                     </Link>
                   </li>
                 ))}
@@ -198,10 +199,16 @@ const Home = () => {
             imageUrl: session.user.image,
           }}
         >
+          <Head>
+            <title>Create unique postcards - PostPostcard</title>
+          </Head>
           <Publications />
         </Layout>
       ) : (
         <Layout>
+          <Head>
+            <title>Create unique postcards - PostPostcard</title>
+          </Head>
           <SignIn />
           {/* <Publications /> */}
         </Layout>

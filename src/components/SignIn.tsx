@@ -1,9 +1,12 @@
 import { signIn } from "next-auth/react";
-import Img from "./Img";
+import Head from "next/head";
 
 export default function SignIn() {
   return (
     <>
+      <Head>
+        <title>Login or sign up - PostPostcard</title>
+      </Head>
       <div className="flex min-h-full flex-col justify-center sm:p-6 lg:p-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <div className="py-8 px-4 sm:px-10">
