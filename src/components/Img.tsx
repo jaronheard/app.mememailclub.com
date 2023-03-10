@@ -193,14 +193,9 @@ const Img = ({
   );
 };
 
-// double escape special characters for cloudinary
-const escape = (text: string): string => {
-  return encodeURIComponent(
-    text
-      .replace(/\,/g, "%2C")
-      .replace(/\//g, "%2F")
-      .replace(/\p{Emoji}/gu, "?") // TODO: imporve beyond replacing emojis with question marks
-  ); // '_–_–_');
-};
+// double escape all special characters
+function escape(text: string): string {
+  return encodeURIComponent(encodeURIComponent(text));
+}
 
 export default Img;
