@@ -362,9 +362,6 @@ const Layout = (props: LayoutProps) => {
               <span className="text-[#FC5825]">s</span>
               <span className="text-[#FE0760]">t</span>
               <span className="text-black">postcard</span>
-              {/* {props.title ||
-              navigation.find((item) => item.current)?.title ||
-              "Post-postcard"} */}
             </h1>
           </div>
         </header>
