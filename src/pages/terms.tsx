@@ -1,11 +1,15 @@
 /* eslint-disable react/no-unescaped-entities */
 import { NextPage } from "next";
+import Head from "next/head";
 import Layout from "../components/Layout";
 
 // simple terms of service page
 const Privacy: NextPage = () => {
   return (
     <Layout>
+      <Head>
+        <title>Terms and conditions - PostPostcard</title>
+      </Head>
       <div className="prose mx-auto">
         <h1>Website Terms and Conditions of Use</h1>
         <h2>1. Terms</h2>
