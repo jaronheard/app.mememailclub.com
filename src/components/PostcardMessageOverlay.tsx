@@ -88,7 +88,7 @@ export default function PostcardMessageOverlay(props: {
                     </Dialog.Title>
                     <div className="mt-2">
                       <textarea
-                        {...register("msg", { required: true })}
+                        {...register("msg", { required: false })}
                         autoComplete="off"
                         rows={6}
                         className={clsx(
