@@ -12,6 +12,7 @@ import { useRouter } from "next/router";
 import Img from "./Img";
 import { Sen } from "@next/font/google";
 import Banner from "./Banner";
+import Head from "next/head";
 
 const sen = Sen({
   variable: "--font-sen",
@@ -127,6 +128,10 @@ const Layout = (props: LayoutProps) => {
 
   return (
     <>
+      <Head>
+        <title>PostPostcard</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      </Head>
       <div className={clsx("min-h-full bg-yellow", sen.variable)}>
         <Disclosure
           as="nav"

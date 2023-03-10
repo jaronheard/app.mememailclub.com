@@ -29,6 +29,28 @@ export default function Document() {
         <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
         <meta name="msapplication-TileColor" content="#da532c" />
         <meta name="theme-color" content="#ffffff" />
+        <meta
+          name="description"
+          content="Send unusually large custom postcards to your friends, family & business connections using PostPostcard. All from your computer or smartphone."
+        />
+        <meta
+          name="keywords"
+          content="postcard, custom, online, photo, design, delivery"
+        />
+        <meta name="author" content="PostPostcard" />
+        <meta
+          property="og:title"
+          content="PostPostcard - Create and send custom postcards online"
+        />
+        <meta
+          property="og:description"
+          content="Send unusually large custom postcards to your friends, family & business connections using PostPostcard. All from your computer or smartphone."
+        />
+        <meta
+          property="og:image"
+          content="https://res.cloudinary.com/jaronheard/image/upload/q_auto,f_auto/c_fill,w_1200,h_630/mail/postcards_2_ywp9uz"
+        />
+        <meta property="og:url" content="https://postpostcard.com/" />
       </Head>
       <body className="h-full">
         <Main />
