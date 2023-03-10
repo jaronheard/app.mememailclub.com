@@ -130,6 +130,7 @@ const Layout = (props: LayoutProps) => {
     <>
       <Head>
         <title>PostPostcard</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Head>
       <div className={clsx("min-h-full bg-yellow", sen.variable)}>
         <Disclosure

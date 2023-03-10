@@ -9,22 +9,16 @@ import type { AppRouter } from "../server/router";
 import type { Session } from "next-auth";
 import "../styles/globals.css";
 import ChatwootWidget from "../components/Chatwoot";
-import Head from "next/head";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
   return (
-    <>
-      <Head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      </Head>
-      <SessionProvider session={session}>
-        <ChatwootWidget />
-        <Component {...pageProps} />
-      </SessionProvider>
-    </>
+    <SessionProvider session={session}>
+      <ChatwootWidget />
+      <Component {...pageProps} />
+    </SessionProvider>
   );
 };
 
