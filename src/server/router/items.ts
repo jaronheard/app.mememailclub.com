@@ -219,13 +219,11 @@ export const items = createRouter()
       const paymentLink = await stripe.paymentLinks.create({
         line_items: [{ price: product.default_price, quantity: 1 }],
         shipping_address_collection: { allowed_countries: ["US"] },
-        // TODO: redirect to custom success page
         after_completion: {
-          hosted_confirmation: {
-            custom_message:
-              "Thank you for your purchase! Your postcard will be shipped by USPS in 1-2 business days.",
+          type: "redirect",
+          redirect: {
+            url: "https://www.postpostcard.com/?bannerHeading=Your+postcard+is+on+its+way!+📮✨&bannerText=Send+another+for+just+$1!",
           },
-          type: "hosted_confirmation",
         },
       });
 
