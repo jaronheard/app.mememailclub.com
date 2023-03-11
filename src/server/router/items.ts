@@ -216,13 +216,18 @@ export const items = createRouter()
         });
       }
 
+      const bannerHeading = encodeURIComponent(
+        "Your postcard is on its way! 📮✨"
+      );
+      const bannerText = encodeURIComponent("Send another for just $1!");
+
       const paymentLink = await stripe.paymentLinks.create({
         line_items: [{ price: product.default_price, quantity: 1 }],
         shipping_address_collection: { allowed_countries: ["US"] },
         after_completion: {
           type: "redirect",
           redirect: {
-            url: "https://www.postpostcard.com/?bannerHeading=Your+postcard+is+on+its+way!+📮✨&bannerText=Send+another+for+just+$1!",
+            url: `${env.NEXT_PUBLIC_APP_URL}/send?bannerHeading=${bannerHeading}&bannerText=${bannerText}`,
           },
         },
       });
