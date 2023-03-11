@@ -1,4 +1,5 @@
-const url = "https://api.cloudinary.com/v1_1/jaronheard/auto/upload";
+export const CLOUDINARY_UPLOAD_API_URL =
+  "https://api.cloudinary.com/v1_1/jaronheard/auto/upload";
 
 export async function uploadFile(file: File) {
   const formData = new FormData();
@@ -7,7 +8,7 @@ export async function uploadFile(file: File) {
 
   // try to upload file
   try {
-    const response = await fetch(url, {
+    const response = await fetch(CLOUDINARY_UPLOAD_API_URL, {
       method: "POST",
       body: formData,
     });

@@ -9,6 +9,7 @@ import {
 } from "@lob/lob-typescript-sdk";
 import { env } from "../../env/server.mjs";
 import { itemSizeToDB } from "../../utils/itemSize";
+import { cloudinaryUrlBuilder } from "../../components/Img";
 
 const INCLUDE_PUBLICATION_FIELDS = {
   include: {
@@ -188,13 +189,17 @@ export const items = createRouter()
         });
       }
 
+      // cache preview images
+      const frontPreviewCached = cloudinaryUrlBuilder({ src: frontPreview });
+      const backPreviewCached = cloudinaryUrlBuilder({ src: backPreview });
+
       // stripe logic
       const product = await stripe.products.create({
         name: input.name || "Postcard",
         // active: input.status === "PUBLISHED",
         description: input.description || "By Post-postcard",
         statement_descriptor: `postcard: ${input.name.slice(0, 12)}`,
-        images: [frontPreview, backPreview],
+        images: [frontPreviewCached, backPreviewCached],
         // default item information
         shippable: true,
         tax_code: "txcd_35020200",
@@ -231,8 +236,8 @@ export const items = createRouter()
           description: input.description,
           front: input.front,
           back: input.back,
-          frontPreview: frontPreview,
-          backPreview: backPreview,
+          frontPreview: frontPreviewCached,
+          backPreview: backPreviewCached,
           status: input.status,
           stripeProductId: product.id,
           stripePaymentLink: paymentLink.url,
@@ -300,6 +305,10 @@ export const items = createRouter()
         });
       }
 
+      // cache preview images
+      const frontPreviewCached = cloudinaryUrlBuilder({ src: frontPreview });
+      const backPreviewCached = cloudinaryUrlBuilder({ src: backPreview });
+
       const item = await ctx.prisma.item.findUnique({
         where: {
           id: input.id,
@@ -323,7 +332,7 @@ export const items = createRouter()
         active: input.status === "PUBLISHED",
         description: input.description,
         statement_descriptor: `postcard: ${input.name.slice(0, 12)}`,
-        images: [frontPreview, backPreview],
+        images: [frontPreviewCached, backPreviewCached],
       });
 
       if (!product) {
@@ -344,8 +353,8 @@ export const items = createRouter()
           description: input.description,
           front: input.front,
           back: input.back,
-          frontPreview: frontPreview,
-          backPreview: backPreview,
+          frontPreview: frontPreviewCached,
+          backPreview: backPreviewCached,
           status: input.status,
           stripeProductId: product.id,
           postcardPreviewId: myPostcard.id,
