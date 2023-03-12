@@ -2,17 +2,16 @@ import { useSession } from "next-auth/react";
 import DefaultQueryCell from "../components/DefaultQueryCell";
 import Layout from "../components/Layout";
 import { trpc } from "../utils/trpc";
-import { PostcardPreview } from "../components/PostcardPreview";
 import LoadingLayout from "../components/LoadingLayout";
-import { itemSizeToClient } from "../utils/itemSize";
 import Head from "next/head";
+import { PostcardPreviewSimple } from "../components/PostcardPreviewSimple";
 
 const PostcardGallery = () => {
   const itemsQuery = trpc.useQuery(["items.getAll"]);
 
   return (
     <>
-      <div className="mx-auto max-w-7xl py-16 px-4 sm:py-24 sm:px-6 lg:px-8">
+      <div className="mx-auto my-16 max-w-7xl px-4 sm:my-24 sm:px-6 lg:px-8">
         <div className="text-center">
           <h2 className="text-lg font-semibold text-indigo-600">Postcards</h2>
           <p className="mt-1 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
@@ -33,18 +32,10 @@ const PostcardGallery = () => {
             <h2 className="sr-only">Products</h2>
             <div className="grid grid-cols-1 gap-y-4 sm:grid-cols-1 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-2 lg:gap-x-8">
               {items.map((item) => (
-                <PostcardPreview
+                <PostcardPreviewSimple
                   key={item.id}
-                  itemId={item.id}
-                  name={item.name}
-                  description={item.description}
                   front={item.front}
-                  back={item.back}
                   stripePaymentLink={item.stripePaymentLink}
-                  author={item.publication.author.name || "Anonymous"}
-                  optimizeImages={true}
-                  messages={item.Messages}
-                  size={itemSizeToClient(item.size)}
                 />
               ))}
             </div>
