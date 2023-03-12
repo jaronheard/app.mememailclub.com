@@ -37,6 +37,8 @@ const PostcardGallery = () => {
                 <PostcardPreviewSimple
                   key={item.id}
                   front={item.front}
+                  name={item.name}
+                  description={item.description}
                   stripePaymentLink={item.stripePaymentLink}
                 />
               ))}
