@@ -11,6 +11,8 @@ import { useState } from "react";
 const Send = () => {
   const { data: session, status } = useSession();
   const [open, setOpen] = useState(false);
+  const [itemId, setItemId] = useState(0);
+  const [itemLink, setItemLink] = useState("");
   const itemsQuery = trpc.useQuery(["items.getAll"]);
 
   if (status === "loading") {
@@ -33,7 +35,7 @@ const Send = () => {
         <Head>
           <title>Send unique postcards - PostPostcard</title>
         </Head>
-        <Slideover open={open} setOpen={setOpen}></Slideover>
+        <Slideover open={open} setOpen={setOpen} itemId={itemId} itemLink={itemLink}></Slideover>
         <div className="mx-auto my-8 max-w-7xl px-4 sm:my-12 sm:px-6 lg:px-8">
           <div className="text-center">
             <h2 className="text-lg font-semibold text-indigo-600">Postcards</h2>
@@ -62,7 +64,11 @@ const Send = () => {
                     front={item.front}
                     name={item.name}
                     description={item.description}
-                    onClick={() => setOpen(true)}
+                    onClick={() => {
+                      setItemId(item.id);
+                      setItemLink(item.stripePaymentLink);
+                      setOpen(true);
+                    }}
                   />
                 ))}
               </div>
