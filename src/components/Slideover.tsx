@@ -97,33 +97,33 @@ export default function Slideover(props: {
                           />
                         </div>
                       </div>
-                      <div className="relative mt-6 flex-1 px-4 sm:px-6">
+                      <div className="flex flex-shrink-0 justify-end px-4 py-4">
+                        <button
+                          type="button"
+                          className="rounded-md bg-postcard py-2 px-3 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:ring-gray-400"
+                          onClick={() => setOpen(false)}
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          type="submit"
+                          className="ml-4 inline-flex justify-center rounded-md bg-indigo-600 py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+                          onClick={handleSubmit((data) => {
+                            createMessage.mutate({
+                              message: data.msg,
+                              itemId: itemId,
+                              userId: session?.user
+                                ? session.user.id
+                                : "unregisted",
+                            });
+                          })}
+                        >
+                          Next
+                        </button>
+                      </div>
+                      <div className="relative flex-1 px-4 sm:px-6">
                         <Inspiration />
                       </div>
-                    </div>
-                    <div className="flex flex-shrink-0 justify-end px-4 py-4">
-                      <button
-                        type="button"
-                        className="rounded-md bg-postcard py-2 px-3 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:ring-gray-400"
-                        onClick={() => setOpen(false)}
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        type="submit"
-                        className="ml-4 inline-flex justify-center rounded-md bg-indigo-600 py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
-                        onClick={handleSubmit((data) => {
-                          createMessage.mutate({
-                            message: data.msg,
-                            itemId: itemId,
-                            userId: session?.user
-                              ? session.user.id
-                              : "unregisted",
-                          });
-                        })}
-                      >
-                        Next
-                      </button>
                     </div>
                   </div>
                 </Dialog.Panel>
