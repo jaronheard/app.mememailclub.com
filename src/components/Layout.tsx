@@ -118,6 +118,13 @@ const Layout = (props: LayoutProps) => {
       title: "Create postcards",
     },
     {
+      name: "About",
+      href: "/about",
+      Icon: null,
+      current: ["/about"].includes(router.asPath),
+      title: "Frequently asked questions",
+    },
+    {
       name: "FAQ",
       href: "/faq",
       Icon: null,
