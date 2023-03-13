@@ -15,7 +15,7 @@ const testimonials = [
         been invented yet. Then we'll invent music.`,
         author: {
           name: "Lauren Ireland",
-          handle: "https://twitter.com/_teen_witch_",
+          handle: "_teen_witch_",
           imageUrl:
             "https://pbs.twimg.com/profile_images/1520795109784174596/um-q70XZ_400x400.jpg",
         },
