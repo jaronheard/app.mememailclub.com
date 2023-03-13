@@ -30,9 +30,8 @@ export default function Slideover(props: {
   });
   const { open, setOpen, itemLink, itemId } = props;
   const createMessage = trpc.useMutation("messages.createMessage", {
-    onSuccess() {
-      // navigate to itemLink
-      router.push(itemLink);
+    onSuccess(message) {
+      router.push(`${itemLink}?client_reference_id=${message.id}`);
     },
   });
 
