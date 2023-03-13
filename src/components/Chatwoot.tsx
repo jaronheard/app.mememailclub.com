@@ -5,10 +5,10 @@ class ChatwootWidget extends React.Component {
     // Add Chatwoot Settings
     window.chatwootSettings = {
       hideMessageBubble: false,
-      position: "right", // This can be left or right
+      position: "left", // This can be left or right
       locale: "en", // Language to be set
-      type: "expanded_bubble", // [standard, expanded_bubble]
-      launcherTitle: "Support", // Title of the launcher
+      type: "standard", // [standard, expanded_bubble]
+      launcherTitle: "Help", // Title of the launcher
     };
 
     // Paste the script from inbox settings except the <script> tag

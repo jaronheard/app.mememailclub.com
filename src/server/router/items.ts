@@ -36,7 +36,7 @@ const testConfig: Configuration = new Configuration({
 });
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
-  apiVersion: "2022-08-01",
+  apiVersion: "2022-11-15",
 });
 
 export const items = createRouter()
@@ -197,7 +197,7 @@ export const items = createRouter()
       const product = await stripe.products.create({
         name: input.name || "Postcard",
         // active: input.status === "PUBLISHED",
-        description: input.description || "By Post-postcard",
+        description: `6"x9" postcard with your message`,
         statement_descriptor: `postcard: ${input.name.slice(0, 12)}`,
         images: [frontPreviewCached, backPreviewCached],
         // default item information
@@ -224,6 +224,11 @@ export const items = createRouter()
       const paymentLink = await stripe.paymentLinks.create({
         line_items: [{ price: product.default_price, quantity: 1 }],
         shipping_address_collection: { allowed_countries: ["US"] },
+        custom_text: {
+          shipping_address: {
+            message: "The shipping address is where we’ll send the postcard.",
+          },
+        },
         after_completion: {
           type: "redirect",
           redirect: {
@@ -333,7 +338,6 @@ export const items = createRouter()
       const product = await stripe.products.update(item.stripeProductId, {
         name: input.name,
         active: input.status === "PUBLISHED",
-        description: input.description,
         statement_descriptor: `postcard: ${input.name.slice(0, 12)}`,
         images: [frontPreviewCached, backPreviewCached],
       });
