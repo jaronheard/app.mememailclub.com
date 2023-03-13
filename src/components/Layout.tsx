@@ -75,7 +75,7 @@ function Footer() {
             <a
               key={item.name}
               href={item.href}
-              className="text-gray-400 hover:text-gray-500"
+              className="text-gray-500 hover:text-gray-900"
             >
               <span className="sr-only">{item.name}</span>
               <item.icon className="h-6 w-6" aria-hidden="true" />
@@ -83,7 +83,8 @@ function Footer() {
           ))}
         </div>
         <p className="mt-8 text-center text-base text-gray-400">
-          &copy; 2022 PostPostcard. All rights reserved.
+          Made with 💖 in Portland, OR, US.<br></br>&copy; 2023 PostPostcard.
+          All rights reserved.
         </p>
       </div>
     </footer>
