@@ -5,7 +5,7 @@ export function PostcardPreviewSimple(props: {
   front: string;
   name: string;
   description: string;
-  stripePaymentLink: string;
+  onClick: () => void;
   loadingState?: boolean;
 }): JSX.Element {
   const aspectRatio = "aspect-[925/625]";
@@ -13,9 +13,10 @@ export function PostcardPreviewSimple(props: {
     "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 9 6'%3E%3C/svg%3E";
 
   return (
-    <a
+    <div
+      role="button"
       className="group flex flex-col overflow-hidden rounded-lg"
-      href={props.stripePaymentLink}
+      onClick={props.onClick}
     >
       <div
         className={clsx(
@@ -40,6 +41,6 @@ export function PostcardPreviewSimple(props: {
         <p>$1</p>
       </div>
       <p className="mt-1 text-sm italic text-gray-400">{`6"x9" postcard w/ message and postage`}</p>
-    </a>
+    </div>
   );
 }

@@ -135,7 +135,7 @@ const Layout = (props: LayoutProps) => {
       <div className={clsx("min-h-full bg-yellow", sen.variable)}>
         <Disclosure
           as="nav"
-          className="fixed top-0 z-50 w-full bg-yellow lg:border-none"
+          className="fixed top-0 z-20 w-full bg-yellow lg:border-none"
         >
           {({ open }) => (
             <>
