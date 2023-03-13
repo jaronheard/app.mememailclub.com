@@ -10,7 +10,7 @@ import { itemSizeToClient } from "../../../utils/itemSize";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
   // https://github.com/stripe/stripe-node#configuration
-  apiVersion: "2022-08-01",
+  apiVersion: "2022-11-15",
 });
 
 const webhookSecret: string = process.env.STRIPE_WEBHOOK_SECRET || "";
