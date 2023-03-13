@@ -11,12 +11,13 @@ const testimonials = [
   [
     [
       {
-        body: "Over the last week I’ve had to explain to my kids what a postcard is, what a VCR is, and proclaim that I am older than the internet and cellphones. I’m not even 40 and I feel ancient.",
+        body: `Dear Lil Wayne, Hey. I hate it when my hands smell like pennies. Do you think we're too sad for each other? Last night I dreamed the richness of gasoline, ropes of hair, canvas, that dead bird. I mean almost everyone is lonely. Almost no one's amazing. I know--how about we ride into a time that hasn't
+        been invented yet. Then we'll invent music.`,
         author: {
-          name: "Stephen Sopp",
-          handle: "the_gunnshow",
+          name: "Lauren Ireland",
+          handle: "https://twitter.com/_teen_witch_",
           imageUrl:
-            "https://pbs.twimg.com/profile_images/1547329161403981825/9rW5tyvo_400x400.jpg",
+            "https://pbs.twimg.com/profile_images/1520795109784174596/um-q70XZ_400x400.jpg",
         },
       },
     ],
