@@ -22,6 +22,9 @@ const sen = Sen({
 
 const navigation = {
   main: [
+    { name: "About", href: "/about" },
+    { name: "FAQ", href: "/faq" },
+    { name: "Contact", href: "/contact" },
     { name: "Terms", href: "/terms" },
     { name: "Privacy Policy", href: "/privacy" },
   ],
@@ -108,7 +111,7 @@ const Layout = (props: LayoutProps) => {
       name: "Send",
       href: "/send",
       Icon: null,
-      current: ["/send"].includes(router.asPath),
+      current: router.asPath.includes("/send"),
       title: "Send postcards",
     },
     {
@@ -122,15 +125,8 @@ const Layout = (props: LayoutProps) => {
       name: "About",
       href: "/about",
       Icon: null,
-      current: ["/about"].includes(router.asPath),
-      title: "Frequently asked questions",
-    },
-    {
-      name: "FAQ",
-      href: "/faq",
-      Icon: null,
-      current: ["/faq"].includes(router.asPath),
-      title: "Frequently asked questions",
+      current: router.asPath.includes("/about"),
+      title: "About us",
     },
   ];
   const userNavigation = props.user
