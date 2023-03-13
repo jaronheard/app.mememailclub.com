@@ -108,7 +108,7 @@ const Layout = (props: LayoutProps) => {
       name: "Send",
       href: "/send",
       Icon: null,
-      current: ["/send"].includes(router.asPath),
+      current: router.asPath.includes("/send"),
       title: "Send postcards",
     },
     {
@@ -122,15 +122,22 @@ const Layout = (props: LayoutProps) => {
       name: "About",
       href: "/about",
       Icon: null,
-      current: ["/about"].includes(router.asPath),
-      title: "Frequently asked questions",
+      current: router.asPath.includes("/about"),
+      title: "About us",
     },
     {
       name: "FAQ",
       href: "/faq",
       Icon: null,
-      current: ["/faq"].includes(router.asPath),
+      current: router.asPath.includes("/faq"),
       title: "Frequently asked questions",
+    },
+    {
+      name: "Contact",
+      href: "/contact",
+      Icon: null,
+      current: router.asPath.includes("/contact"),
+      title: "Contact us",
     },
   ];
   const userNavigation = props.user
