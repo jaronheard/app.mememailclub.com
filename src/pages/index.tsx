@@ -21,7 +21,7 @@ const Index = () => {
                   family, and add a custom message. All without touching pen or
                   paper!
                 </p>
-                <div className="mt-6">
+                <div className="mt-6 text-right sm:text-left">
                   <Button href="/send">Send</Button>
                 </div>
               </div>
@@ -55,7 +55,7 @@ const Index = () => {
                     Create postcard designs that anyone can use. Share your
                     creativity with the world!
                   </p>
-                  <div className="mt-6">
+                  <div className="mt-6 text-right sm:text-left">
                     <Button href="/publications/new">Create</Button>
                   </div>
                 </div>
