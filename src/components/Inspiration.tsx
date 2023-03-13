@@ -1,10 +1,12 @@
+import Img from "./Img";
+
 const featuredTestimonial = {
   body: "Upstairs I stand by the microwave counting the seconds between the corn popping & reading a poem. The dining hall is quiet as a postcard.",
   author: {
     name: "Anis Mojgani",
-    handle: "mojgani",
+    link: "https://www.thepianofarm.com/",
     imageUrl:
-      "https://pbs.twimg.com/profile_images/1387534984299245568/CZv5DFzN_400x400.jpg",
+      "https://pbs.twimg.com/profile_images/1387534984299245568/CZv5DFzN_200x200.jpg",
   },
 };
 const testimonials = [
@@ -15,9 +17,8 @@ const testimonials = [
         been invented yet. Then we'll invent music.`,
         author: {
           name: "Lauren Ireland",
-          handle: "_teen_witch_",
-          imageUrl:
-            "https://pbs.twimg.com/profile_images/1520795109784174596/um-q70XZ_400x400.jpg",
+          link: "https://www.bylaurenireland.com/",
+          imageUrl: "http://magichelicopterpress.com/authors/lauren.jpg",
         },
       },
     ],
@@ -25,13 +26,15 @@ const testimonials = [
   [
     [
       {
-        body: `ME: MAYBE MY UNREASONABLY HIGH EXPECTATIONS ARE THE MOST CHARMING THING ABOUT ME!?
-        Also me: [Collapses in heap sobbing on floor when she doesn't get any mail that day.]`,
+        body: `You can only fit so many words in a postcard.
+        Only so many in a phone call, only so many into space before you forget that words are sometimes used for things other than filling emptiness.
+        It is hard to build a body out of words – I have tried.
+        We have both tried.`,
         author: {
-          name: "Ada Limón",
-          handle: "adalimon",
+          name: "Sarah Kay",
+          link: "https://kaysarahsera.com/",
           imageUrl:
-            "https://pbs.twimg.com/profile_images/1444056640702099458/CzMSXIL__400x400.jpg",
+            "https://t2.genius.com/unsafe/562x562/https%3A%2F%2Fimages.genius.com%2F58854fe0ac7ea68b791215617500488b.540x540x1.jpg",
         },
       },
       // More testimonials...
@@ -54,16 +57,21 @@ export default function Inspiration() {
               <p>{`“${featuredTestimonial.body}”`}</p>
             </blockquote>
             <figcaption className="flex items-center gap-x-4 border-t border-gray-900/10 py-4 px-6">
-              <img
+              <Img
                 className="rounded-full h-10 w-10 flex-none bg-gray-50"
                 src={featuredTestimonial.author.imageUrl}
                 alt=""
+                width={200}
+                height={200}
               />
               <div className="flex-auto">
                 <div className="font-semibold">
                   {featuredTestimonial.author.name}
                 </div>
-                <div className="text-gray-600">{`@${featuredTestimonial.author.handle}`}</div>
+                <a
+                  href={featuredTestimonial.author.link}
+                  className="text-indigo-600"
+                >{`Learn more`}</a>
               </div>
             </figcaption>
           </figure>
@@ -73,23 +81,28 @@ export default function Inspiration() {
                 <div key={columnIdx} className="space-y-8">
                   {column.map((testimonial) => (
                     <figure
-                      key={testimonial.author.handle}
+                      key={testimonial.author.name}
                       className="rounded-2xl bg-white p-6 shadow-lg ring-1 ring-gray-900/5"
                     >
                       <blockquote className="text-gray-900">
                         <p>{`“${testimonial.body}”`}</p>
                       </blockquote>
                       <figcaption className="mt-6 flex items-center gap-x-4">
-                        <img
+                        <Img
                           className="rounded-full h-10 w-10 bg-gray-50"
                           src={testimonial.author.imageUrl}
                           alt=""
+                          width={200}
+                          height={200}
                         />
                         <div>
                           <div className="font-semibold">
                             {testimonial.author.name}
                           </div>
-                          <div className="text-gray-600">{`@${testimonial.author.handle}`}</div>
+                          <a
+                            href={testimonial.author.link}
+                            className="text-indigo-600"
+                          >{`Learn more`}</a>
                         </div>
                       </figcaption>
                     </figure>
