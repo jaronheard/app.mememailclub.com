@@ -42,7 +42,7 @@ export default function SignIn() {
             </svg>
             <div className="relative mt-6 text-lg font-medium text-gray-900 md:flex-grow">
               <p className="relative">
-                To create or send postcards, use your Google Account to login.
+                To create postcards, use your Google Account to login.
               </p>
             </div>
             <p className="mt-6 text-sm font-medium text-gray-700">
