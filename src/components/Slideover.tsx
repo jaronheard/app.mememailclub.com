@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { trpc } from "../utils/trpc";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
+import Inspiration from "./Inspiration";
 
 export type PostcardMessageOverlayFormValues = {
   msg: string;
@@ -97,7 +98,7 @@ export default function Slideover(props: {
                         </div>
                       </div>
                       <div className="relative mt-6 flex-1 px-4 sm:px-6">
-                        {/* Your content */}
+                        <Inspiration />
                       </div>
                     </div>
                     <div className="flex flex-shrink-0 justify-end px-4 py-4">
