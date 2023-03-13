@@ -92,7 +92,7 @@ export default function Slideover(props: {
                                 "border-gray-300": !errors.msg,
                               }
                             )}
-                            placeholder="Stuck on what to write? Tell them where you are, what you’re doing, and how you feel. Make it personal!"
+                            placeholder="Dear recipient..."
                           />
                         </div>
                       </div>
