@@ -22,6 +22,9 @@ const sen = Sen({
 
 const navigation = {
   main: [
+    { name: "About", href: "/about" },
+    { name: "FAQ", href: "/faq" },
+    { name: "Contact", href: "/contact" },
     { name: "Terms", href: "/terms" },
     { name: "Privacy Policy", href: "/privacy" },
   ],
@@ -124,20 +127,6 @@ const Layout = (props: LayoutProps) => {
       Icon: null,
       current: router.asPath.includes("/about"),
       title: "About us",
-    },
-    {
-      name: "FAQ",
-      href: "/faq",
-      Icon: null,
-      current: router.asPath.includes("/faq"),
-      title: "Frequently asked questions",
-    },
-    {
-      name: "Contact",
-      href: "/contact",
-      Icon: null,
-      current: router.asPath.includes("/contact"),
-      title: "Contact us",
     },
   ];
   const userNavigation = props.user
