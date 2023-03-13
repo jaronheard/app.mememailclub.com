@@ -117,6 +117,13 @@ const Layout = (props: LayoutProps) => {
       current: router.asPath.includes("/publications"),
       title: "Create postcards",
     },
+    {
+      name: "FAQ",
+      href: "/faq",
+      Icon: null,
+      current: ["/faq"].includes(router.asPath),
+      title: "Frequently asked questions",
+    },
   ];
   const userNavigation = props.user
     ? [
