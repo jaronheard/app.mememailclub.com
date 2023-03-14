@@ -1,16 +1,15 @@
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/router";
-import { useState } from "react";
 
 export default function Banner() {
-  const [show, setShow] = useState(true);
   const router = useRouter();
   const { query } = router;
 
   const heading = query?.bannerHeading || "New here? Us too!";
   const text = query?.bannerText || 'Send a huge 6"x9" postcard for just $1!';
+  const showBanner = query?.bannerHeading || query?.bannerText;
 
-  if (!show) return null;
+  if (!showBanner) return null;
   else
     return (
       <div className="relative bg-indigo-600">
@@ -29,7 +28,6 @@ export default function Banner() {
               type="button"
               className="flex rounded-md p-2 hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-white"
               onClick={() => {
-                setShow(false);
                 router.replace(router.pathname, undefined, { shallow: true });
               }}
             >
