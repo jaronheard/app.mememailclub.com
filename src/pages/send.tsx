@@ -35,12 +35,17 @@ const Send = () => {
         <Head>
           <title>Send unique postcards - PostPostcard</title>
         </Head>
-        <Slideover open={open} setOpen={setOpen} itemId={itemId} itemLink={itemLink}></Slideover>
+        <Slideover
+          open={open}
+          setOpen={setOpen}
+          itemId={itemId}
+          itemLink={itemLink}
+        ></Slideover>
         <div className="mx-auto my-8 max-w-7xl px-4 sm:my-12 sm:px-6 lg:px-8">
           <div className="text-center">
             <h2 className="text-lg font-semibold text-indigo-600">Postcards</h2>
             <p className="mt-1 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
-              Let&apos;s get physical (mail)
+              All designs
             </p>
             <p className="mx-auto mt-5 max-w-xl text-xl text-gray-500">
               Send a 6&quot;x9&quot; postcard for{" "}

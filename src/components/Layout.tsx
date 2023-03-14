@@ -22,6 +22,7 @@ const sen = Sen({
 
 const navigation = {
   main: [
+    { name: "Home", href: "/" },
     { name: "About", href: "/about" },
     { name: "FAQ", href: "/faq" },
     { name: "Contact", href: "/contact" },
@@ -114,13 +115,13 @@ const Layout = (props: LayoutProps) => {
       current: router.asPath.includes("/send"),
       title: "Send postcards",
     },
-    {
-      name: "Create",
-      href: "/publications",
-      Icon: null,
-      current: router.asPath.includes("/publications"),
-      title: "Create postcards",
-    },
+    // {
+    //   name: "Create",
+    //   href: "/publications",
+    //   Icon: null,
+    //   current: router.asPath.includes("/publications"),
+    //   title: "Create postcards",
+    // },
     {
       name: "About",
       href: "/about",
@@ -366,8 +367,8 @@ const Layout = (props: LayoutProps) => {
           )}
         </Disclosure>
 
-        <main className="-mt-32">
-          <div className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
+        <main className="">
+          <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
             <Banner />
             <div className="rounded-lg bg-postcard px-5 py-6 drop-shadow-sm sm:px-6">
               {props.children}
