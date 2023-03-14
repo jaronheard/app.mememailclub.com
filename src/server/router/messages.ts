@@ -3,6 +3,29 @@ import { z } from "zod";
 import { createRouter } from "./context";
 
 export const messages = createRouter()
+  .mutation("createMessage", {
+    input: z.object({
+      message: z.string(),
+      userId: z.string(),
+      itemId: z.number(),
+    }),
+    async resolve({ ctx, input }) {
+      const message = await ctx.prisma.message.create({
+        data: {
+          message: input.message,
+          userId: input.userId,
+          itemId: input.itemId,
+        },
+      });
+      if (!message) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Message not created",
+        });
+      }
+      return message;
+    },
+  })
   .middleware(async ({ ctx, next }) => {
     // Any queries or mutations after this middleware will
     // raise an error unless there is a current session
@@ -45,29 +68,6 @@ export const messages = createRouter()
         },
       });
       return messages;
-    },
-  })
-  .mutation("createMessage", {
-    input: z.object({
-      message: z.string(),
-      userId: z.string(),
-      itemId: z.number(),
-    }),
-    async resolve({ ctx, input }) {
-      const message = await ctx.prisma.message.create({
-        data: {
-          message: input.message,
-          userId: input.userId,
-          itemId: input.itemId,
-        },
-      });
-      if (!message) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Message not created",
-        });
-      }
-      return message;
     },
   })
   .mutation("updateMessage", {

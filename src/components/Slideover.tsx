@@ -112,9 +112,9 @@ export default function Slideover(props: {
                             createMessage.mutate({
                               message: data.msg,
                               itemId: itemId,
-                              userId: session?.user
+                              userId: session?.user?.id
                                 ? session.user.id
-                                : "unregisted",
+                                : "unregistered",
                             });
                           })}
                         >
