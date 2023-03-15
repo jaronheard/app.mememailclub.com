@@ -13,8 +13,8 @@ function defineNextConfig(config) {
   return config;
 }
 
-export default defineNextConfig(
-  withAxiom({
+export default withAxiom(
+  defineNextConfig({
     reactStrictMode: true,
     swcMinify: true,
     images: {
