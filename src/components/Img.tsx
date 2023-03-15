@@ -65,10 +65,15 @@ export const cloudinaryUrlBuilder = ({
 
 // params of text, type string, and size of type itemSizeOpts with default value of "4x6"
 
-export function textTransformations(
+export function messageTransformation(
   text: string,
   size: ItemSizeOpts = "4x6"
 ): TransformerOption {
+  const textWithBranding = text
+    ? text +
+      "\n\n                                                Sent from postpostcard.com"
+    : "";
+
   return {
     background: "white",
     border: `${SIZES[size].textMargin}px_solid_white`,
@@ -82,7 +87,7 @@ export function textTransformations(
     },
     flags: "layer_apply",
     // overlay: `text:${textStyle}:${text}`,
-    overlay: `text:Futura_${SIZES[size].textSize}:${escape(text)}`,
+    overlay: `text:Futura_${SIZES[size].textSize}:${escape(textWithBranding)}`,
   };
 }
 
@@ -104,7 +109,7 @@ export function addTextTransformationToURL({
   }
 
   const chaining = text
-    ? [textTransformations(text, size), { ...(restTransformations || {}) }]
+    ? [messageTransformation(text, size), { ...(restTransformations || {}) }]
     : [{ ...(restTransformations || {}) }];
 
   // add chaining to options.transforations
@@ -165,7 +170,7 @@ const Img = ({
                         width: params.width,
                       },
                     },
-                    textTransformations(text, "4x6"), // TODO: make this dynamic
+                    messageTransformation(text, "4x6"), // TODO: make this dynamic
                     { ...(restTransformations || {}) },
                   ]
                 : [

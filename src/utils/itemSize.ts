@@ -20,6 +20,12 @@ export const SIZES = {
     previewClassNames: "w-[187.5px] h-[127.5px]",
     previewWidth: 187.5,
     previewHeight: 127.5,
+    // not reviewed
+    brandingTextX: 75,
+    brandingTextY: 75,
+    brandingTextWidth: 975,
+    brandingTextSize: 36,
+    brandingTextMargin: 30,
   },
   "6x9": {
     widthPx: 2775,
@@ -31,6 +37,11 @@ export const SIZES = {
     previewClassNames: "w-[277.5px] h-[187.5px]",
     previewWidth: 277.5,
     previewHeight: 187.5,
+    brandingTextX: 75,
+    brandingTextY: 75,
+    brandingTextWidth: 975,
+    brandingTextSize: 36,
+    brandingTextMargin: 30,
   },
   "6x11": {
     widthPx: 3375,
@@ -42,5 +53,11 @@ export const SIZES = {
     previewClassNames: "w-[337.5px] h-[187.5px]",
     previewWidth: 337.5,
     previewHeight: 187.5,
+    // not reviewed
+    brandingTextX: 75,
+    brandingTextY: 75,
+    brandingTextWidth: 975,
+    brandingTextSize: 36,
+    brandingTextMargin: 30,
   },
 };
