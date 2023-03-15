@@ -99,6 +99,8 @@ export const lob = createRouter()
           })
         : item.back;
 
+      console.log("backWithText", backWithText);
+
       const postcardCreate = new PostcardEditable({
         to: input.addressId,
         front: item.front,

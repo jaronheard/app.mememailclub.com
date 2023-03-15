@@ -76,19 +76,13 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
         const checkoutSession = event.data.object as Stripe.Checkout.Session;
         console.log(`🔔 Checkout Session completed: ${checkoutSession.id}`);
         const addressDetails = {
-          // @ts-ignore - Stripe types are wrong
-          name: checkoutSession.shipping.name || "",
-          // @ts-ignore - Stripe types are wrong
-          address_line1: checkoutSession.shipping?.address?.line1 || "",
-          // @ts-ignore - Stripe types are wrong
-          address_line2: checkoutSession.shipping?.address?.line2 || "",
-          // @ts-ignore - Stripe types are wrong
-          address_city: checkoutSession.shipping?.address?.city || "",
-          // @ts-ignore - Stripe types are wrong
-          address_state: checkoutSession.shipping?.address?.state || "",
-          // @ts-ignore - Stripe types are wrong
-          address_zip: checkoutSession.shipping?.address?.postal_code || "",
-          // address_country: checkoutSession.shipping_details?.address?.country || "",
+          name: checkoutSession.shipping_details?.name || "",
+          address_line1: checkoutSession.shipping_details?.address?.line1 || "",
+          address_line2: checkoutSession.shipping_details?.address?.line2 || "",
+          address_city: checkoutSession.shipping_details?.address?.city || "",
+          address_state: checkoutSession.shipping_details?.address?.state || "",
+          address_zip:
+            checkoutSession.shipping_details?.address?.postal_code || "",
         };
 
         // get lob address
