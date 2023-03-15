@@ -13,7 +13,7 @@ import clsx from "clsx";
 
 function Hero() {
   return (
-    <div className="relative lg:-mt-16 ">
+    <section id="hero" className="relative lg:-mt-16 ">
       <div className="mx-auto max-w-7xl lg:grid lg:grid-cols-12 lg:gap-x-8 lg:px-8">
         <div className="px-6 pt-10 pb-24 sm:pb-32 lg:col-span-7 lg:px-0 lg:pt-48 lg:pb-56 xl:col-span-6">
           <div className="mx-auto max-w-2xl lg:mx-0">
@@ -51,7 +51,7 @@ function Hero() {
                 Get started
               </Link>
               <a
-                href="#"
+                href="#features"
                 className="text-sm font-semibold leading-6 text-gray-900"
               >
                 Learn more <span aria-hidden="true">→</span>
@@ -72,7 +72,7 @@ function Hero() {
           />
         </Link>
       </div>
-    </div>
+    </section>
   );
 }
 
@@ -106,7 +106,7 @@ const features = [
 
 function Features() {
   return (
-    <div className="mx-auto max-w-7xl px-6 lg:px-8">
+    <section id="features" className="mx-auto max-w-7xl px-6 lg:px-8">
       <div className="py-24 sm:py-32">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="mx-auto max-w-2xl lg:text-center">
@@ -156,13 +156,13 @@ function Features() {
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 
 function Testimonial() {
   return (
-    <section className="lg:p-x8 py-24 px-6 sm:py-32">
+    <section id="testimonial" className="lg:p-x8 py-24 px-6 sm:py-32">
       <figure className="mx-auto max-w-2xl">
         <p className="sr-only">5 out of 5 stars</p>
         <div className="flex gap-x-1 text-indigo-600">
@@ -200,7 +200,7 @@ function Testimonial() {
 
 function CTA() {
   return (
-    <div className="">
+    <section id="cta">
       <div className="py-24 px-6 sm:px-6 sm:py-32 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
@@ -222,7 +222,7 @@ function CTA() {
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 
