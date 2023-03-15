@@ -1,9 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 import { Disclosure } from "@headlessui/react";
 import { MinusSmallIcon, PlusSmallIcon } from "@heroicons/react/20/solid";
-import { NextPage } from "next";
-import Head from "next/head";
-import Layout from "../components/Layout";
 
 const faqs = [
   {
