@@ -1,3 +1,4 @@
+import { withAxiom } from "next-axiom";
 import { env } from "./src/env/server.mjs";
 
 /**
@@ -12,18 +13,20 @@ function defineNextConfig(config) {
   return config;
 }
 
-export default defineNextConfig({
-  reactStrictMode: true,
-  swcMinify: true,
-  images: {
-    domains: ["res.cloudinary.com", "lob-assets.com", "images.unsplash.com"],
-  },
-  // Next.js i18n docs: https://nextjs.org/docs/advanced-features/i18n-routing
-  // i18n: {
-  //   locales: ["en"],
-  //   defaultLocale: "en",
-  // },
-  async redirects() {
-    return [];
-  },
-});
+export default defineNextConfig(
+  withAxiom({
+    reactStrictMode: true,
+    swcMinify: true,
+    images: {
+      domains: ["res.cloudinary.com", "lob-assets.com", "images.unsplash.com"],
+    },
+    // Next.js i18n docs: https://nextjs.org/docs/advanced-features/i18n-routing
+    // i18n: {
+    //   locales: ["en"],
+    //   defaultLocale: "en",
+    // },
+    async redirects() {
+      return [];
+    },
+  })
+);
