@@ -31,9 +31,6 @@ export function PostcardPreviewSimple(props: {
             className="h-full w-full object-cover object-center"
             fill
           />
-          <span className="rounded-full absolute top-2 right-2 inline-flex items-center bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">
-            Front
-          </span>
         </div>
       </div>
       <div className="mt-4 flex items-center justify-between text-base font-medium text-gray-900">
