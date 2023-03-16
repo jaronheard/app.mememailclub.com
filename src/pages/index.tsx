@@ -174,8 +174,8 @@ function Testimonial() {
         </div>
         <blockquote className="mt-10 text-xl font-semibold leading-8 tracking-tight text-gray-900 sm:text-2xl sm:leading-9">
           <p>
-            “The email postcard that Jaron sent me using PostPostcard is my
-            favorite thing on my fridge! It&apos;s so big!”
+            {`Love the email postcard Jaron sent me... it's my
+            favorite thing on my fridge! It's more than an email, it's a piece of art!”`}
           </p>
         </blockquote>
         <figcaption className="mt-10 flex items-center gap-x-6">
