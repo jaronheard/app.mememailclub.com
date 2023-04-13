@@ -201,6 +201,7 @@ const Home = () => {
         >
           <Head>
             <title>Create unique postcards - PostPostcard</title>
+            <meta name="robots" content="noindex,nofollow" />
           </Head>
           <Publications />
         </Layout>
@@ -208,6 +209,7 @@ const Home = () => {
         <Layout>
           <Head>
             <title>Create unique postcards - PostPostcard</title>
+            <meta name="robots" content="noindex,nofollow" />
           </Head>
           <SignIn />
           {/* <Publications /> */}
