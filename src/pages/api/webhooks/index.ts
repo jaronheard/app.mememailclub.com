@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-import { buffer } from "micro";
 import Cors from "micro-cors";
 import { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
@@ -7,6 +5,7 @@ import { appRouter } from "../../../server/router";
 import { prisma } from "../../../server/db/client";
 import { RequestHandler } from "next/dist/server/next";
 import { itemSizeToClient } from "../../../utils/itemSize";
+import type { Readable } from "node:stream";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
   // https://github.com/stripe/stripe-node#configuration
@@ -25,6 +24,14 @@ export const config = {
 const cors = Cors({
   allowMethods: ["POST", "HEAD"],
 });
+
+async function buffer(readable: Readable) {
+  const chunks = [];
+  for await (const chunk of readable) {
+    chunks.push(typeof chunk === "string" ? Buffer.from(chunk) : chunk);
+  }
+  return Buffer.concat(chunks);
+}
 
 const caller = appRouter.createCaller({ session: null, prisma: prisma });
 
