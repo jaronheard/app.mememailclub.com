@@ -13,6 +13,7 @@ export type PostcardMessageOverlayFormValues = {
 };
 
 const countLines = (msg: string) => {
+  // currently uses 30 characters for max line length
   // split the message based on manual newlines
   const msgSplitByNewlines = msg.split(/\r\n|\r|\n/);
   const msgLinesByLine = msgSplitByNewlines.map((line) => {
