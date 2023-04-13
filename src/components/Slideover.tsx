@@ -12,6 +12,48 @@ export type PostcardMessageOverlayFormValues = {
   msg: string;
 };
 
+const countLines = (msg: string) => {
+  // currently uses 30 characters for max line length
+  // split the message based on manual newlines
+  const msgSplitByNewlines = msg.split(/\r\n|\r|\n/);
+  const msgLinesByLine = msgSplitByNewlines.map((line) => {
+    // split each line into chunks of 30 characters
+    const chunks = line.match(/.{1,30}/g);
+    // count the number of chunks (or 1 if there are no chunks)
+    const chunkCount = chunks?.length || 1;
+    // return the number of chunks
+    return chunkCount;
+  });
+  // count the number of lines
+  const linesCount = msgLinesByLine.reduce((a, b) => a + b, 0);
+  return linesCount;
+};
+
+const ProgressBar = ({
+  progressPercentage,
+}: {
+  progressPercentage: number;
+}) => {
+  // limit progress percentage to 100
+  progressPercentage = Math.min(progressPercentage, 100);
+  // set the progress bar color based on progress percentage thresholds (70%, 80%, 90%, 95%)
+  const progressBarColor = clsx({
+    "bg-gray-200": progressPercentage < 90,
+    "bg-red-200": progressPercentage >= 90 && progressPercentage < 95,
+    "bg-red-300": progressPercentage >= 95 && progressPercentage < 100,
+    "bg-red-500": progressPercentage >= 100,
+  });
+
+  return (
+    <div className="h-1 w-full bg-gray-100">
+      <div
+        style={{ width: `${progressPercentage}%` }}
+        className={`h-full ${progressBarColor}`}
+      ></div>
+    </div>
+  );
+};
+
 export default function Slideover(props: {
   open: boolean;
   setOpen: (open: boolean) => void;
@@ -20,15 +62,18 @@ export default function Slideover(props: {
 }) {
   const router = useRouter();
   const { data: session } = useSession();
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<PostcardMessageOverlayFormValues>({
-    defaultValues: {
-      msg: "",
-    },
-  });
+  const { register, watch, handleSubmit } =
+    useForm<PostcardMessageOverlayFormValues>({
+      defaultValues: {
+        msg: "",
+      },
+    });
+
+  const linesCount = countLines(watch("msg"));
+  const tooManyLines = linesCount > 30;
+  const lineTooLong = watch("msg").match(/\S{30,}/g)?.length;
+  const hasError = tooManyLines || lineTooLong;
+
   const { open, setOpen, itemLink, itemId } = props;
   const createMessage = trpc.useMutation("messages.createMessage", {
     onSuccess(message) {
@@ -83,43 +128,65 @@ export default function Slideover(props: {
                         </div>
                         <div className="mt-2">
                           <textarea
-                            {...register("msg", { required: false })}
+                            {...register("msg", { required: true })}
                             autoComplete="off"
                             rows={8}
                             className={clsx(
-                              "block w-full rounded-md border p-3 shadow-sm placeholder:text-gray-300  focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
+                              "block w-full rounded-md border p-3 shadow-sm placeholder:text-gray-300 sm:text-sm",
                               {
-                                "border-red-300": errors.msg,
-                                "border-gray-300": !errors.msg,
+                                "focus:border-red-500 focus:ring-red-500":
+                                  hasError,
+                                "focus:border-indigo-500 focus:ring-indigo-500":
+                                  !hasError,
                               }
                             )}
                             placeholder="Dear recipient..."
                           />
                         </div>
+                        <div className="my-2">
+                          <ProgressBar
+                            progressPercentage={(linesCount / 30) * 100}
+                          />
+                        </div>
                       </div>
-                      <div className="flex flex-shrink-0 justify-end px-4 py-4">
-                        <button
-                          type="button"
-                          className="rounded-md bg-postcard py-2 px-3 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:ring-gray-400"
-                          onClick={() => setOpen(false)}
-                        >
-                          Cancel
-                        </button>
-                        <button
-                          type="submit"
-                          className="ml-4 inline-flex justify-center rounded-md bg-indigo-600 py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
-                          onClick={handleSubmit((data) => {
-                            createMessage.mutate({
-                              message: data.msg,
-                              itemId: itemId,
-                              userId: session?.user?.id
-                                ? session.user.id
-                                : "unregistered",
-                            });
-                          })}
-                        >
-                          Next
-                        </button>
+                      <div className="flex flex-shrink-0 justify-between px-4 py-4">
+                        <div className="py-2 px-3">
+                          {lineTooLong && (
+                            <div className="text-sm text-red-500">
+                              Some lines are too long
+                            </div>
+                          )}
+                          {tooManyLines && (
+                            <div className="text-sm text-red-500">
+                              Message is too long
+                            </div>
+                          )}
+                        </div>
+                        <div>
+                          <button
+                            type="button"
+                            className="rounded-md bg-postcard py-2 px-3 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:ring-gray-400"
+                            onClick={() => setOpen(false)}
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            disabled={!!hasError || !watch("msg")}
+                            type="submit"
+                            className="ml-4 inline-flex justify-center rounded-md bg-indigo-600 py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:bg-gray-300"
+                            onClick={handleSubmit((data) => {
+                              createMessage.mutate({
+                                message: data.msg,
+                                itemId: itemId,
+                                userId: session?.user?.id
+                                  ? session.user.id
+                                  : "unregistered",
+                              });
+                            })}
+                          >
+                            Next
+                          </button>
+                        </div>
                       </div>
                       <div className="relative flex-1 px-4 sm:px-6">
                         <Inspiration />
