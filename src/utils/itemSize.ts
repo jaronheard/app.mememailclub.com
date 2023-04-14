@@ -26,6 +26,10 @@ export const SIZES = {
     brandingTextWidth: 975,
     brandingTextSize: 36,
     brandingTextMargin: 30,
+    qrHeight: 94,
+    qrWidth: 82,
+    qrX: 75,
+    qrY: 75,
   },
   "6x9": {
     widthPx: 2775,
@@ -42,6 +46,10 @@ export const SIZES = {
     brandingTextWidth: 975,
     brandingTextSize: 36,
     brandingTextMargin: 30,
+    qrHeight: 94,
+    qrWidth: 82,
+    qrX: 75,
+    qrY: 75,
   },
   "6x11": {
     widthPx: 3375,
@@ -59,5 +67,9 @@ export const SIZES = {
     brandingTextWidth: 975,
     brandingTextSize: 36,
     brandingTextMargin: 30,
+    qrHeight: 94,
+    qrWidth: 82,
+    qrX: 75,
+    qrY: 75,
   },
 };

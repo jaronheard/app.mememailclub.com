@@ -91,6 +91,23 @@ export function messageTransformation(
   };
 }
 
+export function qrStampTransformation(
+  size: ItemSizeOpts = "4x6"
+): TransformerOption {
+  return {
+    resize: {
+      type: "fit",
+      width: SIZES[size].textWidth,
+    },
+    gravity: "north_west",
+    position: {
+      x: SIZES[size].qrX,
+      y: SIZES[size].qrY,
+    },
+    overlay: `stamps_agnmdx`,
+  };
+}
+
 export function addTextTransformationToURL({
   src,
   options = { cloud: CLOUD_OPTIONS },
@@ -109,7 +126,11 @@ export function addTextTransformationToURL({
   }
 
   const chaining = text
-    ? [messageTransformation(text, size), { ...(restTransformations || {}) }]
+    ? [
+        messageTransformation(text, size),
+        qrStampTransformation(size),
+        { ...(restTransformations || {}) },
+      ]
     : [{ ...(restTransformations || {}) }];
 
   // add chaining to options.transforations
