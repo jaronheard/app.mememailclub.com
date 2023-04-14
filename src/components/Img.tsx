@@ -69,10 +69,10 @@ export function messageTransformation(
   text: string,
   size: ItemSizeOpts = "4x6"
 ): TransformerOption {
-  const textWithBranding = text
-    ? text +
-      "\n\n                                                Sent from postpostcard.com"
-    : "";
+  // const textWithBranding = text
+  //   ? text +
+  //     "\n\n                                                Sent from postpostcard.com"
+  //   : "";
 
   return {
     background: "white",
@@ -87,7 +87,7 @@ export function messageTransformation(
     },
     flags: "layer_apply",
     // overlay: `text:${textStyle}:${text}`,
-    overlay: `text:Futura_${SIZES[size].textSize}:${escape(textWithBranding)}`,
+    overlay: `text:Futura_${SIZES[size].textSize}:${escape(text)}`,
   };
 }
 
@@ -97,14 +97,15 @@ export function qrStampTransformation(
   return {
     resize: {
       type: "fit",
-      width: SIZES[size].textWidth,
+      width: SIZES[size].qrWidth,
+      height: SIZES[size].qrHeight,
     },
-    gravity: "north_west",
+    gravity: "north_east",
     position: {
       x: SIZES[size].qrX,
       y: SIZES[size].qrY,
     },
-    overlay: `stamps_agnmdx`,
+    overlay: `postpostcard_stamp_rtny1a`,
   };
 }
 
