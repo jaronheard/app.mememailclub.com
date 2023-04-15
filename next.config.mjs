@@ -26,7 +26,13 @@ export default withAxiom(
     //   defaultLocale: "en",
     // },
     async redirects() {
-      return [];
+      return [
+        {
+          source: "/qr",
+          destination: "/",
+          permanent: true,
+        },
+      ];
     },
   })
 );
