@@ -29,7 +29,8 @@ export default withAxiom(
       return [
         {
           source: "/qr",
-          destination: "/",
+          destination:
+            "/?utm_campaign=qr+stamp&utm_source=postcard&utm_medium=qr",
           permanent: true,
         },
       ];
