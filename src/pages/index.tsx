@@ -37,7 +37,7 @@ function Hero() {
               </div>
             </div>
             <h1 className="mt-24 text-4xl font-bold tracking-tight text-gray-900 sm:mt-10 sm:text-6xl">
-              Get weird with postcards
+              Big postcard energy
             </h1>
             <p className="mt-6 text-lg leading-8 text-gray-600">
               Send a huge 6&quot; x 9&quot; postcard to your friends and family,
