@@ -7,6 +7,7 @@ import { trpc } from "../utils/trpc";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import Inspiration from "./Inspiration";
+import { trackGoal } from "fathom-client";
 
 export type PostcardMessageOverlayFormValues = {
   msg: string;
@@ -182,6 +183,7 @@ export default function Slideover(props: {
                                   ? session.user.id
                                   : "unregistered",
                               });
+                              trackGoal("GMZEE6ZN", 0);
                             })}
                           >
                             Next

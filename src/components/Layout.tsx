@@ -13,6 +13,7 @@ import Img from "./Img";
 import { Sen } from "@next/font/google";
 import Banner from "./Banner";
 import Head from "next/head";
+import { trackGoal } from "fathom-client";
 
 const sen = Sen({
   variable: "--font-sen",
@@ -114,6 +115,7 @@ const Layout = (props: LayoutProps) => {
       Icon: null,
       current: router.asPath.includes("/send"),
       title: "Send postcards",
+      onClick: () => trackGoal("K2RFAJRG", 0),
     },
     // {
     //   name: "Create",
@@ -128,6 +130,7 @@ const Layout = (props: LayoutProps) => {
       Icon: null,
       current: router.asPath.includes("/about"),
       title: "About us",
+      onClick: () => null,
     },
   ];
   const userNavigation = props.user
@@ -199,6 +202,7 @@ const Layout = (props: LayoutProps) => {
                               "rounded-md py-2 px-3 text-sm font-bold"
                             )}
                             aria-current={item.current ? "page" : undefined}
+                            onClick={item.onClick}
                           >
                             {/* <item.Icon
                             className="mr-1.5 inline-block h-5 w-5 flex-shrink-0"
@@ -307,6 +311,7 @@ const Layout = (props: LayoutProps) => {
                         "block rounded-md py-2 px-3 text-base font-bold"
                       )}
                       aria-current={item.current ? "page" : undefined}
+                      onClick={item.onClick}
                     >
                       {item.name}
                     </Disclosure.Button>

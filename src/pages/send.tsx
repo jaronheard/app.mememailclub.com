@@ -7,6 +7,7 @@ import Head from "next/head";
 import { PostcardPreviewSimple } from "../components/PostcardPreviewSimple";
 import Slideover from "../components/Slideover";
 import { useState } from "react";
+import { trackGoal } from "fathom-client";
 
 const Send = () => {
   const { data: session, status } = useSession();
@@ -90,6 +91,7 @@ const Send = () => {
                       setItemId(item.id);
                       setItemLink(item.stripePaymentLink);
                       setOpen(true);
+                      trackGoal("1WFW5D7J", 0);
                     }}
                   />
                 ))}
