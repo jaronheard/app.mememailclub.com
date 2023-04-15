@@ -9,11 +9,27 @@ import type { AppRouter } from "../server/router";
 import type { Session } from "next-auth";
 import "../styles/globals.css";
 import ChatwootWidget from "../components/Chatwoot";
+import { Router } from "next/router";
+import * as Fathom from "fathom-client";
+import { useEffect } from "react";
+
+// Record a pageview when route changes
+Router.events.on("routeChangeComplete", (as, routeProps) => {
+  if (!routeProps.shallow) {
+    Fathom.trackPageview();
+  }
+});
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
+  // Initialize Fathom when the app loads
+  useEffect(() => {
+    Fathom.load("NIXBEPED", {
+      includedDomains: ["postpostcard.com", "www.postpostcard.com"],
+    });
+  }, []);
   return (
     <SessionProvider session={session}>
       <ChatwootWidget />

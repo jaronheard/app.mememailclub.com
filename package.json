@@ -33,6 +33,7 @@
     "cloudinary-build-url": "^0.2.4",
     "clsx": "^1.2.1",
     "date-fns": "^2.29.3",
+    "fathom-client": "^3.5.0",
     "md5": "^2.3.0",
     "micro-cors": "^0.1.1",
     "next": "^13.0.2",
