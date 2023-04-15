@@ -105,7 +105,7 @@ export function qrStampTransformation(
       x: SIZES[size].qrX,
       y: SIZES[size].qrY,
     },
-    overlay: `postpostcard_stamp_rtny1a`,
+    overlay: `stamp-QR_hifa4z`,
   };
 }
 
