@@ -11,6 +11,11 @@ import { env } from "../../env/server.mjs";
 import { itemSizeToDB } from "../../utils/itemSize";
 import { cloudinaryUrlBuilder } from "../../components/Img";
 
+export const bannerHeading = encodeURIComponent(
+  "Your postcard is on its way! 📮✨"
+);
+export const bannerText = encodeURIComponent("Send another for just $1!");
+
 const INCLUDE_PUBLICATION_FIELDS = {
   include: {
     publication: {
@@ -215,11 +220,6 @@ export const items = createRouter()
           message: "Stripe product creation failed",
         });
       }
-
-      const bannerHeading = encodeURIComponent(
-        "Your postcard is on its way! 📮✨"
-      );
-      const bannerText = encodeURIComponent("Send another for just $1!");
 
       const paymentLink = await stripe.paymentLinks.create({
         line_items: [{ price: product.default_price, quantity: 1 }],
