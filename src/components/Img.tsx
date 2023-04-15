@@ -69,10 +69,10 @@ export function messageTransformation(
   text: string,
   size: ItemSizeOpts = "4x6"
 ): TransformerOption {
-  const textWithBranding = text
-    ? text +
-      "\n\n                                                Sent from postpostcard.com"
-    : "";
+  // const textWithBranding = text
+  //   ? text +
+  //     "\n\n                                                Sent from postpostcard.com"
+  //   : "";
 
   return {
     background: "white",
@@ -87,7 +87,25 @@ export function messageTransformation(
     },
     flags: "layer_apply",
     // overlay: `text:${textStyle}:${text}`,
-    overlay: `text:Futura_${SIZES[size].textSize}:${escape(textWithBranding)}`,
+    overlay: `text:Futura_${SIZES[size].textSize}:${escape(text)}`,
+  };
+}
+
+export function qrStampTransformation(
+  size: ItemSizeOpts = "4x6"
+): TransformerOption {
+  return {
+    resize: {
+      type: "fit",
+      width: SIZES[size].qrWidth,
+      height: SIZES[size].qrHeight,
+    },
+    gravity: "north_east",
+    position: {
+      x: SIZES[size].qrX,
+      y: SIZES[size].qrY,
+    },
+    overlay: `postpostcard_stamp_rtny1a`,
   };
 }
 
@@ -109,7 +127,11 @@ export function addTextTransformationToURL({
   }
 
   const chaining = text
-    ? [messageTransformation(text, size), { ...(restTransformations || {}) }]
+    ? [
+        messageTransformation(text, size),
+        qrStampTransformation(size),
+        { ...(restTransformations || {}) },
+      ]
     : [{ ...(restTransformations || {}) }];
 
   // add chaining to options.transforations
