@@ -12,19 +12,11 @@ import ChatwootWidget from "../components/Chatwoot";
 import { Router } from "next/router";
 import * as Fathom from "fathom-client";
 import { useEffect } from "react";
-import { bannerHeading, bannerText } from "../server/router/items";
 
 // Record a pageview when route changes
 Router.events.on("routeChangeComplete", (as, routeProps) => {
   if (!routeProps.shallow) {
     Fathom.trackPageview();
-    // Track payment success by checking for query params
-    if (
-      routeProps.query?.bannerHeading === bannerHeading ||
-      routeProps.query?.bannerText === bannerText
-    ) {
-      Fathom.trackGoal("ZSIZU7WN", 1);
-    }
   }
 });
 
