@@ -230,7 +230,7 @@ export const items = createRouter()
         after_completion: {
           type: "redirect",
           redirect: {
-            url: `${env.NEXT_PUBLIC_APP_URL}/send?bannerHeading=${bannerHeading}&bannerText=${bannerText}`,
+            url: `${env.NEXT_PUBLIC_APP_URL}/send?bannerHeading=${bannerHeading}&bannerText=${bannerText}&utm_source=stripe&utm_medium=paymentlink&utm_campaign=send`,
           },
         },
       });
