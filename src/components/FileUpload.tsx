@@ -1,12 +1,10 @@
 import { useState } from "react";
-import { uploadFile } from "../utils/cloudinary";
 import {
   FieldErrorsImpl,
   FieldPath,
   FieldValues,
   Path,
   PathValue,
-  UseFormRegister,
 } from "react-hook-form";
 import Img from "./Img";
 import { ItemSizeOpts, SIZES } from "../utils/itemSize";
@@ -18,23 +16,17 @@ import Button from "./Button";
 interface FileUploadProps<FormValues extends FieldValues> {
   id: FieldPath<FormValues>;
   label: string;
-  required?: boolean;
-  accept?: string;
-  register: UseFormRegister<FormValues>;
   // getValues and setValue are from react-hook-form
   getValues: any;
   setValue: any;
   errors: FieldErrorsImpl<FormValues>;
-  size?: ItemSizeOpts;
+  size: ItemSizeOpts;
   children?: React.ReactNode;
 }
 
 function FileUpload<FormValues extends FieldValues>({
   id,
   label,
-  required,
-  accept,
-  register,
   getValues,
   setValue,
   errors,
@@ -71,20 +63,19 @@ function FileUpload<FormValues extends FieldValues>({
         >
           {url && status !== "uploading" && (
             <Img
-              className={size ? SIZES[size].previewClassNames : "h-20 w-20"}
+              className={SIZES[size].previewClassNames}
               alt="Open file"
               src={thumbnailUrl || url}
-              height={size ? SIZES[size].previewWidth : 80}
-              width={size ? SIZES[size].previewHeight : 80}
+              height={SIZES[size].previewWidth}
+              width={SIZES[size].previewHeight}
               autoCrop
             />
           )}
         </a>
         <CldUploadWidget
           uploadPreset="oe6iang6"
-          onUpload={(result, widget) => {
+          onUpload={(result: any, widget: any) => {
             if (result.event === "success") {
-              console.log(result);
               setThumbnailUrl(result.info.thumbnail_url);
               setUrl(result.info.secure_url);
               setStatus("uploaded"); // Updating local state with asset details
@@ -93,10 +84,18 @@ function FileUpload<FormValues extends FieldValues>({
           }}
           options={{
             cropping: true,
-            croppingAspectRatio: 925 / 625,
+            croppingAspectRatio: SIZES[size].widthPx / SIZES[size].heightPx,
             croppingShowBackButton: true,
             showSkipCropButton: false,
             showUploadMoreButton: false,
+            sources: [
+              "local",
+              "url",
+              "google_drive",
+              "instagram",
+              "facebook",
+              "unsplash",
+            ],
           }}
         >
           {({ open }) => {
