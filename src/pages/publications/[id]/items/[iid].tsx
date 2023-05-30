@@ -177,7 +177,7 @@ const Item = () => {
               query={itemsQuery}
               success={() => (
                 <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
-                  <div className="sm:col-span-6" id="size">
+                  <div className="hidden sm:col-span-6" id="size">
                     {/* Size field with options for 4x6, 6x9, and 6x11 */}
                     <label
                       htmlFor="size"
