@@ -14,6 +14,7 @@ const Send = () => {
   const [open, setOpen] = useState(false);
   const [itemId, setItemId] = useState(0);
   const [itemLink, setItemLink] = useState("");
+  const [itemFront, setItemFront] = useState("");
   const itemsQuery = trpc.useQuery(["items.getAll"]);
 
   if (status === "loading") {
@@ -41,6 +42,7 @@ const Send = () => {
           setOpen={setOpen}
           itemId={itemId}
           itemLink={itemLink}
+          itemFront={itemFront}
         ></Slideover>
         <div className="mx-auto my-8 max-w-7xl px-4 sm:my-12 sm:px-6 lg:px-8">
           <div className="text-center">
@@ -90,6 +92,7 @@ const Send = () => {
                     onClick={() => {
                       setItemId(item.id);
                       setItemLink(item.stripePaymentLink);
+                      setItemFront(item.front);
                       setOpen(true);
                       trackGoal("1WFW5D7J", 0);
                     }}

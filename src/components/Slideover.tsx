@@ -8,6 +8,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import Inspiration from "./Inspiration";
 import { trackGoal } from "fathom-client";
+import Img from "./Img";
 
 export type PostcardMessageOverlayFormValues = {
   msg: string;
@@ -60,6 +61,7 @@ export default function Slideover(props: {
   setOpen: (open: boolean) => void;
   itemLink: string;
   itemId: number;
+  itemFront: string;
 }) {
   const router = useRouter();
   const { data: session } = useSession();
@@ -75,7 +77,7 @@ export default function Slideover(props: {
   const lineTooLong = watch("msg").match(/\S{30,}/g)?.length;
   const hasError = tooManyLines || lineTooLong;
 
-  const { open, setOpen, itemLink, itemId } = props;
+  const { open, setOpen, itemLink, itemId, itemFront } = props;
   const createMessage = trpc.useMutation("messages.createMessage", {
     onSuccess(message) {
       router.push(`${itemLink}?client_reference_id=${message.id}`);
@@ -104,8 +106,25 @@ export default function Slideover(props: {
                     <div className="flex min-h-0 flex-1 flex-col overflow-y-scroll py-6">
                       <div className="px-4 sm:px-6">
                         <div className="flex items-start justify-between">
-                          <Dialog.Title className="text-base font-semibold leading-6 text-gray-900">
-                            Write postcard
+                          <Dialog.Title className="flex items-center gap-3">
+                            <Img
+                              src={itemFront}
+                              alt=""
+                              className="w-24 object-cover object-center"
+                              width={92.5}
+                              height={62.5}
+                            />
+                            <div>
+                              <div className="text-base font-semibold leading-6 text-gray-900">
+                                Write postcard
+                              </div>
+                              <div className="mt-1">
+                                <p className="text-sm text-gray-400">
+                                  Add your message. Include a greeting and a
+                                  signoff.
+                                </p>
+                              </div>
+                            </div>
                           </Dialog.Title>
                           <div className="ml-3 flex h-7 items-center">
                             <button
@@ -120,12 +139,6 @@ export default function Slideover(props: {
                               />
                             </button>
                           </div>
-                        </div>
-                        <div className="mt-1">
-                          <p className="text-sm text-gray-400">
-                            Write your postcard message here. You will address
-                            your postcard in the next step.
-                          </p>
                         </div>
                         <div className="mt-2">
                           <textarea
@@ -186,7 +199,7 @@ export default function Slideover(props: {
                               trackGoal("GMZEE6ZN", 0);
                             })}
                           >
-                            Next
+                            Address & Send
                           </button>
                         </div>
                       </div>
