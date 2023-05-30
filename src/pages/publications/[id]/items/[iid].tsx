@@ -376,8 +376,8 @@ const Item = () => {
             />
 
             <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
-              <div className="sm:col-span-6" id="actions">
-                <div className="flex justify-start gap-3">
+              <div className="col-span-6 sm:col-span-4" id="actions">
+                <div className="flex items-center justify-start gap-3">
                   <Button
                     onClick={handleSubmit((data) => {
                       updateItem.mutate({
@@ -415,58 +415,26 @@ const Item = () => {
                   </Button>
                 </div>
               </div>
-              <div className="pt-6 sm:col-span-6">
-                <h3 className="text-lg font-medium leading-6 text-gray-900">
-                  Item Preview
-                </h3>
-                <p className="mt-2 text-sm text-gray-500">
-                  This preview shows exactly how your item will look. It takes a
-                  while to load...
-                </p>
+              <div className="col-span-6 sm:col-span-2" id="delete">
+                <div className="flex items-center justify-start gap-3">
+                  <Button
+                    onClick={() => {
+                      deleteItem.mutate({
+                        id: query.iid,
+                      });
+                    }}
+                    size="sm"
+                    variant="danger"
+                  >
+                    Delete
+                  </Button>
+                  <p className="text-sm font-medium text-red-700">
+                    Warning: this action is irreversable
+                  </p>
+                </div>
               </div>
             </div>
-
-            <DefaultQueryCell
-              query={itemsQuery}
-              success={() => (
-                <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
-                  <div className="sm:col-span-6 lg:col-span-3" id="preview">
-                    <PostcardPreview
-                      itemId={item?.id || 0}
-                      size={item?.size ? itemSizeToClient(item.size) : "4x6"}
-                      front={item?.frontPreview || ""}
-                      back={item?.backPreview || ""}
-                      author={item?.publication?.author?.name || ""}
-                      name={watch("name")}
-                      description={watch("description")}
-                      stripePaymentLink={item?.stripePaymentLink || "#"}
-                      loadingState={!item?.postcardPreviewRendered}
-                      hideAddressArea={true}
-                    />
-                  </div>
-                </div>
-              )}
-            />
           </form>
-          <div className="mt-6 sm:col-span-6" id="delete">
-            <div className="flex items-center justify-start gap-3">
-              <Button
-                onClick={() => {
-                  deleteItem.mutate({
-                    id: query.iid,
-                  });
-                }}
-                className="ml-3"
-                size="sm"
-                variant="danger"
-              >
-                Delete
-              </Button>
-              <p className="text-sm font-medium text-red-700">
-                Warning: this action is irreversable
-              </p>
-            </div>
-          </div>
         </Layout>
       ) : (
         <Layout>
