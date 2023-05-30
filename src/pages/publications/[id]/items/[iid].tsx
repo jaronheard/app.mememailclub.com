@@ -21,6 +21,7 @@ import {
   itemSizeToClient,
   SIZES,
 } from "../../../../utils/itemSize";
+import { Switch } from "@headlessui/react";
 
 export type ItemFormValues = {
   name: string;
@@ -29,6 +30,7 @@ export type ItemFormValues = {
   front: string;
   back: string;
   size: ItemSizeOpts;
+  visibility: "PRIVATE" | "PUBLIC";
 };
 
 const ParamsValidator = z.object({
@@ -61,7 +63,8 @@ const Item = () => {
       imageUrl: "",
       front: "",
       back: "",
-      size: "4x6",
+      size: "6x9",
+      visibility: "PRIVATE",
     },
   });
 
@@ -129,6 +132,7 @@ const Item = () => {
         front: item.front,
         back: item.back,
         size: itemSizeToClient(item.size),
+        visibility: item.visibility,
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -270,6 +274,65 @@ const Item = () => {
                     )}
                   </div>
 
+                  <div className="sm:col-span-6" id="visibility">
+                    <Switch.Group as="div" className="flex items-center">
+                      <Switch.Label as="span" className="mr-3 w-[7ch] text-sm">
+                        <div
+                          className={
+                            watch("visibility") === "PUBLIC"
+                              ? "font-medium text-gray-900"
+                              : "font-bold text-gray-900"
+                          }
+                        >
+                          Private
+                        </div>
+                      </Switch.Label>
+                      <Switch
+                        checked={watch("visibility") === "PUBLIC"}
+                        onChange={() =>
+                          setValue(
+                            "visibility",
+                            watch("visibility") === "PUBLIC"
+                              ? "PRIVATE"
+                              : "PUBLIC"
+                          )
+                        }
+                        className={clsx(
+                          watch("visibility") === "PUBLIC"
+                            ? "bg-indigo-600"
+                            : "bg-gray-200",
+                          "rounded-full relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"
+                        )}
+                      >
+                        <span
+                          aria-hidden="true"
+                          className={clsx(
+                            watch("visibility") === "PUBLIC"
+                              ? "translate-x-5"
+                              : "translate-x-0",
+                            "rounded-full pointer-events-none inline-block h-5 w-5 transform bg-white shadow ring-0 transition duration-200 ease-in-out"
+                          )}
+                        />
+                      </Switch>
+                      <Switch.Label as="span" className="ml-3 w-[8ch] text-sm">
+                        <span
+                          className={
+                            watch("visibility") === "PUBLIC"
+                              ? "font-bold text-gray-900"
+                              : "font-medium text-gray-900"
+                          }
+                        >
+                          Public
+                        </span>
+                      </Switch.Label>
+                    </Switch.Group>
+                    <p className="mt-2 text-sm text-gray-500">
+                      {watch("visibility") === "PUBLIC"
+                        ? "Your postcard will be visible and available to send by anyone on PostPostcard"
+                        : "Your postcard will only be visible to you"}
+                    </p>
+                  </div>
+
                   <div className="sm:col-span-6" id="description">
                     <label
                       htmlFor="description"
@@ -318,6 +381,7 @@ const Item = () => {
                         back: data.back,
                         status: "PUBLISHED",
                         size: data.size,
+                        visibility: data.visibility,
                       });
                     })}
                     size="sm"
@@ -334,6 +398,7 @@ const Item = () => {
                         back: data.back,
                         status: "DRAFT",
                         size: data.size,
+                        visibility: data.visibility,
                       });
                     })}
                     size="sm"

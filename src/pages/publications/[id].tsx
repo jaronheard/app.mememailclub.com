@@ -126,9 +126,6 @@ const Publication = () => {
     <LoadingLayout />;
   }
 
-  const randomFront = Math.floor(Math.random() * 1000);
-  const randomBack = Math.floor(Math.random() * 1000);
-
   return (
     <>
       {status === "authenticated" && session.user ? (
@@ -170,6 +167,7 @@ const Publication = () => {
                           back: `https://res.cloudinary.com/jaronheard/image/upload/v1685407706/6x9_postcard_ztcybr.png`,
                           status: "DRAFT",
                           size: "6x9",
+                          visibility: "PRIVATE",
                         })
                       }
                       size="sm"
