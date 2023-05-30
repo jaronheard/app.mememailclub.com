@@ -333,7 +333,14 @@ const Item = () => {
                     </p>
                   </div>
 
-                  <div className="sm:col-span-6" id="description">
+                  <div
+                    className={
+                      watch("visibility") === "PUBLIC"
+                        ? "sm:col-span-6"
+                        : "hidden"
+                    }
+                    id="description"
+                  >
                     <label
                       htmlFor="description"
                       className="block text-sm font-medium text-gray-700"
