@@ -166,8 +166,8 @@ const Publication = () => {
                           publicationId: publication?.id as number,
                           name: "",
                           description: "",
-                          front: `https://picsum.photos/seed/${randomFront}/1875/1275`,
-                          back: `https://picsum.photos/seed/${randomBack}/1875/1275`,
+                          front: `https://res.cloudinary.com/jaronheard/image/upload/v1685407734/6x9_postcard_front_ismigp.png`,
+                          back: `https://res.cloudinary.com/jaronheard/image/upload/v1685407706/6x9_postcard_ztcybr.png`,
                           status: "DRAFT",
                           size: "6x9",
                         })
