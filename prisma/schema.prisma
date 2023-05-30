@@ -81,8 +81,9 @@ model Item {
   publicationId           Int
   publication             Publication @relation(fields: [publicationId], references: [id])
   test                    Boolean     @default(false)
-  size                    ItemSize    @default(sz_4x6)
+  size                    ItemSize    @default(sz_6x9)
   Messages                Message[]
+  visibility              Visibility  @default(PRIVATE)
 
   @@index([publicationId])
 }
@@ -145,4 +146,9 @@ enum ItemSize {
   sz_4x6
   sz_6x9
   sz_6x11
+}
+
+enum Visibility {
+  PUBLIC
+  PRIVATE
 }

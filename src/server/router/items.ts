@@ -154,6 +154,7 @@ export const items = createRouter()
       back: z.string().url(),
       status: z.enum(["DRAFT", "PUBLISHED"]),
       size: z.enum(["4x6", "6x9", "6x11"]),
+      visibility: z.enum(["PUBLIC", "PRIVATE"]),
     }),
     async resolve({ ctx, input }) {
       // create a postcard using lob
@@ -251,6 +252,7 @@ export const items = createRouter()
           postcardPreviewId: myPostcard.id,
           size: itemSizeToDB(input.size),
           test: process.env.NODE_ENV === "development",
+          visibility: input.visibility,
         },
       });
 
@@ -273,6 +275,7 @@ export const items = createRouter()
       back: z.string().url(),
       status: z.enum(["DRAFT", "PUBLISHED"]),
       size: z.enum(["4x6", "6x9", "6x11"]),
+      visibility: z.enum(["PUBLIC", "PRIVATE"]),
     }),
     async resolve({ ctx, input }) {
       // create a postcard using lob
@@ -365,6 +368,7 @@ export const items = createRouter()
           postcardPreviewId: myPostcard.id,
           postcardPreviewRendered: false,
           size: itemSizeToDB(input.size),
+          visibility: input.visibility,
           // stripePaymentLink: item.stripePaymentLink,
         },
       });

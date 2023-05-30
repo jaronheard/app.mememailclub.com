@@ -8,9 +8,6 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import FileUpload from "../../../../components/FileUpload";
 import DefaultQueryCell from "../../../../components/DefaultQueryCell";
-// import Img from "../../../../components/Img";
-import { PostcardPreview } from "../../../../components/PostcardPreview";
-// import { id } from "date-fns/locale";
 import { z } from "zod";
 import Breadcrumbs from "../../../../components/Breadcrumbs";
 import SignIn from "../../../../components/SignIn";
@@ -21,6 +18,7 @@ import {
   itemSizeToClient,
   SIZES,
 } from "../../../../utils/itemSize";
+import { Switch } from "@headlessui/react";
 
 export type ItemFormValues = {
   name: string;
@@ -29,6 +27,7 @@ export type ItemFormValues = {
   front: string;
   back: string;
   size: ItemSizeOpts;
+  visibility: "PRIVATE" | "PUBLIC";
 };
 
 const ParamsValidator = z.object({
@@ -61,7 +60,8 @@ const Item = () => {
       imageUrl: "",
       front: "",
       back: "",
-      size: "4x6",
+      size: "6x9",
+      visibility: "PRIVATE",
     },
   });
 
@@ -129,6 +129,7 @@ const Item = () => {
         front: item.front,
         back: item.back,
         size: itemSizeToClient(item.size),
+        visibility: item.visibility,
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -177,7 +178,7 @@ const Item = () => {
               query={itemsQuery}
               success={() => (
                 <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
-                  <div className="sm:col-span-6" id="size">
+                  <div className="hidden sm:col-span-6" id="size">
                     {/* Size field with options for 4x6, 6x9, and 6x11 */}
                     <label
                       htmlFor="size"
@@ -247,7 +248,7 @@ const Item = () => {
                       htmlFor="name"
                       className="block text-sm font-medium text-gray-700"
                     >
-                      Item name
+                      Title
                     </label>
                     <div className="mt-1">
                       <input
@@ -260,17 +261,83 @@ const Item = () => {
                             "border-gray-300": !errors.name,
                           }
                         )}
-                        placeholder="Something very pretty"
+                        placeholder="Your postcard is your art, give it a title!"
                       />
                     </div>
                     {errors.name && (
                       <p className="mt-2 text-sm text-red-600" id="email-error">
-                        Item name is required.
+                        Title is required.
                       </p>
                     )}
                   </div>
 
-                  <div className="sm:col-span-6" id="description">
+                  <div className="sm:col-span-6" id="visibility">
+                    <Switch.Group as="div" className="flex items-center">
+                      <Switch.Label as="span" className="mr-3 w-[7ch] text-sm">
+                        <div
+                          className={
+                            watch("visibility") === "PUBLIC"
+                              ? "font-medium text-gray-900"
+                              : "font-bold text-gray-900"
+                          }
+                        >
+                          Private
+                        </div>
+                      </Switch.Label>
+                      <Switch
+                        checked={watch("visibility") === "PUBLIC"}
+                        onChange={() =>
+                          setValue(
+                            "visibility",
+                            watch("visibility") === "PUBLIC"
+                              ? "PRIVATE"
+                              : "PUBLIC"
+                          )
+                        }
+                        className={clsx(
+                          watch("visibility") === "PUBLIC"
+                            ? "bg-indigo-600"
+                            : "bg-gray-200",
+                          "rounded-full relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"
+                        )}
+                      >
+                        <span
+                          aria-hidden="true"
+                          className={clsx(
+                            watch("visibility") === "PUBLIC"
+                              ? "translate-x-5"
+                              : "translate-x-0",
+                            "rounded-full pointer-events-none inline-block h-5 w-5 transform bg-white shadow ring-0 transition duration-200 ease-in-out"
+                          )}
+                        />
+                      </Switch>
+                      <Switch.Label as="span" className="ml-3 w-[8ch] text-sm">
+                        <span
+                          className={
+                            watch("visibility") === "PUBLIC"
+                              ? "font-bold text-gray-900"
+                              : "font-medium text-gray-900"
+                          }
+                        >
+                          Public
+                        </span>
+                      </Switch.Label>
+                    </Switch.Group>
+                    <p className="mt-2 text-sm text-gray-500">
+                      {watch("visibility") === "PUBLIC"
+                        ? "Your postcard will be visible and available to send by anyone on PostPostcard"
+                        : "Your postcard will only be visible to you"}
+                    </p>
+                  </div>
+
+                  <div
+                    className={
+                      watch("visibility") === "PUBLIC"
+                        ? "sm:col-span-6"
+                        : "hidden"
+                    }
+                    id="description"
+                  >
                     <label
                       htmlFor="description"
                       className="block text-sm font-medium text-gray-700"
@@ -289,9 +356,7 @@ const Item = () => {
                             "border-gray-300": !errors.name,
                           }
                         )}
-                        placeholder={
-                          "Something beautiful or funny. As you can see, there are no raccoons here."
-                        }
+                        placeholder={"A longer description of your postcard."}
                       />
                     </div>
                     {errors.description && (
@@ -308,8 +373,8 @@ const Item = () => {
             />
 
             <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
-              <div className="sm:col-span-6" id="actions">
-                <div className="flex justify-start gap-3">
+              <div className="col-span-6 sm:col-span-4" id="actions">
+                <div className="flex items-center justify-start gap-3">
                   <Button
                     onClick={handleSubmit((data) => {
                       updateItem.mutate({
@@ -320,6 +385,7 @@ const Item = () => {
                         back: data.back,
                         status: "PUBLISHED",
                         size: data.size,
+                        visibility: data.visibility,
                       });
                     })}
                     size="sm"
@@ -336,6 +402,7 @@ const Item = () => {
                         back: data.back,
                         status: "DRAFT",
                         size: data.size,
+                        visibility: data.visibility,
                       });
                     })}
                     size="sm"
@@ -345,58 +412,26 @@ const Item = () => {
                   </Button>
                 </div>
               </div>
-              <div className="pt-6 sm:col-span-6">
-                <h3 className="text-lg font-medium leading-6 text-gray-900">
-                  Item Preview
-                </h3>
-                <p className="mt-2 text-sm text-gray-500">
-                  This preview shows exactly how your item will look. It takes a
-                  while to load...
-                </p>
+              <div className="col-span-6 sm:col-span-2" id="delete">
+                <div className="flex items-center justify-start gap-3">
+                  <Button
+                    onClick={() => {
+                      deleteItem.mutate({
+                        id: query.iid,
+                      });
+                    }}
+                    size="sm"
+                    variant="danger"
+                  >
+                    Delete
+                  </Button>
+                  <p className="text-sm font-medium text-red-700">
+                    Warning: this action is irreversable
+                  </p>
+                </div>
               </div>
             </div>
-
-            <DefaultQueryCell
-              query={itemsQuery}
-              success={() => (
-                <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
-                  <div className="sm:col-span-6 lg:col-span-3" id="preview">
-                    <PostcardPreview
-                      itemId={item?.id || 0}
-                      size={item?.size ? itemSizeToClient(item.size) : "4x6"}
-                      front={item?.frontPreview || ""}
-                      back={item?.backPreview || ""}
-                      author={item?.publication?.author?.name || ""}
-                      name={watch("name")}
-                      description={watch("description")}
-                      stripePaymentLink={item?.stripePaymentLink || "#"}
-                      loadingState={!item?.postcardPreviewRendered}
-                      hideAddressArea={true}
-                    />
-                  </div>
-                </div>
-              )}
-            />
           </form>
-          <div className="mt-6 sm:col-span-6" id="delete">
-            <div className="flex items-center justify-start gap-3">
-              <Button
-                onClick={() => {
-                  deleteItem.mutate({
-                    id: query.iid,
-                  });
-                }}
-                className="ml-3"
-                size="sm"
-                variant="danger"
-              >
-                Delete
-              </Button>
-              <p className="text-sm font-medium text-red-700">
-                Warning: this action is irreversable
-              </p>
-            </div>
-          </div>
         </Layout>
       ) : (
         <Layout>
