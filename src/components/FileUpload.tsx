@@ -11,6 +11,8 @@ import {
 import Img from "./Img";
 import { ItemSizeOpts, SIZES } from "../utils/itemSize";
 import clsx from "clsx";
+import { CldUploadWidget } from "next-cloudinary";
+import Button from "./Button";
 
 // props interface using generics to pass in FormValues as FieldValues
 interface FileUploadProps<FormValues extends FieldValues> {
@@ -40,6 +42,7 @@ function FileUpload<FormValues extends FieldValues>({
   size,
 }: FileUploadProps<FormValues>) {
   const [status, setStatus] = useState("idle");
+  const [thumbnailUrl, setThumbnailUrl] = useState("");
 
   const url = getValues()[id];
   const setUrl = (value: PathValue<FormValues, Path<FormValues>>) =>
@@ -70,40 +73,47 @@ function FileUpload<FormValues extends FieldValues>({
             <Img
               className={size ? SIZES[size].previewClassNames : "h-20 w-20"}
               alt="Open file"
-              src={url}
+              src={thumbnailUrl || url}
               height={size ? SIZES[size].previewWidth : 80}
               width={size ? SIZES[size].previewHeight : 80}
               autoCrop
             />
           )}
         </a>
-        <label
-          htmlFor={`${id}-file-upload`}
-          className="inline-flex h-[2.125rem] items-center rounded-md border border-transparent bg-indigo-600 px-3 py-2 text-sm font-bold leading-4 text-white shadow-button focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:bg-indigo-700"
+        <CldUploadWidget
+          uploadPreset="oe6iang6"
+          onUpload={(result, widget) => {
+            if (result.event === "success") {
+              console.log(result);
+              setThumbnailUrl(result.info.thumbnail_url);
+              setUrl(result.info.secure_url);
+              setStatus("uploaded"); // Updating local state with asset details
+              widget.close(); // Close widget immediately after successful upload
+            }
+          }}
+          options={{
+            cropping: true,
+            croppingAspectRatio: 925 / 625,
+            croppingShowBackButton: true,
+            showSkipCropButton: false,
+            showUploadMoreButton: false,
+          }}
         >
-          {status === "uploading" ? "Uploading..." : "Upload File"}
-          <input
-            className="hidden"
-            type="text"
-            {...register(id, { required })}
-          />
-          <input
-            className="sr-only"
-            aria-describedby="file_input_help"
-            id={`${id}-file-upload`}
-            type="file"
-            accept={accept}
-            onChange={(e) => {
-              if (e.target?.files?.[0]) {
-                setStatus("uploading");
-                uploadFile(e.target.files[0]).then((url) => {
-                  setUrl(url);
-                  setStatus("uploaded");
-                });
-              }
-            }}
-          ></input>
-        </label>
+          {({ open }) => {
+            function handleOnClick(
+              event?: React.MouseEvent<HTMLButtonElement>
+            ) {
+              event?.preventDefault();
+              setStatus("uploading");
+              open();
+            }
+            return (
+              <Button onClick={handleOnClick} size="sm">
+                Upload
+              </Button>
+            );
+          }}
+        </CldUploadWidget>
       </div>
       {errors[id] && (
         <p className="mt-1 text-sm text-red-600" id="email-error">
