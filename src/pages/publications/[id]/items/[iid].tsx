@@ -247,7 +247,7 @@ const Item = () => {
                       htmlFor="name"
                       className="block text-sm font-medium text-gray-700"
                     >
-                      Item name
+                      Title
                     </label>
                     <div className="mt-1">
                       <input
@@ -260,12 +260,12 @@ const Item = () => {
                             "border-gray-300": !errors.name,
                           }
                         )}
-                        placeholder="Something very pretty"
+                        placeholder="Your postcard is your art, give it a title!"
                       />
                     </div>
                     {errors.name && (
                       <p className="mt-2 text-sm text-red-600" id="email-error">
-                        Item name is required.
+                        Title is required.
                       </p>
                     )}
                   </div>
@@ -289,9 +289,7 @@ const Item = () => {
                             "border-gray-300": !errors.name,
                           }
                         )}
-                        placeholder={
-                          "Something beautiful or funny. As you can see, there are no raccoons here."
-                        }
+                        placeholder={"A longer description of your postcard."}
                       />
                     </div>
                     {errors.description && (
