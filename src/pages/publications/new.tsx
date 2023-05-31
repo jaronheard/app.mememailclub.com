@@ -5,7 +5,6 @@ import SignIn from "../../components/SignIn";
 import { trpc } from "../../utils/trpc";
 import clsx from "clsx";
 import { useRouter } from "next/router";
-import FileUpload from "../../components/FileUpload";
 import { PublicationFormValues } from "./[id]";
 import Breadcrumbs from "../../components/Breadcrumbs";
 import LoadingLayout from "../../components/LoadingLayout";
@@ -17,15 +16,12 @@ const New = () => {
   const {
     register,
     handleSubmit,
-    getValues,
-    setValue,
     watch,
     formState: { errors },
   } = useForm<PublicationFormValues>({
     defaultValues: {
       name: "",
       description: "",
-      imageUrl: "",
     },
   });
   const createPublication = trpc.useMutation("publications.createPublication", {
@@ -133,22 +129,6 @@ const New = () => {
                       A few sentences about your new postcard collection
                     </p>
                   </div>
-
-                  <div className="sm:col-span-6">
-                    <FileUpload
-                      id="imageUrl"
-                      label="Cover Image"
-                      accept="image/*"
-                      required
-                      register={register}
-                      getValues={getValues}
-                      setValue={setValue}
-                      errors={errors}
-                    />
-                    <p className="mt-2 text-sm text-gray-500">
-                      A cover photo for your new postcard collection
-                    </p>
-                  </div>
                 </div>
               </div>
             </div>
@@ -176,7 +156,8 @@ const New = () => {
                       authorId: session.user?.id as string,
                       name: data.name,
                       description: data.description,
-                      imageUrl: data.imageUrl,
+                      imageUrl:
+                        "https://res.cloudinary.com/jaronheard/image/upload/v1685474738/folder_fpgnfp.png",
                       status: "PUBLISHED",
                     });
                   })}

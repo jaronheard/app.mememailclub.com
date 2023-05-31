@@ -4,7 +4,7 @@ import Link from "next/link";
 type ButtonProps = {
   href?: string;
   children: React.ReactNode;
-  onClick?: () => void;
+  onClick?: (event?: React.MouseEvent<HTMLButtonElement>) => void;
   className?: string;
   size?: "sm" | "base";
   variant?: "primary" | "secondary" | "danger";
@@ -23,7 +23,7 @@ function Button({
   }
   if (href) {
     return (
-      (<Link
+      <Link
         href={href}
         className={clsx(
           "inline-flex rounded-md border px-4 py-2 font-bold shadow-button",
@@ -38,11 +38,10 @@ function Button({
               variant === "secondary",
           },
           className
-        )}>
-
+        )}
+      >
         {children}
-
-      </Link>)
+      </Link>
     );
   }
   if (onClick) {

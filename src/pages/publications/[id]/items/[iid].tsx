@@ -13,11 +13,7 @@ import Breadcrumbs from "../../../../components/Breadcrumbs";
 import SignIn from "../../../../components/SignIn";
 import LoadingLayout from "../../../../components/LoadingLayout";
 import Button from "../../../../components/Button";
-import {
-  ItemSizeOpts,
-  itemSizeToClient,
-  SIZES,
-} from "../../../../utils/itemSize";
+import { ItemSizeOpts, itemSizeToClient } from "../../../../utils/itemSize";
 import { Switch } from "@headlessui/react";
 
 export type ItemFormValues = {
@@ -211,17 +207,12 @@ const Item = () => {
                     <FileUpload
                       id="front"
                       label="Front"
-                      accept="application/pdf, image/png, image/jpeg"
-                      required
-                      register={register}
                       getValues={getValues}
                       setValue={setValue}
                       errors={errors}
                       size={watch("size")}
                     >
-                      Must be exactly {SIZES[watch("size")].widthPx}px by{" "}
-                      {SIZES[watch("size")].heightPx}px in PDF, PNG, or JPG
-                      format
+                      Maximum file size 10MB
                     </FileUpload>
                   </div>
 
@@ -229,17 +220,12 @@ const Item = () => {
                     <FileUpload
                       id="back"
                       label="Back (address and message side)"
-                      required
-                      accept="application/pdf, image/png, image/jpeg"
-                      register={register}
                       getValues={getValues}
                       setValue={setValue}
                       errors={errors}
                       size={watch("size")}
                     >
-                      Must be exactly {SIZES[watch("size")].widthPx}px by{" "}
-                      {SIZES[watch("size")].heightPx}px in PDF, PNG, or JPG
-                      format.
+                      Maximum file size 10MB
                     </FileUpload>
                   </div>
 

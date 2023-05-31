@@ -15,7 +15,6 @@ import {
 import { format } from "date-fns";
 import DefaultQueryCell from "../../components/DefaultQueryCell";
 import Img from "../../components/Img";
-import FileUpload from "../../components/FileUpload";
 import { z } from "zod";
 import Breadcrumbs from "../../components/Breadcrumbs";
 import SignIn from "../../components/SignIn";
@@ -25,7 +24,6 @@ import Button from "../../components/Button";
 export type PublicationFormValues = {
   name: string;
   description: string;
-  imageUrl: string;
 };
 
 const ItemsEmpty = () => (
@@ -66,15 +64,12 @@ const Publication = () => {
     register,
     handleSubmit,
     reset,
-    getValues,
-    setValue,
     watch,
     formState: { errors },
   } = useForm<PublicationFormValues>({
     defaultValues: {
       name: "",
       description: "",
-      imageUrl: "",
     },
   });
   const publicationQuery = trpc.useQuery(
@@ -111,7 +106,6 @@ const Publication = () => {
       reset({
         name: publication?.name,
         description: publication?.description,
-        imageUrl: publication?.imageUrl,
       });
     }
   }, [
@@ -192,7 +186,7 @@ const Publication = () => {
                                   href={`/publications/${id}/items/${item.id}`}
                                   className="block hover:bg-gray-50"
                                 >
-                                  <div className="kis flex items-center px-4 py-4 sm:px-6">
+                                  <div className="flex items-center px-4 py-4 sm:px-6">
                                     <Img
                                       src={item.front}
                                       alt={item.name}
@@ -336,19 +330,6 @@ const Publication = () => {
                         Write a few sentences about your publication.
                       </p>
                     </div>
-
-                    <div className="sm:col-span-6">
-                      <FileUpload
-                        id="imageUrl"
-                        label="Image"
-                        accept="image/*"
-                        required
-                        register={register}
-                        getValues={getValues}
-                        setValue={setValue}
-                        errors={errors}
-                      />
-                    </div>
                   </form>
                 </div>
                 <div className="pt-12">
@@ -373,7 +354,8 @@ const Publication = () => {
                           id: query.id,
                           name: data.name,
                           description: data.description,
-                          imageUrl: data.imageUrl,
+                          imageUrl:
+                            "https://res.cloudinary.com/jaronheard/image/upload/v1685474738/folder_fpgnfp.png",
                           status: "PUBLISHED",
                         });
                       })}
