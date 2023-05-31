@@ -11,6 +11,7 @@ import { ItemSizeOpts, SIZES } from "../utils/itemSize";
 import clsx from "clsx";
 import { CldUploadWidget } from "next-cloudinary";
 import Button from "./Button";
+import { PostcardBackWithOverlay } from "./PostcardBackWithOverlay";
 
 // props interface using generics to pass in FormValues as FieldValues
 interface FileUploadProps<FormValues extends FieldValues> {
@@ -19,6 +20,7 @@ interface FileUploadProps<FormValues extends FieldValues> {
   // getValues and setValue are from react-hook-form
   getValues: any;
   setValue: any;
+  postcardBackWithOverlay?: boolean;
   errors: FieldErrorsImpl<FormValues>;
   size: ItemSizeOpts;
   children?: React.ReactNode;
@@ -29,9 +31,10 @@ function FileUpload<FormValues extends FieldValues>({
   label,
   getValues,
   setValue,
+  postcardBackWithOverlay,
+  size,
   errors,
   children,
-  size,
 }: FileUploadProps<FormValues>) {
   const [status, setStatus] = useState("idle");
   const [thumbnailUrl, setThumbnailUrl] = useState("");
@@ -61,7 +64,7 @@ function FileUpload<FormValues extends FieldValues>({
           target="_blank"
           rel="noreferrer"
         >
-          {url && status !== "uploading" && (
+          {url && status !== "uploading" && !postcardBackWithOverlay && (
             <Img
               className={SIZES[size].previewClassNames}
               alt="Open file"
@@ -69,6 +72,13 @@ function FileUpload<FormValues extends FieldValues>({
               height={SIZES[size].previewWidth}
               width={SIZES[size].previewHeight}
               autoCrop
+            />
+          )}
+          {url && status !== "uploading" && postcardBackWithOverlay && (
+            <PostcardBackWithOverlay
+              back={thumbnailUrl || url}
+              size={size}
+              optimizeImages
             />
           )}
         </a>
