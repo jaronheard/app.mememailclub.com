@@ -1,21 +1,21 @@
-import { useSession } from "next-auth/react";
+import { useAuth } from "@clerk/nextjs";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import SignIn from "../components/SignIn";
 
 const Login = () => {
   const router = useRouter();
-  const { status } = useSession();
+  const { isLoaded, userId } = useAuth();
 
   useEffect(() => {
-    if (status === "authenticated") {
+    if (isLoaded && userId) {
       if (router.query.next) {
         router.push(router.query.next as string);
       } else {
         router.push("/");
       }
     }
-  }, [status, router]);
+  }, [isLoaded, userId, router]);
 
   return <SignIn />;
 };

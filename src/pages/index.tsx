@@ -6,7 +6,7 @@ import {
   StarIcon,
 } from "@heroicons/react/20/solid";
 import Img from "../components/Img";
-import { useSession } from "next-auth/react";
+import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
 import FAQ from "../components/FAQ";
 import clsx from "clsx";
@@ -247,14 +247,14 @@ const Index = () => {
 };
 
 const IndexPage = () => {
-  const { data: session, status } = useSession();
+  const { isLoaded, isSignedIn, user } = useUser();
 
-  return status === "authenticated" && session.user ? (
+  return isLoaded && isSignedIn ? (
     <Layout
       user={{
-        name: session.user.name,
-        email: session.user.email,
-        imageUrl: session.user.image,
+        name: `${user.firstName} ${user.lastName}`,
+        email: user.primaryEmailAddress?.emailAddress,
+        imageUrl: user.imageUrl,
       }}
     >
       <Index />

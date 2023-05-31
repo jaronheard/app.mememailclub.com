@@ -2,16 +2,15 @@
 import { httpBatchLink } from "@trpc/client/links/httpBatchLink";
 import { loggerLink } from "@trpc/client/links/loggerLink";
 import { withTRPC } from "@trpc/next";
-import { SessionProvider } from "next-auth/react";
 import superjson from "superjson";
 import type { AppType } from "next/app";
 import type { AppRouter } from "../server/router";
-import type { Session } from "next-auth";
 import "../styles/globals.css";
 import ChatwootWidget from "../components/Chatwoot";
 import { Router } from "next/router";
 import * as Fathom from "fathom-client";
 import { useEffect } from "react";
+import { ClerkProvider } from "@clerk/nextjs";
 
 // Record a pageview when route changes
 Router.events.on("routeChangeComplete", (as, routeProps) => {
@@ -20,10 +19,7 @@ Router.events.on("routeChangeComplete", (as, routeProps) => {
   }
 });
 
-const MyApp: AppType<{ session: Session | null }> = ({
-  Component,
-  pageProps: { session, ...pageProps },
-}) => {
+const MyApp: AppType = ({ Component, pageProps: { ...pageProps } }) => {
   // Initialize Fathom when the app loads
   useEffect(() => {
     Fathom.load("NIXBEPED", {
@@ -31,10 +27,18 @@ const MyApp: AppType<{ session: Session | null }> = ({
     });
   }, []);
   return (
-    <SessionProvider session={session}>
+    <ClerkProvider
+      appearance={{
+        variables: {
+          borderRadius: "0",
+          colorBackground: "#FFFAF5",
+        },
+      }}
+      {...pageProps}
+    >
       <ChatwootWidget />
       <Component {...pageProps} />
-    </SessionProvider>
+    </ClerkProvider>
   );
 };
 
