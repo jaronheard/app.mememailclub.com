@@ -9,11 +9,10 @@ import { format } from "date-fns";
 import Link from "next/link";
 import DefaultQueryCell from "../../components/DefaultQueryCell";
 import Img from "../../components/Img";
-import SignIn from "../../components/SignIn";
 import Breadcrumbs from "../../components/Breadcrumbs";
-import LoadingLayout from "../../components/LoadingLayout";
 import Button from "../../components/Button";
 import Head from "next/head";
+import { useUser, SignedIn } from "@clerk/nextjs";
 
 const PublicationsEmpty = () => {
   return (
@@ -183,39 +182,23 @@ const Publications = () => {
 };
 
 const Home = () => {
-  const { data: session, status } = useSession();
-
-  if (status === "loading") {
-    return <LoadingLayout />;
-  }
-
+  const { isLoaded, isSignedIn, user } = useUser();
   return (
-    <>
-      {status === "authenticated" && session.user ? (
-        <Layout
-          user={{
-            name: session.user.name,
-            email: session.user.email,
-            imageUrl: session.user.image,
-          }}
-        >
-          <Head>
-            <title>Create unique postcards - PostPostcard</title>
-            <meta name="robots" content="noindex,nofollow" />
-          </Head>
-          <Publications />
-        </Layout>
-      ) : (
-        <Layout>
-          <Head>
-            <title>Create unique postcards - PostPostcard</title>
-            <meta name="robots" content="noindex,nofollow" />
-          </Head>
-          <SignIn />
-          {/* <Publications /> */}
-        </Layout>
-      )}
-    </>
+    <SignedIn>
+      <Layout
+        user={{
+          name: `${user.firstName} ${user.lastName}`,
+          email: user.primaryEmailAddress?.emailAddress,
+          imageUrl: user.imageUrl,
+        }}
+      >
+        <Head>
+          <title>Create unique postcards - PostPostcard</title>
+          <meta name="robots" content="noindex,nofollow" />
+        </Head>
+        <Publications />
+      </Layout>
+    </SignedIn>
   );
 };
 
