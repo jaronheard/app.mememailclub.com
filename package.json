@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@cld-apis/utils": "^0.2.0",
+    "@clerk/nextjs": "^4.19.0",
     "@headlessui/react": "^1.7.4",
     "@heroicons/react": "^2.0.13",
     "@lob/lob-typescript-sdk": "^1.2.0",
