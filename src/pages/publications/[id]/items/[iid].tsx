@@ -224,6 +224,7 @@ const Item = () => {
                       setValue={setValue}
                       errors={errors}
                       size={watch("size")}
+                      postcardBackWithOverlay
                     >
                       Maximum file size 10MB
                     </FileUpload>
