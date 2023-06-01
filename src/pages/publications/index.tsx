@@ -1,4 +1,3 @@
-import { useSession } from "next-auth/react";
 import Layout from "../../components/Layout";
 import { trpc } from "../../utils/trpc";
 // Import for PublicationsEmpty
@@ -13,6 +12,7 @@ import Breadcrumbs from "../../components/Breadcrumbs";
 import Button from "../../components/Button";
 import Head from "next/head";
 import { useUser } from "@clerk/nextjs";
+import { UserResource } from "@clerk/types";
 
 const PublicationsEmpty = () => {
   return (
@@ -51,17 +51,17 @@ const PublicationsEmpty = () => {
   );
 };
 
-const Publications = () => {
-  const { data: session } = useSession();
-  const publicationsQuery = trpc.useQuery(
-    [
-      "publications.getAllByAuthor",
-      {
-        authorId: session?.user?.id as string,
-      },
-    ],
-    { enabled: !!session?.user?.id }
-  );
+type PublicationsProps = {
+  user: UserResource;
+};
+
+const Publications = ({ user }: PublicationsProps) => {
+  const publicationsQuery = trpc.useQuery([
+    "publications.getAllByAuthor",
+    {
+      authorId: user.id,
+    },
+  ]);
 
   return (
     <div>
@@ -200,7 +200,7 @@ const Home = () => {
         <title>Create unique postcards - PostPostcard</title>
         <meta name="robots" content="noindex,nofollow" />
       </Head>
-      <Publications />
+      <Publications user={user} />
     </Layout>
   );
 };
