@@ -103,6 +103,7 @@ export const publications = createRouter()
     async resolve({ ctx, input }) {
       const publication = await ctx.prisma.publication.create({
         data: {
+          authorId: input.userId,
           userId: input.userId,
           name: input.name,
           description: input.description,
