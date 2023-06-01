@@ -281,10 +281,10 @@ const Layout = (props: LayoutProps) => {
         </Disclosure>
 
         <div className="flex min-h-screen flex-col justify-between">
-          <main className="">
-            <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+          <main className="mx-auto flex w-full grow">
+            <div className="mx-auto flex max-w-7xl grow flex-col px-4 py-16 sm:px-6 lg:px-8">
               <Banner />
-              <div className="rounded-lg bg-postcard px-5 py-6 drop-shadow-sm sm:px-6">
+              <div className="grow rounded-lg bg-postcard px-5 py-6 drop-shadow-sm sm:px-6">
                 {props.children}
               </div>
             </div>

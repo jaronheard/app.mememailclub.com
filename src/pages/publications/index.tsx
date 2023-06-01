@@ -65,110 +65,112 @@ const Publications = ({ user }: PublicationsProps) => {
 
   return (
     <div>
-      <Breadcrumbs pages={[]} />
       <DefaultQueryCell
         query={publicationsQuery}
         empty={() => <PublicationsEmpty />}
         success={({ data: publications }) => (
-          <div className="mt-6 overflow-hidden bg-white shadow sm:rounded-md">
-            <ul role="list" className="divide-y divide-gray-200">
-              {publications &&
-                publications.map((publication) => (
-                  <li key={publication.id}>
-                    <Link
-                      href={`/publications/${publication.id}`}
-                      className="block hover:bg-gray-50"
-                    >
-                      <div className="flex items-center px-4 py-4 sm:px-6">
-                        <div className="flex min-w-0 flex-1 items-center">
-                          <div className="flex-shrink-0">
-                            <Img
-                              className="h-20 w-20 rounded-md"
-                              src={publication.imageUrl || ""}
-                              alt=""
-                              height={80}
-                              width={80}
-                              autoCrop
-                            />
-                          </div>
-                          <div className="min-w-0 flex-1 px-4 md:grid md:grid-cols-2 md:gap-4">
-                            <div>
-                              <p className="truncate text-sm font-medium text-indigo-600">
-                                {publication.name}
-                              </p>
-                              <p className="truncate text-sm text-gray-500">
-                                {publication.description}
-                              </p>
-                              <p className="mt-2 flex items-center gap-3 text-sm text-gray-500">
-                                <div
-                                  className="flex items-center gap-1.5"
-                                  id="postcards"
-                                >
-                                  <EnvelopeOpenIcon
-                                    className="h-5 w-5 flex-shrink-0 text-gray-400"
-                                    aria-hidden="true"
-                                  />
-                                  <span className="">
-                                    {publication.Items.length} postcards
-                                  </span>
-                                </div>
-                              </p>
+          <>
+            <Breadcrumbs pages={[]} />
+            <div className="mt-6 overflow-hidden bg-white shadow sm:rounded-md">
+              <ul role="list" className="divide-y divide-gray-200">
+                {publications &&
+                  publications.map((publication) => (
+                    <li key={publication.id}>
+                      <Link
+                        href={`/publications/${publication.id}`}
+                        className="block hover:bg-gray-50"
+                      >
+                        <div className="flex items-center px-4 py-4 sm:px-6">
+                          <div className="flex min-w-0 flex-1 items-center">
+                            <div className="flex-shrink-0">
+                              <Img
+                                className="h-20 w-20 rounded-md"
+                                src={publication.imageUrl || ""}
+                                alt=""
+                                height={80}
+                                width={80}
+                                autoCrop
+                              />
                             </div>
-                            <div className="hidden md:block">
+                            <div className="min-w-0 flex-1 px-4 md:grid md:grid-cols-2 md:gap-4">
                               <div>
-                                <p className="text-sm text-gray-900">
-                                  Created on{" "}
-                                  <time
-                                    dateTime={format(
-                                      publication.createdAt,
-                                      "yyyy-MM-dd"
-                                    )}
+                                <p className="truncate text-sm font-medium text-indigo-600">
+                                  {publication.name}
+                                </p>
+                                <p className="truncate text-sm text-gray-500">
+                                  {publication.description}
+                                </p>
+                                <p className="mt-2 flex items-center gap-3 text-sm text-gray-500">
+                                  <div
+                                    className="flex items-center gap-1.5"
+                                    id="postcards"
                                   >
-                                    {format(
-                                      publication.createdAt,
-                                      "yyyy-MM-dd"
+                                    <EnvelopeOpenIcon
+                                      className="h-5 w-5 flex-shrink-0 text-gray-400"
+                                      aria-hidden="true"
+                                    />
+                                    <span className="">
+                                      {publication.Items.length} postcards
+                                    </span>
+                                  </div>
+                                </p>
+                              </div>
+                              <div className="hidden md:block">
+                                <div>
+                                  <p className="text-sm text-gray-900">
+                                    Created on{" "}
+                                    <time
+                                      dateTime={format(
+                                        publication.createdAt,
+                                        "yyyy-MM-dd"
+                                      )}
+                                    >
+                                      {format(
+                                        publication.createdAt,
+                                        "yyyy-MM-dd"
+                                      )}
+                                    </time>
+                                  </p>
+                                  <p className="mt-2 flex items-center text-sm text-gray-500">
+                                    {publication.status === "DRAFT" && (
+                                      <EyeSlashIcon
+                                        className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                                        aria-hidden="true"
+                                      />
                                     )}
-                                  </time>
-                                </p>
-                                <p className="mt-2 flex items-center text-sm text-gray-500">
-                                  {publication.status === "DRAFT" && (
-                                    <EyeSlashIcon
-                                      className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
-                                      aria-hidden="true"
-                                    />
-                                  )}
-                                  {publication.status === "PUBLISHED" && (
-                                    <EyeIcon
-                                      className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
-                                      aria-hidden="true"
-                                    />
-                                  )}
-                                  <span className="capitalize">
-                                    {publication.status.toLowerCase()}
-                                  </span>
-                                </p>
+                                    {publication.status === "PUBLISHED" && (
+                                      <EyeIcon
+                                        className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                                        aria-hidden="true"
+                                      />
+                                    )}
+                                    <span className="capitalize">
+                                      {publication.status.toLowerCase()}
+                                    </span>
+                                  </p>
+                                </div>
                               </div>
                             </div>
                           </div>
+                          <div>
+                            <ChevronRightIcon
+                              className="h-5 w-5 text-gray-400"
+                              aria-hidden="true"
+                            />
+                          </div>
                         </div>
-                        <div>
-                          <ChevronRightIcon
-                            className="h-5 w-5 text-gray-400"
-                            aria-hidden="true"
-                          />
-                        </div>
-                      </div>
-                    </Link>
-                  </li>
-                ))}
-            </ul>
-          </div>
+                      </Link>
+                    </li>
+                  ))}
+              </ul>
+            </div>
+            <Button href="/publications/new" className="mt-6" size="sm">
+              <PlusIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
+              New Postcard Collection
+            </Button>
+          </>
         )}
       />
-      <Button href="/publications/new" className="mt-6" size="sm">
-        <PlusIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
-        New Postcard Collection
-      </Button>
     </div>
   );
 };
