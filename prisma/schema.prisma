@@ -35,15 +35,16 @@ model Item {
 }
 
 model Publication {
-  id            Int               @id @default(autoincrement())
-  createdAt     DateTime          @default(now())
-  name          String
-  description   String            @db.Text
-  imageUrl      String            @db.Text
-  userId        String
-  status        PublicationStatus @default(DRAFT)
-  Items         Item[]
-  test          Boolean           @default(false)
+  id          Int               @id @default(autoincrement())
+  createdAt   DateTime          @default(now())
+  name        String
+  description String            @db.Text
+  imageUrl    String            @db.Text
+  authorId    String
+  userId      String            @default("anonymous")
+  status      PublicationStatus @default(DRAFT)
+  Items       Item[]
+  test        Boolean           @default(false)
 
   @@index([userId])
 }
