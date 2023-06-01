@@ -13,7 +13,7 @@ const Send = () => {
   const [itemId, setItemId] = useState(0);
   const [itemLink, setItemLink] = useState("");
   const [itemFront, setItemFront] = useState("");
-  const itemsQuery = trpc.useQuery(["items.getAll"]);
+  const itemsQuery = trpc.useQuery(["items.getPublished"]);
 
   return (
     <>

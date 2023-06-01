@@ -58,10 +58,11 @@ export const items = createRouter()
       const items = await ctx.prisma.item.findMany({
         where: {
           status: "PUBLISHED",
+          visibility: "PUBLIC",
         },
         ...INCLUDE_PUBLICATION_FIELDS,
         orderBy: {
-          createdAt: "asc",
+          createdAt: "desc",
         },
       });
       return items;
