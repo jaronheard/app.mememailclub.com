@@ -89,17 +89,17 @@ const Send = () => {
 const Page = () => {
   const { isLoaded, isSignedIn, user } = useUser();
 
-  if (!isLoaded || !isSignedIn) {
-    return null;
-  }
-
   return (
     <Layout
-      user={{
-        name: `${user.firstName} ${user.lastName}`,
-        email: user.primaryEmailAddress?.emailAddress,
-        imageUrl: user.imageUrl,
-      }}
+      user={
+        !isLoaded || !isSignedIn
+          ? undefined
+          : {
+              name: `${user.firstName} ${user.lastName}`,
+              email: user.primaryEmailAddress?.emailAddress,
+              imageUrl: user.imageUrl,
+            }
+      }
     >
       <Head>
         <title>Create unique postcards - PostPostcard</title>
