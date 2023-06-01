@@ -17,14 +17,6 @@ const config: Configuration = new Configuration({
 });
 
 export const lob = createRouter()
-  // .middleware(async ({ ctx, next }) => {
-  //   // Any queries or mutations after this middleware will
-  //   // raise an error unless there is a current session
-  //   if (!ctx.session) {
-  //     throw new TRPCError({ code: "UNAUTHORIZED" });
-  //   }
-  //   return next();
-  // })
   .mutation("createAddress", {
     input: z.object({
       name: z.string(),

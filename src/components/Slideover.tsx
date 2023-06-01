@@ -4,11 +4,11 @@ import { XMarkIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import { useForm } from "react-hook-form";
 import { trpc } from "../utils/trpc";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import Inspiration from "./Inspiration";
 import { trackGoal } from "fathom-client";
 import Img from "./Img";
+import { useUser } from "@clerk/nextjs";
 
 export type PostcardMessageOverlayFormValues = {
   msg: string;
@@ -64,7 +64,7 @@ export default function Slideover(props: {
   itemFront: string;
 }) {
   const router = useRouter();
-  const { data: session } = useSession();
+  const { user } = useUser();
   const { register, watch, handleSubmit } =
     useForm<PostcardMessageOverlayFormValues>({
       defaultValues: {
@@ -192,9 +192,7 @@ export default function Slideover(props: {
                               createMessage.mutate({
                                 message: data.msg,
                                 itemId: itemId,
-                                userId: session?.user?.id
-                                  ? session.user.id
-                                  : "unregistered",
+                                userId: user?.id ? user.id : "unregistered",
                               });
                               trackGoal("GMZEE6ZN", 0);
                             })}

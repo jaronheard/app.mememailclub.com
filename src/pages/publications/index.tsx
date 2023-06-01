@@ -59,7 +59,7 @@ const Publications = ({ user }: PublicationsProps) => {
   const publicationsQuery = trpc.useQuery([
     "publications.getAllByAuthor",
     {
-      authorId: user.id,
+      userId: user.id,
     },
   ]);
 
@@ -100,14 +100,6 @@ const Publications = ({ user }: PublicationsProps) => {
                                 {publication.description}
                               </p>
                               <p className="mt-2 flex items-center gap-3 text-sm text-gray-500">
-                                {/* <UsersIcon
-                                  className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
-                                  aria-hidden="true"
-                                />
-                                <span className="">
-                                  {publication.Subscriptions.length}{" "}
-                                  subscribers
-                                </span> */}
                                 <div
                                   className="flex items-center gap-1.5"
                                   id="postcards"

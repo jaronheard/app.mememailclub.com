@@ -129,7 +129,7 @@ const New = ({ user }: NewProps) => {
             <Button
               onClick={handleSubmit((data) => {
                 createPublication.mutate({
-                  authorId: user.id,
+                  userId: user.id,
                   name: data.name,
                   description: data.description,
                   imageUrl:

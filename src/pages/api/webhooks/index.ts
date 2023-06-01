@@ -6,6 +6,7 @@ import { prisma } from "../../../server/db/client";
 import { RequestHandler } from "next/dist/server/next";
 import { itemSizeToClient } from "../../../utils/itemSize";
 import type { Readable } from "node:stream";
+import { getAuth } from "@clerk/nextjs/server";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
   // https://github.com/stripe/stripe-node#configuration
@@ -33,9 +34,9 @@ async function buffer(readable: Readable) {
   return Buffer.concat(chunks);
 }
 
-const caller = appRouter.createCaller({ session: null, prisma: prisma });
-
 const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
+  const caller = appRouter.createCaller({ auth: getAuth(req), prisma: prisma });
+
   if (req.method === "POST") {
     const buf = await buffer(req);
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

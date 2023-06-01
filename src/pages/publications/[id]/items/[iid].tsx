@@ -15,11 +15,10 @@ import { ItemSizeOpts, itemSizeToClient } from "../../../../utils/itemSize";
 import { Switch } from "@headlessui/react";
 import Head from "next/head";
 import { useUser } from "@clerk/nextjs";
-import { UserResource } from "@clerk/types";
 
 export type ItemFormValues = {
   name: string;
-  description: string;
+  description?: string;
   imageUrl: string;
   front: string;
   back: string;
@@ -32,11 +31,7 @@ const ParamsValidator = z.object({
   iid: z.optional(z.string().transform((str) => Number(str))),
 });
 
-type ItemProps = {
-  user: UserResource;
-};
-
-const Item = ({ user }: { user: UserResource }) => {
+const Item = () => {
   const router = useRouter();
   const utils = trpc.useContext();
   const [query, setQuery] = useState({
@@ -325,7 +320,9 @@ const Item = ({ user }: { user: UserResource }) => {
                 </label>
                 <div className="mt-1">
                   <textarea
-                    {...register("description", { required: true })}
+                    {...register("description", {
+                      required: watch("visibility") === "PUBLIC",
+                    })}
                     autoComplete="off"
                     rows={3}
                     className={clsx(
@@ -359,7 +356,7 @@ const Item = ({ user }: { user: UserResource }) => {
                   updateItem.mutate({
                     id: query.iid,
                     name: data.name,
-                    description: data.description,
+                    description: data.description || "Private postcard",
                     front: data.front,
                     back: data.back,
                     status: "PUBLISHED",
@@ -376,7 +373,7 @@ const Item = ({ user }: { user: UserResource }) => {
                   updateItem.mutate({
                     id: query.iid,
                     name: data.name,
-                    description: data.description,
+                    description: data.description || "Private postcard",
                     front: data.front,
                     back: data.back,
                     status: "DRAFT",
@@ -434,7 +431,7 @@ const Page = () => {
         <title>Create unique postcards - PostPostcard</title>
         <meta name="robots" content="noindex,nofollow" />
       </Head>
-      <Item user={user} />
+      <Item />
     </Layout>
   );
 };

@@ -72,6 +72,7 @@ export function PostcardBackWithOverlay(props: {
           text={sampleMessage}
         />
       ) : (
+        // eslint-disable-next-line @next/next/no-img-element
         <img
           src={props.loadingState ? placeholderSrc : props.back}
           alt=""
