@@ -21,13 +21,7 @@ const INCLUDE_PUBLICATION_FIELDS = {
         name: true,
         description: true,
         imageUrl: true,
-        author: {
-          select: {
-            name: true,
-            image: true,
-          },
-        },
-        authorId: true,
+        userId: true,
       },
     },
     Messages: true,
@@ -140,7 +134,7 @@ export const items = createRouter()
   .middleware(async ({ ctx, next }) => {
     // Any queries or mutations after this middleware will
     // raise an error unless there is a current session
-    if (!ctx.session) {
+    if (!ctx.auth.userId) {
       throw new TRPCError({ code: "UNAUTHORIZED" });
     }
     return next();

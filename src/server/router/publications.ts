@@ -4,9 +4,7 @@ import { createRouter } from "./context";
 
 const INCLUDE_RELATIONS = {
   include: {
-    author: true,
     Items: true,
-    Subscriptions: true,
   },
 };
 
@@ -16,13 +14,13 @@ const BasePublication = z.object({
   imageUrl: z.string().url(),
   status: z.enum(["DRAFT", "PUBLISHED"]),
 });
-const HasAuthorId = z.object({
-  authorId: z.string(),
+const HasUserId = z.object({
+  userId: z.string(),
 });
 const HadId = z.object({
   id: z.number(),
 });
-const CreatePublication = BasePublication.merge(HasAuthorId);
+const CreatePublication = BasePublication.merge(HasUserId);
 const UpdatePublication = BasePublication.merge(HadId);
 
 export const publications = createRouter()
@@ -60,12 +58,12 @@ export const publications = createRouter()
   })
   .query("getAllByAuthor", {
     input: z.object({
-      authorId: z.string(),
+      userId: z.string(),
     }),
     async resolve({ ctx, input }) {
       const publications = await ctx.prisma.publication.findMany({
         where: {
-          authorId: input.authorId,
+          userId: input.userId,
         },
         ...INCLUDE_RELATIONS,
         orderBy: {
@@ -77,12 +75,12 @@ export const publications = createRouter()
   })
   .query("getAllByNotAuthor", {
     input: z.object({
-      authorId: z.string(),
+      userId: z.string(),
     }),
     async resolve({ ctx, input }) {
       const publications = await ctx.prisma.publication.findMany({
         where: {
-          authorId: input.authorId,
+          userId: input.userId,
         },
         ...INCLUDE_RELATIONS,
         orderBy: {
@@ -95,7 +93,7 @@ export const publications = createRouter()
   .middleware(async ({ ctx, next }) => {
     // Any queries or mutations after this middleware will
     // raise an error unless there is a current session
-    if (!ctx.session) {
+    if (!ctx.auth.userId) {
       throw new TRPCError({ code: "UNAUTHORIZED" });
     }
     return next();
@@ -105,7 +103,7 @@ export const publications = createRouter()
     async resolve({ ctx, input }) {
       const publication = await ctx.prisma.publication.create({
         data: {
-          authorId: input.authorId,
+          userId: input.userId,
           name: input.name,
           description: input.description,
           imageUrl: input.imageUrl,

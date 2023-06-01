@@ -33,6 +33,11 @@ export default withAxiom(
             "/?utm_campaign=qr+stamp&utm_source=postcard&utm_medium=qr",
           permanent: true,
         },
+        {
+          source: "/login",
+          destination: "/sign-in",
+          permanent: true,
+        },
       ];
     },
   })

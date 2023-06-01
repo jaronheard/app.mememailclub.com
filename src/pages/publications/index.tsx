@@ -1,4 +1,3 @@
-import { useSession } from "next-auth/react";
 import Layout from "../../components/Layout";
 import { trpc } from "../../utils/trpc";
 // Import for PublicationsEmpty
@@ -9,11 +8,11 @@ import { format } from "date-fns";
 import Link from "next/link";
 import DefaultQueryCell from "../../components/DefaultQueryCell";
 import Img from "../../components/Img";
-import SignIn from "../../components/SignIn";
 import Breadcrumbs from "../../components/Breadcrumbs";
-import LoadingLayout from "../../components/LoadingLayout";
 import Button from "../../components/Button";
 import Head from "next/head";
+import { useUser } from "@clerk/nextjs";
+import { UserResource } from "@clerk/types";
 
 const PublicationsEmpty = () => {
   return (
@@ -52,17 +51,17 @@ const PublicationsEmpty = () => {
   );
 };
 
-const Publications = () => {
-  const { data: session } = useSession();
-  const publicationsQuery = trpc.useQuery(
-    [
-      "publications.getAllByAuthor",
-      {
-        authorId: session?.user?.id as string,
-      },
-    ],
-    { enabled: !!session?.user?.id }
-  );
+type PublicationsProps = {
+  user: UserResource;
+};
+
+const Publications = ({ user }: PublicationsProps) => {
+  const publicationsQuery = trpc.useQuery([
+    "publications.getAllByAuthor",
+    {
+      userId: user.id,
+    },
+  ]);
 
   return (
     <div>
@@ -101,14 +100,6 @@ const Publications = () => {
                                 {publication.description}
                               </p>
                               <p className="mt-2 flex items-center gap-3 text-sm text-gray-500">
-                                {/* <UsersIcon
-                                  className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
-                                  aria-hidden="true"
-                                />
-                                <span className="">
-                                  {publication.Subscriptions.length}{" "}
-                                  subscribers
-                                </span> */}
                                 <div
                                   className="flex items-center gap-1.5"
                                   id="postcards"
@@ -182,41 +173,28 @@ const Publications = () => {
   );
 };
 
-const Home = () => {
-  const { data: session, status } = useSession();
+const Page = () => {
+  const { isLoaded, isSignedIn, user } = useUser();
 
-  if (status === "loading") {
-    return <LoadingLayout />;
+  if (!isLoaded || !isSignedIn) {
+    return null;
   }
 
   return (
-    <>
-      {status === "authenticated" && session.user ? (
-        <Layout
-          user={{
-            name: session.user.name,
-            email: session.user.email,
-            imageUrl: session.user.image,
-          }}
-        >
-          <Head>
-            <title>Create unique postcards - PostPostcard</title>
-            <meta name="robots" content="noindex,nofollow" />
-          </Head>
-          <Publications />
-        </Layout>
-      ) : (
-        <Layout>
-          <Head>
-            <title>Create unique postcards - PostPostcard</title>
-            <meta name="robots" content="noindex,nofollow" />
-          </Head>
-          <SignIn />
-          {/* <Publications /> */}
-        </Layout>
-      )}
-    </>
+    <Layout
+      user={{
+        name: `${user.firstName} ${user.lastName}`,
+        email: user.primaryEmailAddress?.emailAddress,
+        imageUrl: user.imageUrl,
+      }}
+    >
+      <Head>
+        <title>Create unique postcards - PostPostcard</title>
+        <meta name="robots" content="noindex,nofollow" />
+      </Head>
+      <Publications user={user} />
+    </Layout>
   );
 };
 
-export default Home;
+export default Page;

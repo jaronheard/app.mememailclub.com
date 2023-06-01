@@ -8,8 +8,7 @@ import { z } from "zod";
 export const serverSchema = z.object({
   DATABASE_URL: z.string().url(),
   NODE_ENV: z.enum(["development", "test", "production"]),
-  NEXTAUTH_SECRET: z.string(),
-  NEXTAUTH_URL: z.string().url(),
+  CLERK_SECRET_KEY: z.string(),
   GOOGLE_CLIENT_ID: z.string(),
   GOOGLE_CLIENT_SECRET: z.string(),
   LOB_API_KEY: z.string(),
@@ -27,6 +26,11 @@ export const clientSchema = z.object({
   NEXT_PUBLIC_APP_URL: z.string().url(),
   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string(),
   NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: z.string(),
+  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string(),
+  NEXT_PUBLIC_CLERK_SIGN_IN_URL: z.string(),
+  NEXT_PUBLIC_CLERK_SIGN_UP_URL: z.string(),
+  NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL: z.string(),
+  NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL: z.string(),
   // NEXT_PUBLIC_BAR: z.string(),
 });
 
@@ -42,5 +46,13 @@ export const clientEnv = {
     process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
   NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME:
     process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
+    process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
+  NEXT_PUBLIC_CLERK_SIGN_IN_URL: process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL,
+  NEXT_PUBLIC_CLERK_SIGN_UP_URL: process.env.NEXT_PUBLIC_CLERK_SIGN_UP_URL,
+  NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL:
+    process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL,
+  NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL:
+    process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL,
   // NEXT_PUBLIC_BAR: process.env.NEXT_PUBLIC_BAR,
 };
