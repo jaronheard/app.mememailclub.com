@@ -53,7 +53,7 @@ const navigation = {
 
 function Footer() {
   return (
-    <footer className="bg-yelllow">
+    <footer className="bg-yellow">
       <div className="mx-auto max-w-7xl overflow-hidden py-12 px-4 sm:px-6 lg:px-8">
         <nav
           className="-mx-5 -my-2 flex flex-wrap justify-center"
@@ -135,7 +135,7 @@ const Layout = (props: LayoutProps) => {
         <title>PostPostcard</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Head>
-      <div className={clsx("min-h-full bg-yellow", sen.variable)}>
+      <div className={clsx("bg-yellow", sen.variable)}>
         <Disclosure
           as="nav"
           className="fixed top-0 z-20 w-full bg-yellow lg:border-none"
@@ -280,16 +280,18 @@ const Layout = (props: LayoutProps) => {
           )}
         </Disclosure>
 
-        <main className="">
-          <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-            <Banner />
-            <div className="rounded-lg bg-postcard px-5 py-6 drop-shadow-sm sm:px-6">
-              {props.children}
+        <div className="flex min-h-screen flex-col justify-between">
+          <main className="">
+            <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+              <Banner />
+              <div className="rounded-lg bg-postcard px-5 py-6 drop-shadow-sm sm:px-6">
+                {props.children}
+              </div>
             </div>
-          </div>
-        </main>
+          </main>
 
-        <Footer />
+          <Footer />
+        </div>
       </div>
     </>
   );
