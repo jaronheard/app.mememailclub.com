@@ -1,4 +1,3 @@
-import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 // import Link from "next/link";
 import Layout from "../../../../components/Layout";
@@ -10,11 +9,13 @@ import FileUpload from "../../../../components/FileUpload";
 import DefaultQueryCell from "../../../../components/DefaultQueryCell";
 import { z } from "zod";
 import Breadcrumbs from "../../../../components/Breadcrumbs";
-import SignIn from "../../../../components/SignIn";
 import LoadingLayout from "../../../../components/LoadingLayout";
 import Button from "../../../../components/Button";
 import { ItemSizeOpts, itemSizeToClient } from "../../../../utils/itemSize";
 import { Switch } from "@headlessui/react";
+import Head from "next/head";
+import { useUser } from "@clerk/nextjs";
+import { UserResource } from "@clerk/types";
 
 export type ItemFormValues = {
   name: string;
@@ -31,7 +32,11 @@ const ParamsValidator = z.object({
   iid: z.optional(z.string().transform((str) => Number(str))),
 });
 
-const Item = () => {
+type ItemProps = {
+  user: UserResource;
+};
+
+const Item = ({ user }: { user: UserResource }) => {
   const router = useRouter();
   const utils = trpc.useContext();
   const [query, setQuery] = useState({
@@ -40,7 +45,6 @@ const Item = () => {
     iid: 0,
   });
 
-  const { data: session, status } = useSession();
   const {
     register,
     handleSubmit,
@@ -131,302 +135,308 @@ const Item = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [item?.id, reset]);
 
-  if (status === "loading" || !query.ready) {
+  if (!query.ready) {
     return <LoadingLayout />;
   }
 
   return (
     <>
-      {status === "authenticated" && session.user ? (
-        <Layout
-          user={{
-            name: session.user?.name,
-            email: session.user?.email,
-            imageUrl: session.user?.image,
-          }}
-        >
-          <DefaultQueryCell
-            query={itemsQuery}
-            success={({ data: item }) => (
-              <Breadcrumbs
-                pages={[
-                  {
-                    name: item.publication.name,
-                    href: `/publications/${query.id}`,
-                    current: false,
-                  },
-                  {
-                    name: watch("name"),
-                    href: `/publications/${query.id}/items/${query.iid}`,
-                    current: true,
-                  },
-                ]}
-              />
-            )}
+      <DefaultQueryCell
+        query={itemsQuery}
+        success={({ data: item }) => (
+          <Breadcrumbs
+            pages={[
+              {
+                name: item.publication.name,
+                href: `/publications/${query.id}`,
+                current: false,
+              },
+              {
+                name: watch("name"),
+                href: `/publications/${query.id}/items/${query.iid}`,
+                current: true,
+              },
+            ]}
           />
-          <form className="mt-6">
-            <div>
-              <h3 className="text-lg font-medium leading-6 text-gray-900">
-                Postcard
-              </h3>
-            </div>
-            <DefaultQueryCell
-              query={itemsQuery}
-              success={() => (
-                <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
-                  <div className="hidden sm:col-span-6" id="size">
-                    {/* Size field with options for 4x6, 6x9, and 6x11 */}
-                    <label
-                      htmlFor="size"
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      Size
-                    </label>
-                    <select
-                      id="size"
-                      className="mt-1 block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                      {...register("size", {
-                        onChange: () => {
-                          setValue(
-                            "front",
-                            resizeImageUrl(watch("front"), watch("size"))
-                          );
-                          setValue(
-                            "back",
-                            resizeImageUrl(watch("back"), watch("size"))
-                          );
-                        },
-                      })}
-                    >
-                      <option value="4x6">4x6</option>
-                      <option value="6x9">6x9</option>
-                      <option value="6x11">6x11</option>
-                    </select>
-                  </div>
-                  <div className="sm:col-span-3" id="front">
-                    <FileUpload
-                      id="front"
-                      label="Front"
-                      getValues={getValues}
-                      setValue={setValue}
-                      errors={errors}
-                      size={watch("size")}
-                    >
-                      Maximum file size 10MB
-                    </FileUpload>
-                  </div>
-
-                  <div className="sm:col-span-3" id="back">
-                    <FileUpload
-                      id="back"
-                      label="Back (address and message side)"
-                      getValues={getValues}
-                      setValue={setValue}
-                      errors={errors}
-                      size={watch("size")}
-                      postcardBackWithOverlay
-                    >
-                      Maximum file size 10MB
-                    </FileUpload>
-                  </div>
-
-                  <div className="sm:col-span-4" id="name">
-                    <label
-                      htmlFor="name"
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      Title
-                    </label>
-                    <div className="mt-1">
-                      <input
-                        {...register("name", { required: true })}
-                        autoComplete="off"
-                        className={clsx(
-                          "block w-full rounded-md border p-3 shadow-sm placeholder:text-gray-300  focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
-                          {
-                            "border-red-300": errors.name,
-                            "border-gray-300": !errors.name,
-                          }
-                        )}
-                        placeholder="Your postcard is your art, give it a title!"
-                      />
-                    </div>
-                    {errors.name && (
-                      <p className="mt-2 text-sm text-red-600" id="email-error">
-                        Title is required.
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="sm:col-span-6" id="visibility">
-                    <Switch.Group as="div" className="flex items-center">
-                      <Switch.Label as="span" className="mr-3 w-[7ch] text-sm">
-                        <div
-                          className={
-                            watch("visibility") === "PUBLIC"
-                              ? "font-medium text-gray-900"
-                              : "font-bold text-gray-900"
-                          }
-                        >
-                          Private
-                        </div>
-                      </Switch.Label>
-                      <Switch
-                        checked={watch("visibility") === "PUBLIC"}
-                        onChange={() =>
-                          setValue(
-                            "visibility",
-                            watch("visibility") === "PUBLIC"
-                              ? "PRIVATE"
-                              : "PUBLIC"
-                          )
-                        }
-                        className={clsx(
-                          watch("visibility") === "PUBLIC"
-                            ? "bg-indigo-600"
-                            : "bg-gray-200",
-                          "rounded-full relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"
-                        )}
-                      >
-                        <span
-                          aria-hidden="true"
-                          className={clsx(
-                            watch("visibility") === "PUBLIC"
-                              ? "translate-x-5"
-                              : "translate-x-0",
-                            "rounded-full pointer-events-none inline-block h-5 w-5 transform bg-white shadow ring-0 transition duration-200 ease-in-out"
-                          )}
-                        />
-                      </Switch>
-                      <Switch.Label as="span" className="ml-3 w-[8ch] text-sm">
-                        <span
-                          className={
-                            watch("visibility") === "PUBLIC"
-                              ? "font-bold text-gray-900"
-                              : "font-medium text-gray-900"
-                          }
-                        >
-                          Public
-                        </span>
-                      </Switch.Label>
-                    </Switch.Group>
-                    <p className="mt-2 text-sm text-gray-500">
-                      {watch("visibility") === "PUBLIC"
-                        ? "Your postcard will be visible and available to send by anyone on PostPostcard"
-                        : "Your postcard will only be visible to you"}
-                    </p>
-                  </div>
-
-                  <div
-                    className={
-                      watch("visibility") === "PUBLIC"
-                        ? "sm:col-span-6"
-                        : "hidden"
-                    }
-                    id="description"
-                  >
-                    <label
-                      htmlFor="description"
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      Description
-                    </label>
-                    <div className="mt-1">
-                      <textarea
-                        {...register("description", { required: true })}
-                        autoComplete="off"
-                        rows={3}
-                        className={clsx(
-                          "block w-full rounded-md shadow-sm placeholder:text-gray-300  focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
-                          {
-                            "border-red-300": errors.name,
-                            "border-gray-300": !errors.name,
-                          }
-                        )}
-                        placeholder={"A longer description of your postcard."}
-                      />
-                    </div>
-                    {errors.description && (
-                      <p className="mt-2 text-sm text-red-600" id="email-error">
-                        Description is required.
-                      </p>
-                    )}
-                    <p className="mt-2 text-sm text-gray-500">
-                      Write a few sentences about your item.
-                    </p>
-                  </div>
-                </div>
-              )}
-            />
-
+        )}
+      />
+      <form className="mt-6">
+        <div>
+          <h3 className="text-lg font-medium leading-6 text-gray-900">
+            Postcard
+          </h3>
+        </div>
+        <DefaultQueryCell
+          query={itemsQuery}
+          success={() => (
             <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
-              <div className="col-span-6 sm:col-span-4" id="actions">
-                <div className="flex items-center justify-start gap-3">
-                  <Button
-                    onClick={handleSubmit((data) => {
-                      updateItem.mutate({
-                        id: query.iid,
-                        name: data.name,
-                        description: data.description,
-                        front: data.front,
-                        back: data.back,
-                        status: "PUBLISHED",
-                        size: data.size,
-                        visibility: data.visibility,
-                      });
-                    })}
-                    size="sm"
-                  >
-                    Publish
-                  </Button>
-                  <Button
-                    onClick={handleSubmit((data) => {
-                      updateItem.mutate({
-                        id: query.iid,
-                        name: data.name,
-                        description: data.description,
-                        front: data.front,
-                        back: data.back,
-                        status: "DRAFT",
-                        size: data.size,
-                        visibility: data.visibility,
-                      });
-                    })}
-                    size="sm"
-                    variant="secondary"
-                  >
-                    Preview
-                  </Button>
-                </div>
+              <div className="hidden sm:col-span-6" id="size">
+                {/* Size field with options for 4x6, 6x9, and 6x11 */}
+                <label
+                  htmlFor="size"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Size
+                </label>
+                <select
+                  id="size"
+                  className="mt-1 block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                  {...register("size", {
+                    onChange: () => {
+                      setValue(
+                        "front",
+                        resizeImageUrl(watch("front"), watch("size"))
+                      );
+                      setValue(
+                        "back",
+                        resizeImageUrl(watch("back"), watch("size"))
+                      );
+                    },
+                  })}
+                >
+                  <option value="4x6">4x6</option>
+                  <option value="6x9">6x9</option>
+                  <option value="6x11">6x11</option>
+                </select>
               </div>
-              <div className="col-span-6 sm:col-span-2" id="delete">
-                <div className="flex items-center justify-start gap-3">
-                  <Button
-                    onClick={() => {
-                      deleteItem.mutate({
-                        id: query.iid,
-                      });
-                    }}
-                    size="sm"
-                    variant="danger"
-                  >
-                    Delete
-                  </Button>
-                  <p className="text-sm font-medium text-red-700">
-                    Warning: this action is irreversable
-                  </p>
+              <div className="sm:col-span-3" id="front">
+                <FileUpload
+                  id="front"
+                  label="Front"
+                  getValues={getValues}
+                  setValue={setValue}
+                  errors={errors}
+                  size={watch("size")}
+                >
+                  Maximum file size 10MB
+                </FileUpload>
+              </div>
+
+              <div className="sm:col-span-3" id="back">
+                <FileUpload
+                  id="back"
+                  label="Back (address and message side)"
+                  getValues={getValues}
+                  setValue={setValue}
+                  errors={errors}
+                  size={watch("size")}
+                  postcardBackWithOverlay
+                >
+                  Maximum file size 10MB
+                </FileUpload>
+              </div>
+
+              <div className="sm:col-span-4" id="name">
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Title
+                </label>
+                <div className="mt-1">
+                  <input
+                    {...register("name", { required: true })}
+                    autoComplete="off"
+                    className={clsx(
+                      "block w-full rounded-md border p-3 shadow-sm placeholder:text-gray-300  focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
+                      {
+                        "border-red-300": errors.name,
+                        "border-gray-300": !errors.name,
+                      }
+                    )}
+                    placeholder="Your postcard is your art, give it a title!"
+                  />
                 </div>
+                {errors.name && (
+                  <p className="mt-2 text-sm text-red-600" id="email-error">
+                    Title is required.
+                  </p>
+                )}
+              </div>
+
+              <div className="sm:col-span-6" id="visibility">
+                <Switch.Group as="div" className="flex items-center">
+                  <Switch.Label as="span" className="mr-3 w-[7ch] text-sm">
+                    <div
+                      className={
+                        watch("visibility") === "PUBLIC"
+                          ? "font-medium text-gray-900"
+                          : "font-bold text-gray-900"
+                      }
+                    >
+                      Private
+                    </div>
+                  </Switch.Label>
+                  <Switch
+                    checked={watch("visibility") === "PUBLIC"}
+                    onChange={() =>
+                      setValue(
+                        "visibility",
+                        watch("visibility") === "PUBLIC" ? "PRIVATE" : "PUBLIC"
+                      )
+                    }
+                    className={clsx(
+                      watch("visibility") === "PUBLIC"
+                        ? "bg-indigo-600"
+                        : "bg-gray-200",
+                      "rounded-full relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"
+                    )}
+                  >
+                    <span
+                      aria-hidden="true"
+                      className={clsx(
+                        watch("visibility") === "PUBLIC"
+                          ? "translate-x-5"
+                          : "translate-x-0",
+                        "rounded-full pointer-events-none inline-block h-5 w-5 transform bg-white shadow ring-0 transition duration-200 ease-in-out"
+                      )}
+                    />
+                  </Switch>
+                  <Switch.Label as="span" className="ml-3 w-[8ch] text-sm">
+                    <span
+                      className={
+                        watch("visibility") === "PUBLIC"
+                          ? "font-bold text-gray-900"
+                          : "font-medium text-gray-900"
+                      }
+                    >
+                      Public
+                    </span>
+                  </Switch.Label>
+                </Switch.Group>
+                <p className="mt-2 text-sm text-gray-500">
+                  {watch("visibility") === "PUBLIC"
+                    ? "Your postcard will be visible and available to send by anyone on PostPostcard"
+                    : "Your postcard will only be visible to you"}
+                </p>
+              </div>
+
+              <div
+                className={
+                  watch("visibility") === "PUBLIC" ? "sm:col-span-6" : "hidden"
+                }
+                id="description"
+              >
+                <label
+                  htmlFor="description"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Description
+                </label>
+                <div className="mt-1">
+                  <textarea
+                    {...register("description", { required: true })}
+                    autoComplete="off"
+                    rows={3}
+                    className={clsx(
+                      "block w-full rounded-md shadow-sm placeholder:text-gray-300  focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
+                      {
+                        "border-red-300": errors.name,
+                        "border-gray-300": !errors.name,
+                      }
+                    )}
+                    placeholder={"A longer description of your postcard."}
+                  />
+                </div>
+                {errors.description && (
+                  <p className="mt-2 text-sm text-red-600" id="email-error">
+                    Description is required.
+                  </p>
+                )}
+                <p className="mt-2 text-sm text-gray-500">
+                  Write a few sentences about your item.
+                </p>
               </div>
             </div>
-          </form>
-        </Layout>
-      ) : (
-        <Layout>
-          <SignIn />
-        </Layout>
-      )}
+          )}
+        />
+
+        <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+          <div className="col-span-6 sm:col-span-4" id="actions">
+            <div className="flex items-center justify-start gap-3">
+              <Button
+                onClick={handleSubmit((data) => {
+                  updateItem.mutate({
+                    id: query.iid,
+                    name: data.name,
+                    description: data.description,
+                    front: data.front,
+                    back: data.back,
+                    status: "PUBLISHED",
+                    size: data.size,
+                    visibility: data.visibility,
+                  });
+                })}
+                size="sm"
+              >
+                Publish
+              </Button>
+              <Button
+                onClick={handleSubmit((data) => {
+                  updateItem.mutate({
+                    id: query.iid,
+                    name: data.name,
+                    description: data.description,
+                    front: data.front,
+                    back: data.back,
+                    status: "DRAFT",
+                    size: data.size,
+                    visibility: data.visibility,
+                  });
+                })}
+                size="sm"
+                variant="secondary"
+              >
+                Preview
+              </Button>
+            </div>
+          </div>
+          <div className="col-span-6 sm:col-span-2" id="delete">
+            <div className="flex items-center justify-start gap-3">
+              <Button
+                onClick={() => {
+                  deleteItem.mutate({
+                    id: query.iid,
+                  });
+                }}
+                size="sm"
+                variant="danger"
+              >
+                Delete
+              </Button>
+              <p className="text-sm font-medium text-red-700">
+                Warning: this action is irreversable
+              </p>
+            </div>
+          </div>
+        </div>
+      </form>
     </>
   );
 };
 
-export default Item;
+const Page = () => {
+  const { isLoaded, isSignedIn, user } = useUser();
+
+  if (!isLoaded || !isSignedIn) {
+    return null;
+  }
+
+  return (
+    <Layout
+      user={{
+        name: `${user.firstName} ${user.lastName}`,
+        email: user.primaryEmailAddress?.emailAddress,
+        imageUrl: user.imageUrl,
+      }}
+    >
+      <Head>
+        <title>Create unique postcards - PostPostcard</title>
+        <meta name="robots" content="noindex,nofollow" />
+      </Head>
+      <Item user={user} />
+    </Layout>
+  );
+};
+
+export default Page;

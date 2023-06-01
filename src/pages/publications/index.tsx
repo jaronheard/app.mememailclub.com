@@ -181,7 +181,7 @@ const Publications = ({ user }: PublicationsProps) => {
   );
 };
 
-const Home = () => {
+const Page = () => {
   const { isLoaded, isSignedIn, user } = useUser();
 
   if (!isLoaded || !isSignedIn) {
@@ -205,4 +205,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Page;
