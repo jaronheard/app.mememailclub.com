@@ -7,6 +7,7 @@ import Slideover from "../components/Slideover";
 import { useState } from "react";
 import { trackGoal } from "fathom-client";
 import { useUser } from "@clerk/nextjs";
+import LoadingLayout from "../components/LoadingLayout";
 
 const Send = () => {
   const [open, setOpen] = useState(false);
@@ -88,6 +89,10 @@ const Send = () => {
 
 const Page = () => {
   const { isLoaded, isSignedIn, user } = useUser();
+
+  if (!isLoaded) {
+    return <LoadingLayout />;
+  }
 
   return (
     <Layout
