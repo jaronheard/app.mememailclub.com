@@ -9,8 +9,10 @@ import { trackGoal } from "fathom-client";
 import { useUser } from "@clerk/nextjs";
 import LoadingLayout from "../components/LoadingLayout";
 import { PostcardCreateSimple } from "../components/PostcardCreateSimple";
+import { useRouter } from "next/router";
 
 const Send = () => {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [itemId, setItemId] = useState(0);
   const [itemLink, setItemLink] = useState("");
@@ -65,9 +67,7 @@ const Send = () => {
           <div className="mx-auto max-w-2xl py-8 px-4 sm:py-12 sm:px-6 lg:max-w-7xl lg:px-8">
             <h2 className="sr-only">Products</h2>
             <div className="grid grid-cols-1 gap-y-4 sm:grid-cols-1 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-2 lg:gap-x-8">
-              <PostcardCreateSimple
-                onClick={() => console.log("create new postcard")}
-              />
+              <PostcardCreateSimple onClick={() => router.push("/items/new")} />
               {items.map((item) => (
                 <PostcardPreviewSimple
                   key={item.id}
