@@ -393,7 +393,8 @@ const Item = () => {
           <div className="col-span-6 sm:col-span-2" id="delete">
             <div className="flex items-center justify-start gap-3">
               <Button
-                onClick={() => {
+                onClick={(event) => {
+                  event?.preventDefault();
                   deleteItem.mutate({
                     id: queryStatus.iid,
                   });
