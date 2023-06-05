@@ -16,7 +16,7 @@ const SendSignedIn = () => {
   const [open, setOpen] = useState(false);
   const [itemId, setItemId] = useState(0);
   // TODO: get only items for the current user
-  const itemsQuery = trpc.useQuery(["items.getAll"]);
+  const itemsQuery = trpc.useQuery(["items.getAllPublished"]);
 
   useEffect(() => {
     // Make sure we have the query param available.

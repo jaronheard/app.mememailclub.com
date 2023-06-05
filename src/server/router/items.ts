@@ -161,6 +161,20 @@ export const items = createRouter()
       return items;
     },
   })
+  .query("getAllPublished", {
+    async resolve({ ctx }) {
+      const items = await ctx.prisma.item.findMany({
+        where: {
+          status: "PUBLISHED",
+        },
+        ...INCLUDE_PUBLICATION_FIELDS,
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+      return items;
+    },
+  })
   .query("getPublished", {
     async resolve({ ctx }) {
       const items = await ctx.prisma.item.findMany({
