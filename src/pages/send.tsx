@@ -91,7 +91,9 @@ const SendSignedIn = () => {
                       key={item.id}
                       id={`postcard-${item.id}`}
                       front={item.front}
-                      name={item.name}
+                      name={`${item.visibility === "PRIVATE" ? "🔒" : "🌐"} ${
+                        item.name
+                      }`}
                       description={item.description}
                       onClick={() => {
                         setItemId(item.id);
