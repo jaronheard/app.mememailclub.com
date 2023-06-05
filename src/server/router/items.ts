@@ -1,6 +1,6 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { createRouter } from "./context";
+import { Context, createRouter } from "./context";
 import Stripe from "stripe";
 import {
   Configuration,
@@ -36,7 +36,26 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
   apiVersion: "2022-11-15",
 });
 
-async function createPostcard({ ctx, input }) {
+const createPostcardInput = z.object({
+  publicationId: z.number(),
+  name: z.string(),
+  description: z.string(),
+  front: z.string().url(),
+  back: z.string().url(),
+  status: z.enum(["DRAFT", "PUBLISHED"]),
+  size: z.enum(["4x6", "6x9", "6x11"]),
+  visibility: z.enum(["PUBLIC", "PRIVATE"]),
+});
+
+type CreatePostcard = z.infer<typeof createPostcardInput>;
+
+async function createPostcard({
+  ctx,
+  input,
+}: {
+  ctx: Context;
+  input: CreatePostcard;
+}) {
   // create a postcard using lob
   const postcardCreate = new PostcardEditable({
     to: {
@@ -309,10 +328,19 @@ export const items = createRouter()
         if (!newPublication) {
           throw new TRPCError({
             code: "INTERNAL_SERVER_ERROR",
-            message: "Publication creation failed",
+            message: "Postcard creation failed - error creating publication",
           });
         }
       }
+      if (!publication?.id || !newPublication?.id) {
+        if (!newPublication) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Postcard creation failed - no publication",
+          });
+        }
+      }
+
       const newItem = await createPostcard({
         ctx,
         input: {
