@@ -2,6 +2,7 @@ import clsx from "clsx";
 import Img from "./Img";
 
 export function PostcardPreviewSimple(props: {
+  id: string;
   front: string;
   name: string;
   description: string;
@@ -14,6 +15,7 @@ export function PostcardPreviewSimple(props: {
 
   return (
     <div
+      id={props.id}
       role="button"
       className="group flex flex-col overflow-hidden rounded-lg"
       onClick={props.onClick}

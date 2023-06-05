@@ -34,7 +34,7 @@ const ParamsValidator = z.object({
 const Item = () => {
   const router = useRouter();
   const utils = trpc.useContext();
-  const [query, setQuery] = useState({
+  const [queryStatus, setQueryStatus] = useState({
     ready: false,
     id: 0,
     iid: 0,
@@ -82,8 +82,8 @@ const Item = () => {
     return url;
   };
 
-  const itemsQuery = trpc.useQuery(["items.getOne", { id: query.iid }], {
-    enabled: query.ready,
+  const itemsQuery = trpc.useQuery(["items.getOne", { id: queryStatus.iid }], {
+    enabled: queryStatus.ready,
   });
   const { data: item } = itemsQuery;
   const updateItem = trpc.useMutation("items.updateItem", {
@@ -92,13 +92,15 @@ const Item = () => {
       utils.invalidateQueries(["items.getPublished"]);
       utils.invalidateQueries(["items.getOne", { id: variables.id }]);
       variables.status === "DRAFT"
-        ? router.push(`/publications/${query.id}/items/${query.iid}`)
-        : router.push(`/publications/${query.id}`);
+        ? router.push(
+            `/publications/${queryStatus.id}/items/${queryStatus.iid}`
+          )
+        : router.push(`/send?id=${queryStatus.iid}`);
     },
   });
   const deleteItem = trpc.useMutation("items.deleteItem", {
     onSuccess() {
-      router.push(`/publications/${query.id}`);
+      router.push(`/publications/${queryStatus.id}`);
     },
   });
 
@@ -106,7 +108,7 @@ const Item = () => {
     if (router.isReady) {
       const zQuery = ParamsValidator.safeParse(router.query);
       if (zQuery.success && zQuery.data.id && zQuery.data.iid) {
-        setQuery({
+        setQueryStatus({
           ready: true,
           id: zQuery.data.id,
           iid: zQuery.data.iid,
@@ -130,7 +132,7 @@ const Item = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [item?.id, reset]);
 
-  if (!query.ready) {
+  if (!queryStatus.ready) {
     return <LoadingLayout />;
   }
 
@@ -143,12 +145,12 @@ const Item = () => {
             pages={[
               {
                 name: item.publication.name,
-                href: `/publications/${query.id}`,
+                href: `/publications/${queryStatus.id}`,
                 current: false,
               },
               {
                 name: watch("name"),
-                href: `/publications/${query.id}/items/${query.iid}`,
+                href: `/publications/${queryStatus.id}/items/${queryStatus.iid}`,
                 current: true,
               },
             ]}
@@ -354,7 +356,7 @@ const Item = () => {
               <Button
                 onClick={handleSubmit((data) => {
                   updateItem.mutate({
-                    id: query.iid,
+                    id: queryStatus.iid,
                     name: data.name,
                     description: data.description || "Private postcard",
                     front: data.front,
@@ -366,12 +368,12 @@ const Item = () => {
                 })}
                 size="sm"
               >
-                Publish
+                Add Message
               </Button>
               <Button
                 onClick={handleSubmit((data) => {
                   updateItem.mutate({
-                    id: query.iid,
+                    id: queryStatus.iid,
                     name: data.name,
                     description: data.description || "Private postcard",
                     front: data.front,
@@ -384,7 +386,7 @@ const Item = () => {
                 size="sm"
                 variant="secondary"
               >
-                Preview
+                Save Draft
               </Button>
             </div>
           </div>
@@ -393,7 +395,7 @@ const Item = () => {
               <Button
                 onClick={() => {
                   deleteItem.mutate({
-                    id: query.iid,
+                    id: queryStatus.iid,
                   });
                 }}
                 size="sm"
