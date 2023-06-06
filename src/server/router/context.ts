@@ -33,7 +33,7 @@ export const createContext = async (
   return await createContextInner({ auth: getAuth(opts.req) });
 };
 
-type Context = trpc.inferAsyncReturnType<typeof createContext>;
+export type Context = trpc.inferAsyncReturnType<typeof createContext>;
 
 export const createRouter = () => trpc.router<Context>();
 

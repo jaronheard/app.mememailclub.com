@@ -15,7 +15,6 @@ type NewProps = {
 };
 
 const New = ({ user }: NewProps) => {
-  console.log(user);
   const router = useRouter();
   const {
     register,
