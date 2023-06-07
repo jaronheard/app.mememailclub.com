@@ -9,6 +9,7 @@ import type {
 } from "@cld-apis/types";
 import { STORAGE_TYPES } from "@cld-apis/utils";
 import { ItemSizeOpts, SIZES } from "../utils/itemSize";
+import clsx from "clsx";
 
 const CLOUD_OPTIONS = {
   cloudName: "jaronheard",
@@ -215,6 +216,9 @@ const Img = ({
       height={height}
       fill={fill}
       className={className}
+      style={{
+        objectFit: keepAspectRatio ? "contain" : "cover",
+      }}
       {...rest}
     />
   );
