@@ -69,9 +69,10 @@ function FileUpload<FormValues extends FieldValues>({
               className={SIZES[size].previewClassNames}
               alt="Open file"
               src={thumbnailUrl || url}
-              height={SIZES[size].previewWidth}
-              width={SIZES[size].previewHeight}
+              height={SIZES[size].previewHeight}
+              width={SIZES[size].previewWidth}
               autoCrop
+              contain
             />
           )}
           {url && status !== "uploading" && postcardBackWithOverlay && (
