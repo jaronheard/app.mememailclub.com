@@ -332,19 +332,20 @@ export const items = createRouter()
           });
         }
       }
-      if (!publication?.id || !newPublication?.id) {
-        if (!newPublication) {
-          throw new TRPCError({
-            code: "INTERNAL_SERVER_ERROR",
-            message: "Postcard creation failed - no publication",
-          });
-        }
+
+      // ensure publication promise is resolved
+      const publicationId = publication?.id || newPublication?.id;
+      if (!publicationId) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Postcard creation failed - error determining publication",
+        });
       }
 
       const newItem = await createPostcard({
         ctx,
         input: {
-          publicationId: publication?.id || newPublication?.id,
+          publicationId: publicationId,
           name: input.name,
           description: input.description,
           front: input.front,
