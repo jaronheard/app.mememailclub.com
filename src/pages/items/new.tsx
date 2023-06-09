@@ -29,7 +29,11 @@ const Page = () => {
     }
   }, [isLoaded, isSignedIn, status, mutate, user?.id]);
 
-  return <LoadingLayout />;
+  return (
+    <LoadingLayout>
+      <p>Creating your new item...</p>
+    </LoadingLayout>
+  );
 };
 
 export default Page;
