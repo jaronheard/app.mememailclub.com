@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
@@ -9,6 +9,7 @@ import Inspiration from "./Inspiration";
 import { trackGoal } from "fathom-client";
 import Img from "./Img";
 import { useUser } from "@clerk/nextjs";
+import useAutoFocus from "../hooks/useAutoFocus";
 
 export type PostcardMessageOverlayFormValues = {
   msg: string;
@@ -65,12 +66,16 @@ export default function Slideover(props: {
 }) {
   const router = useRouter();
   const { user } = useUser();
-  const { register, watch, handleSubmit } =
+  const { register, watch, handleSubmit, setFocus } =
     useForm<PostcardMessageOverlayFormValues>({
       defaultValues: {
         msg: "",
       },
     });
+  // set focus to the message input
+  useEffect(() => {
+    setFocus("msg");
+  }, [setFocus]);
 
   const linesCount = countLines(watch("msg"));
   const tooManyLines = linesCount > 30;
