@@ -8,6 +8,7 @@ export function PostcardPreviewSimple(props: {
   description: string;
   onClick: () => void;
   loadingState?: boolean;
+  hideText?: boolean;
 }): JSX.Element {
   const aspectRatio = "aspect-[925/625]";
   const placeholderSrc =
@@ -35,11 +36,15 @@ export function PostcardPreviewSimple(props: {
           />
         </div>
       </div>
-      <div className="mt-4 flex items-center justify-between text-base font-medium text-gray-900">
-        <h3>{props.name}</h3>
-        <p>$1</p>
-      </div>
-      <p className="mt-1 text-sm italic text-gray-400">{`6"x9" postcard w/ message and postage`}</p>
+      {!props.hideText && (
+        <>
+          <div className="mt-4 flex items-center justify-between text-base font-medium text-gray-900">
+            <h3>{props.name}</h3>
+            <p>$1</p>
+          </div>
+          <p className="mt-1 text-sm italic text-gray-400">{`6"x9" postcard w/ message and postage`}</p>
+        </>
+      )}
     </div>
   );
 }
