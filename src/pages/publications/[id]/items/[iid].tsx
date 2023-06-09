@@ -15,6 +15,8 @@ import { ItemSizeOpts, itemSizeToClient } from "../../../../utils/itemSize";
 import { Switch } from "@headlessui/react";
 import Head from "next/head";
 import { useUser } from "@clerk/nextjs";
+import { PostcardPreviewSimple } from "../../../../components/PostcardPreviewSimple";
+import { SIZES } from "../../../../utils/itemSize";
 
 export type ItemFormValues = {
   name: string;
@@ -90,6 +92,7 @@ const Item = () => {
     onSuccess(data, variables) {
       utils.invalidateQueries(["items.getAll"]);
       utils.invalidateQueries(["items.getPublished"]);
+      utils.invalidateQueries(["items.getAllPublished"]);
       utils.invalidateQueries(["items.getOne", { id: variables.id }]);
       variables.status === "DRAFT"
         ? router.push(
@@ -156,6 +159,7 @@ const Item = () => {
             ]}
           />
         )}
+        loading={() => <Breadcrumbs loading />}
       />
       <form className="mt-6">
         <div>
@@ -344,6 +348,104 @@ const Item = () => {
                 )}
                 <p className="mt-2 text-sm text-gray-500">
                   Write a few sentences about your item.
+                </p>
+              </div>
+            </div>
+          )}
+          loading={() => (
+            <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+              <div className="hidden sm:col-span-6" id="size">
+                {/* Size field with options for 4x6, 6x9, and 6x11 */}
+                <label
+                  htmlFor="size"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Size
+                </label>
+                <select
+                  id="size"
+                  className="mt-1 block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                  defaultValue="6x9"
+                  disabled
+                >
+                  <option value="6x9">6x9</option>
+                </select>
+              </div>
+              <div className="flex flex-col gap-2 sm:col-span-3" id="front">
+                <p className="block text-sm font-medium text-gray-700">Front</p>
+                <div className={SIZES["6x9"].previewClassNames}>
+                  <PostcardPreviewSimple
+                    id={`loading-front`}
+                    loadingState={true}
+                    front=""
+                    name=""
+                    description=""
+                    onClick={() => null}
+                    hideText
+                  />
+                </div>
+                <p className="mt-1 block text-sm font-medium text-gray-700">
+                  Maximum file size 10MB
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-2 sm:col-span-3" id="back">
+                <p className="block text-sm font-medium text-gray-700">
+                  Back (address and message side)
+                </p>
+                <div className={SIZES["6x9"].previewClassNames}>
+                  <PostcardPreviewSimple
+                    id={`loading-back`}
+                    loadingState={true}
+                    front=""
+                    name=""
+                    description=""
+                    onClick={() => null}
+                    hideText
+                  />
+                </div>
+                <p className="mt-1 block text-sm font-medium text-gray-700">
+                  Maximum file size 10MB
+                </p>
+              </div>
+
+              <div className="sm:col-span-4" id="name">
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Title
+                </label>
+                <div className="mt-1">
+                  <input
+                    className="block w-full rounded-md border p-3 shadow-sm placeholder:text-gray-300  focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    placeholder="Your postcard is your art, give it a title!"
+                    disabled
+                  />
+                </div>
+              </div>
+
+              <div className="sm:col-span-6" id="visibility">
+                <Switch.Group as="div" className="flex items-center">
+                  <Switch.Label as="span" className="mr-3 w-[7ch] text-sm">
+                    <div className="font-bold text-gray-900">Private</div>
+                  </Switch.Label>
+                  <Switch
+                    checked
+                    className="rounded-full relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer border-2 border-transparent bg-gray-200 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"
+                    disabled
+                  >
+                    <span
+                      aria-hidden="true"
+                      className="rounded-full pointer-events-none inline-block h-5 w-5 translate-x-0 transform bg-white shadow ring-0 transition duration-200 ease-in-out"
+                    />
+                  </Switch>
+                  <Switch.Label as="span" className="ml-3 w-[8ch] text-sm">
+                    <span className="font-medium text-gray-900">Public</span>
+                  </Switch.Label>
+                </Switch.Group>
+                <p className="mt-2 text-sm text-gray-500">
+                  Postcard visibility loading...
                 </p>
               </div>
             </div>

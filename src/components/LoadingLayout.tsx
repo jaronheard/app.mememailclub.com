@@ -1,8 +1,15 @@
 import Layout from "./Layout";
+import Loading from "./Loading";
 
-const LoadingLayout = () => (
+const LoadingLayout = ({
+  message,
+  children,
+}: {
+  message?: string;
+  children?: JSX.Element;
+}): JSX.Element => (
   <Layout>
-    <main className="h-screen"></main>
+    <Loading message={message}>{children}</Loading>
   </Layout>
 );
 
