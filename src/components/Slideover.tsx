@@ -9,7 +9,6 @@ import Inspiration from "./Inspiration";
 import { trackGoal } from "fathom-client";
 import Img from "./Img";
 import { useUser } from "@clerk/nextjs";
-import useAutoFocus from "../hooks/useAutoFocus";
 import Button from "./Button";
 
 export type PostcardMessageOverlayFormValues = {
