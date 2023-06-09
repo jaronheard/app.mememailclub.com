@@ -8,6 +8,8 @@ type ButtonProps = {
   className?: string;
   size?: "sm" | "base";
   variant?: "primary" | "secondary" | "danger";
+  disabled?: boolean;
+  type?: "button" | "submit" | "reset";
 };
 
 function Button({
@@ -17,6 +19,8 @@ function Button({
   className,
   size = "base",
   variant = "primary",
+  disabled,
+  type = "button",
 }: ButtonProps) {
   if (href && onClick) {
     throw new Error("Button cannot have both href and onClick");
@@ -64,6 +68,8 @@ function Button({
           className
         )}
         onClick={onClick}
+        disabled={disabled}
+        type={type}
       >
         {children}
       </button>
