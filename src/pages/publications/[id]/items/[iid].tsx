@@ -92,6 +92,7 @@ const Item = () => {
     onSuccess(data, variables) {
       utils.invalidateQueries(["items.getAll"]);
       utils.invalidateQueries(["items.getPublished"]);
+      utils.invalidateQueries(["items.getAllPublished"]);
       utils.invalidateQueries(["items.getOne", { id: variables.id }]);
       variables.status === "DRAFT"
         ? router.push(
