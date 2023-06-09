@@ -186,7 +186,7 @@ const Layout = (props: LayoutProps) => {
                             className={clsx(
                               item.current
                                 ? "bg-indigo-700 text-white"
-                                : "text-black hover:bg-indigo-500 hover:bg-opacity-90 hover:text-white",
+                                : "text-black hover:bg-indigo-500 hover:bg-opacity-90 hover:text-white active:bg-indigo-950",
                               "rounded-md py-2 px-3 text-sm font-bold"
                             )}
                             aria-current={item.current ? "page" : undefined}
@@ -204,7 +204,7 @@ const Layout = (props: LayoutProps) => {
                   </div>
                   <div className="flex lg:hidden">
                     {/* Mobile menu button */}
-                    <Disclosure.Button className="inline-flex items-center justify-center rounded-md bg-transparent p-2 text-indigo-200 hover:bg-indigo-500 hover:bg-opacity-90 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-700 hover:focus:ring-white">
+                    <Disclosure.Button className="inline-flex items-center justify-center rounded-md bg-transparent p-2 text-indigo-200 hover:bg-indigo-500 hover:bg-opacity-90 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-700 hover:focus:ring-white active:bg-indigo-950">
                       <span className="sr-only">Open main menu</span>
                       {open ? (
                         <XMarkIcon
@@ -229,7 +229,7 @@ const Layout = (props: LayoutProps) => {
                         {" "}
                         {/* Signed out users get sign in button */}
                         <SignInButton>
-                          <button className="relative ml-3 flex-shrink-0 rounded-md py-2 px-3 text-sm font-bold text-black hover:bg-indigo-500 hover:bg-opacity-90 hover:text-white">
+                          <button className="relative ml-3 flex-shrink-0 rounded-md py-2 px-3 text-sm font-bold text-black hover:bg-indigo-500 hover:bg-opacity-90 hover:text-white active:bg-indigo-950">
                             Sign in
                           </button>
                         </SignInButton>
@@ -249,7 +249,7 @@ const Layout = (props: LayoutProps) => {
                       className={clsx(
                         item.current
                           ? "bg-indigo-700 text-white"
-                          : "text-black hover:bg-indigo-500 hover:bg-opacity-90 hover:text-white",
+                          : "text-black hover:bg-indigo-500 hover:bg-opacity-90 hover:text-white active:bg-indigo-950",
                         "block rounded-md py-2 px-3 text-base font-bold"
                       )}
                       aria-current={item.current ? "page" : undefined}
@@ -269,7 +269,7 @@ const Layout = (props: LayoutProps) => {
                   <SignedOut>
                     {/* Signed out users get sign in button */}
                     <SignInButton>
-                      <button className="flex w-full items-center rounded-md py-2 px-3 text-base font-bold text-black hover:bg-indigo-500 hover:bg-opacity-90 hover:text-white">
+                      <button className="flex w-full items-center rounded-md py-2 px-3 text-base font-bold text-black hover:bg-indigo-500 hover:bg-opacity-90 hover:text-white active:bg-indigo-950">
                         Sign in
                       </button>
                     </SignInButton>

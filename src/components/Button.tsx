@@ -8,6 +8,8 @@ type ButtonProps = {
   className?: string;
   size?: "sm" | "base";
   variant?: "primary" | "secondary" | "danger";
+  disabled?: boolean;
+  type?: "button" | "submit" | "reset";
 };
 
 function Button({
@@ -17,6 +19,8 @@ function Button({
   className,
   size = "base",
   variant = "primary",
+  disabled,
+  type = "button",
 }: ButtonProps) {
   if (href && onClick) {
     throw new Error("Button cannot have both href and onClick");
@@ -32,9 +36,9 @@ function Button({
             "text-base": size === "base",
           },
           {
-            "border-transparent bg-indigo-600 text-white hover:bg-indigo-700":
+            "border-transparent bg-indigo-600 text-white hover:bg-indigo-700 active:bg-indigo-950":
               variant === "primary",
-            "border-indigo-700 bg-white text-indigo-700 hover:bg-gray-100":
+            "border-indigo-700 bg-white text-indigo-700 hover:bg-gray-100 active:bg-gray-200":
               variant === "secondary",
           },
           className
@@ -54,16 +58,18 @@ function Button({
             "text-base": size === "base",
           },
           {
-            "border-transparent bg-indigo-600 text-white hover:bg-indigo-700":
+            "border-transparent bg-indigo-600 text-white hover:bg-indigo-700 active:bg-indigo-950":
               variant === "primary",
-            "border-indigo-700 bg-white text-indigo-700 hover:bg-gray-100":
+            "border-indigo-700 bg-white text-indigo-700 hover:bg-gray-100 active:bg-gray-200":
               variant === "secondary",
-            "border-transparent bg-red-100 text-red-700 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2":
+            "border-transparent bg-red-100 text-red-700 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 active:bg-red-300":
               variant === "danger",
           },
           className
         )}
         onClick={onClick}
+        disabled={disabled}
+        type={type}
       >
         {children}
       </button>

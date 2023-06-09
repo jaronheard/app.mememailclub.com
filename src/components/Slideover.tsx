@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
@@ -9,6 +9,7 @@ import Inspiration from "./Inspiration";
 import { trackGoal } from "fathom-client";
 import Img from "./Img";
 import { useUser } from "@clerk/nextjs";
+import Button from "./Button";
 
 export type PostcardMessageOverlayFormValues = {
   msg: string;
@@ -65,12 +66,16 @@ export default function Slideover(props: {
 }) {
   const router = useRouter();
   const { user } = useUser();
-  const { register, watch, handleSubmit } =
+  const { register, watch, handleSubmit, setFocus } =
     useForm<PostcardMessageOverlayFormValues>({
       defaultValues: {
         msg: "",
       },
     });
+  // set focus to the message input
+  useEffect(() => {
+    setFocus("msg");
+  }, [setFocus]);
 
   const linesCount = countLines(watch("msg"));
   const tooManyLines = linesCount > 30;
@@ -176,18 +181,18 @@ export default function Slideover(props: {
                             </div>
                           )}
                         </div>
-                        <div>
-                          <button
+                        <div className="flex gap-4 px-2">
+                          <Button
                             type="button"
-                            className="rounded-md bg-postcard py-2 px-3 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:ring-gray-400"
                             onClick={() => setOpen(false)}
+                            size="sm"
+                            variant="secondary"
                           >
                             Cancel
-                          </button>
-                          <button
+                          </Button>
+                          <Button
                             disabled={!!hasError || !watch("msg")}
-                            type="submit"
-                            className="ml-4 inline-flex justify-center rounded-md bg-indigo-600 py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:bg-gray-300"
+                            variant="primary"
                             onClick={handleSubmit((data) => {
                               createMessage.mutate({
                                 message: data.msg,
@@ -196,9 +201,11 @@ export default function Slideover(props: {
                               });
                               trackGoal("GMZEE6ZN", 0);
                             })}
+                            type="submit"
+                            size="sm"
                           >
                             Address & Send
-                          </button>
+                          </Button>
                         </div>
                       </div>
                       <div className="relative flex-1 px-4 sm:px-6">
