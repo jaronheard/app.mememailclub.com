@@ -61,6 +61,7 @@ type PublicationProps = {
 
 const Publication = ({ user }: PublicationProps) => {
   const router = useRouter();
+  const utils = trpc.useContext();
   const [query, setQuery] = useState({ ready: false, id: 0 });
 
   const { id } = router.query;
@@ -82,14 +83,22 @@ const Publication = ({ user }: PublicationProps) => {
   );
   const { data: publication, isLoading } = publicationQuery;
   const updatePublication = trpc.useMutation("publications.updatePublication", {
-    onSuccess: () => router.push("/publications"),
+    onSuccess: () => {
+      utils.invalidateQueries({ queryKey: "publications" });
+      router.push("/publications");
+    },
   });
   const deletePublication = trpc.useMutation("publications.deletePublication", {
-    onSuccess: () => router.push("/publications"),
+    onSuccess: () => {
+      utils.invalidateQueries({ queryKey: "publications" });
+      router.push("/publications");
+    },
   });
   const createItem = trpc.useMutation("items.createItem", {
-    onSuccess: (data) =>
-      router.push(`/publications/${query.id}/items/${data?.id}`),
+    onSuccess: (data) => {
+      utils.invalidateQueries({ queryKey: "publications" });
+      router.push(`/publications/${query.id}/items/${data?.id}`);
+    },
   });
 
   useEffect(() => {

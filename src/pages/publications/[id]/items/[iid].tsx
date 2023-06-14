@@ -90,10 +90,7 @@ const Item = () => {
   const { data: item } = itemsQuery;
   const updateItem = trpc.useMutation("items.updateItem", {
     onSuccess(data, variables) {
-      utils.invalidateQueries(["items.getAll"]);
-      utils.invalidateQueries(["items.getPublished"]);
-      utils.invalidateQueries(["items.getAllPublished"]);
-      utils.invalidateQueries(["items.getOne", { id: variables.id }]);
+      utils.invalidateQueries({ queryKey: "items" });
       variables.status === "DRAFT"
         ? router.push(
             `/publications/${queryStatus.id}/items/${queryStatus.iid}`
@@ -102,7 +99,8 @@ const Item = () => {
     },
   });
   const deleteItem = trpc.useMutation("items.deleteItem", {
-    onSuccess() {
+    onSuccess(data, variables) {
+      utils.invalidateQueries({ queryKey: "items" });
       router.push(`/publications/${queryStatus.id}`);
     },
   });

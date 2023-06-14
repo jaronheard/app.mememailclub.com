@@ -47,6 +47,7 @@ const SendSignedIn = () => {
         </div>
       </div>
       <DefaultQueryCell
+        loadingWhenStale={itemId !== 0}
         query={itemsQuery}
         empty={() => <div>No postcards</div>}
         loading={() => (
