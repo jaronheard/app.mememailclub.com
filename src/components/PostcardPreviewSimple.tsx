@@ -24,7 +24,8 @@ export function PostcardPreviewSimple(props: {
       <div
         className={clsx(
           "sm:aspect-none relative bg-gray-200 group-hover:opacity-75",
-          aspectRatio
+          aspectRatio,
+          props.loadingState && "animate-pulse"
         )}
       >
         <div>
@@ -39,7 +40,7 @@ export function PostcardPreviewSimple(props: {
       {!props.hideText && (
         <>
           <div className="mt-4 flex items-center justify-between text-base font-medium text-gray-900">
-            <h3>{props.name}</h3>
+            <h3>{props.name || "Loading..."}</h3>
             <p>$1</p>
           </div>
           <p className="mt-1 text-sm italic text-gray-400">{`6"x9" postcard w/ message and postage`}</p>
