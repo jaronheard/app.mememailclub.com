@@ -217,9 +217,13 @@ const Img = ({
       height={height}
       fill={fill}
       className={className}
-      style={{
-        objectFit: "contain",
-      }}
+      style={
+        contain
+          ? {
+              objectFit: "contain",
+            }
+          : {}
+      }
       {...rest}
     />
   );
