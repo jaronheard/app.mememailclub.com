@@ -4,7 +4,7 @@
 import {
   QueryObserverIdleResult,
   QueryObserverLoadingErrorResult,
-  QueryObserverLoadingResult,
+  QueryObserverBaseResult,
   QueryObserverRefetchErrorResult,
   QueryObserverSuccessResult,
   UseQueryResult,
@@ -25,12 +25,13 @@ interface CreateQueryCellOptions<TError> {
    * Default loading handler for this cell
    */
   loading: (
-    query: QueryObserverLoadingResult<unknown, TError>
+    query: QueryObserverBaseResult<unknown, TError>
   ) => JSXElementOrNull;
   /**
    * Default idle handler for this cell (when `enabled: false`)
    */
   idle: (query: QueryObserverIdleResult<unknown, TError>) => JSXElementOrNull;
+  loadingWhenStale?: boolean;
 }
 
 interface QueryCellOptions<TData, TError> {
@@ -42,13 +43,12 @@ interface QueryCellOptions<TData, TError> {
   /**
    * Optionally override loading state
    */
-  loading?: (
-    query: QueryObserverLoadingResult<TData, TError>
-  ) => JSXElementOrNull;
+  loading?: (query: QueryObserverBaseResult<TData, TError>) => JSXElementOrNull;
   /**
    * Override `enabled: false`-state - defaults to same as `loading`
    */
   idle?: (query: QueryObserverIdleResult<TData, TError>) => JSXElementOrNull;
+  loadingWhenStale?: boolean;
 }
 
 interface QueryCellOptionsWithEmpty<TData, TError>
@@ -86,6 +86,10 @@ export function createQueryCell<TError>(
       | QueryCellOptionsWithEmpty<TData, TError>
   ) {
     const { query } = opts;
+
+    if (opts.loadingWhenStale && query.isStale) {
+      return opts.loading?.(query) ?? queryCellOpts.loading(query);
+    }
 
     if (query.status === "success") {
       if (
