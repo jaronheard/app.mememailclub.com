@@ -65,6 +65,7 @@ export default function Slideover(props: {
   itemFront: string;
 }) {
   const router = useRouter();
+  const utils = trpc.useContext();
   const { user } = useUser();
   const { register, watch, handleSubmit, setFocus } =
     useForm<PostcardMessageOverlayFormValues>({
@@ -85,6 +86,7 @@ export default function Slideover(props: {
   const { open, setOpen, itemLink, itemId, itemFront } = props;
   const createMessage = trpc.useMutation("messages.createMessage", {
     onSuccess(message) {
+      utils.invalidateQueries({ queryKey: "messages" });
       router.push(`${itemLink}?client_reference_id=${message.id}`);
     },
   });

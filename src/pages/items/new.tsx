@@ -6,9 +6,11 @@ import LoadingLayout from "../../components/LoadingLayout";
 
 const Page = () => {
   const router = useRouter();
+  const utils = trpc.useContext();
   const { isLoaded, isSignedIn, user } = useUser();
   const { mutate, status } = trpc.useMutation("items.createItemForUser", {
     onSuccess: (data) => {
+      utils.invalidateQueries({ queryKey: "items" });
       router.push(`/publications/${data.publicationId}/items/${data.id}`);
     },
   });

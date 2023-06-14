@@ -16,6 +16,7 @@ type NewProps = {
 
 const New = ({ user }: NewProps) => {
   const router = useRouter();
+  const utils = trpc.useContext();
   const {
     register,
     handleSubmit,
@@ -29,6 +30,7 @@ const New = ({ user }: NewProps) => {
   });
   const createPublication = trpc.useMutation("publications.createPublication", {
     onSuccess(data) {
+      utils.invalidateQueries({ queryKey: "publications" });
       router.push(`/publications/${data.id}`);
     },
   });
