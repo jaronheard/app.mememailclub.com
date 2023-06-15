@@ -10,7 +10,7 @@ const Page = () => {
   const { isLoaded, isSignedIn, user } = useUser();
   const { mutate, status } = trpc.useMutation("items.createItemForUser", {
     onSuccess: (data) => {
-      utils.invalidateQueries({ queryKey: "items" });
+      utils.invalidateQueries();
       router.push(`/publications/${data.publicationId}/items/${data.id}`);
     },
   });
