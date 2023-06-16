@@ -17,8 +17,6 @@ const SendSignedIn = () => {
   const [itemId, setItemId] = useState(0);
   // TODO: get only items for the current user
   const itemsQuery = trpc.useQuery(["items.getAllPublished"]);
-  console.log("router", router);
-  console.log("itemsQuery", itemsQuery);
 
   useEffect(() => {
     // Make sure we have the query param available.
@@ -26,7 +24,9 @@ const SendSignedIn = () => {
     if (router.asPath !== router.route && router.query?.id) {
       // check query param is a string, not a string[]
       if (typeof router.query.id === "string") {
+        console.log("Setting item id", router.query.id);
         setItemId(parseInt(router.query.id));
+        console.log("Setting open to true");
         setOpen(true);
       }
     }
@@ -73,6 +73,7 @@ const SendSignedIn = () => {
         )}
         success={({ data: items }) => {
           const activeItem = items.find((item) => item.id === itemId);
+          console.log("Active item", activeItem, !!activeItem);
           return (
             <>
               {activeItem && (
