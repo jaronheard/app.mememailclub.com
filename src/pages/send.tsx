@@ -10,7 +10,6 @@ import { SignedIn, SignedOut, useUser } from "@clerk/nextjs";
 import LoadingLayout from "../components/LoadingLayout";
 import { PostcardCreateSimple } from "../components/PostcardCreateSimple";
 import { useRouter } from "next/router";
-import { is } from "date-fns/locale";
 
 const SendSignedIn = () => {
   const router = useRouter();
@@ -19,18 +18,16 @@ const SendSignedIn = () => {
   // TODO: get only items for the current user
   const itemsQuery = trpc.useQuery(["items.getAllPublished"]);
 
-  const { isSuccess } = itemsQuery;
-
   useEffect(() => {
     // Make sure we have the query param available.
-    if (router.asPath !== router.route && router.query?.id && isSuccess) {
+    if (router.asPath !== router.route && router.query?.id) {
       // check query param is a string, not a string[]
       if (typeof router.query.id === "string") {
         setItemId(parseInt(router.query.id));
         setOpen(true);
       }
     }
-  }, [router, isSuccess]);
+  }, [router]);
 
   return (
     <>
