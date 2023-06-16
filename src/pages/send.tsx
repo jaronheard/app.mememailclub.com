@@ -17,9 +17,12 @@ const SendSignedIn = () => {
   const [itemId, setItemId] = useState(0);
   // TODO: get only items for the current user
   const itemsQuery = trpc.useQuery(["items.getAllPublished"]);
+  console.log("router", router);
+  console.log("itemsQuery", itemsQuery);
 
   useEffect(() => {
     // Make sure we have the query param available.
+    console.log("Use effect", router);
     if (router.asPath !== router.route && router.query?.id) {
       // check query param is a string, not a string[]
       if (typeof router.query.id === "string") {
