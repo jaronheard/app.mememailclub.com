@@ -23,6 +23,7 @@ const SendSignedIn = () => {
   const activeItem = data?.find((item) => item.id === itemId);
 
   useEffect(() => {
+    console.log("useEffect - activeItem", activeItem);
     // Make sure we have the query param available.
     if (router.query?.id && shouldSetItemId && !shouldSetOpen) {
       // check query param is a string, not a string[]
@@ -32,7 +33,6 @@ const SendSignedIn = () => {
         setShouldSetOpen(true);
         // clear the query param
         router.replace(router.route, undefined, { shallow: true });
-        ``;
       }
     }
     if (shouldSetOpen && activeItem) {
@@ -59,14 +59,14 @@ const SendSignedIn = () => {
         </div>
       </div>
       <DefaultQueryCell
-        loadingWhenStale={itemId !== 0}
         query={itemsQuery}
         empty={() => <div>No postcards</div>}
         loading={() => (
           <div className="mx-auto max-w-2xl py-8 px-4 sm:py-12 sm:px-6 lg:max-w-7xl lg:px-8">
             <h2 className="sr-only">Products</h2>
             <div className="grid grid-cols-1 gap-y-4 sm:grid-cols-1 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-2 lg:gap-x-8">
-              {[0, 1, 2, 3, 4, 5, 6, 7].map((item) => (
+              <PostcardCreateSimple onClick={() => router.push("/items/new")} />
+              {[0, 1, 2, 3, 4, 5, 6].map((item) => (
                 <PostcardPreviewSimple
                   id={`loading-${item}`}
                   key={item}
@@ -83,15 +83,13 @@ const SendSignedIn = () => {
         success={({ data: items }) => {
           return (
             <>
-              {activeItem && (
-                <Slideover
-                  open={open}
-                  setOpen={setOpen}
-                  itemId={activeItem.id}
-                  itemLink={activeItem.stripePaymentLink}
-                  itemFront={activeItem.front}
-                ></Slideover>
-              )}
+              <Slideover
+                open={open}
+                setOpen={setOpen}
+                itemId={activeItem?.id || 0}
+                itemLink={activeItem?.stripePaymentLink || ""}
+                itemFront={activeItem?.front || ""}
+              ></Slideover>
               <div className="mx-auto max-w-2xl py-8 px-4 sm:py-12 sm:px-6 lg:max-w-7xl lg:px-8">
                 <h2 className="sr-only">Products</h2>
                 <div className="grid grid-cols-1 gap-y-4 sm:grid-cols-1 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-2 lg:gap-x-8">
