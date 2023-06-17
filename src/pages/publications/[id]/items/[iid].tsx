@@ -99,8 +99,11 @@ const Item = () => {
   });
   const deleteItem = trpc.useMutation("items.deleteItem", {
     onSuccess(data, variables) {
-      utils.invalidateQueries();
-      router.push(`/publications/${queryStatus.id}`);
+      return utils
+        .invalidateQueries(["publications.getOne", { id: queryStatus.id }])
+        .then(() => {
+          router.push(`/publications/${queryStatus.id}`);
+        });
     },
   });
 

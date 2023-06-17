@@ -84,20 +84,19 @@ const Publication = ({ user }: PublicationProps) => {
   const { data: publication, isLoading } = publicationQuery;
   const updatePublication = trpc.useMutation("publications.updatePublication", {
     onSuccess: () => {
-      utils.invalidateQueries();
-      router.push("/publications");
+      return utils.invalidateQueries().then(() => router.push("/publications"));
     },
   });
   const deletePublication = trpc.useMutation("publications.deletePublication", {
     onSuccess: () => {
-      utils.invalidateQueries();
-      router.push("/publications");
+      return utils.invalidateQueries().then(() => router.push("/publications"));
     },
   });
   const createItem = trpc.useMutation("items.createItem", {
     onSuccess: (data) => {
-      utils.invalidateQueries();
-      router.push(`/publications/${query.id}/items/${data?.id}`);
+      return utils
+        .invalidateQueries()
+        .then(() => router.push(`/publications/${query.id}/items/${data?.id}`));
     },
   });
 
