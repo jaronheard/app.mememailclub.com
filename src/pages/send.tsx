@@ -24,19 +24,15 @@ const SendSignedIn = () => {
 
   useEffect(() => {
     // Make sure we have the query param available.
-    if (
-      router.asPath !== router.route &&
-      router.query?.id &&
-      shouldSetItemId &&
-      !shouldSetOpen
-    ) {
+    if (router.query?.id && shouldSetItemId && !shouldSetOpen) {
       // check query param is a string, not a string[]
       if (typeof router.query.id === "string") {
         setItemId(parseInt(router.query.id));
         setShouldSetItemId(false);
         setShouldSetOpen(true);
         // clear the query param
-        router.replace(router.route, undefined, { shallow: true });``
+        router.replace(router.route, undefined, { shallow: true });
+        ``;
       }
     }
     if (shouldSetOpen && activeItem) {
