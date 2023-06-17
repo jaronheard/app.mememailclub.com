@@ -90,7 +90,9 @@ const Item = () => {
   const { data: item } = itemsQuery;
   const updateItem = trpc.useMutation("items.updateItem", {
     onSuccess(data, variables) {
-      utils.invalidateQueries();
+      utils.invalidateQueries("items.getAllPublished", {
+        refetchInactive: true,
+      });
       variables.status === "DRAFT"
         ? router.push(
             `/publications/${queryStatus.id}/items/${queryStatus.iid}`
