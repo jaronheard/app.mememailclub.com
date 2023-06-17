@@ -18,7 +18,10 @@ const SendSignedIn = () => {
   const [shouldSetItemId, setShouldSetItemId] = useState(true);
   const [shouldSetOpen, setShouldSetOpen] = useState(false);
   // TODO: get only items for the current user
-  const itemsQuery = trpc.useQuery(["items.getAllPublished"]);
+  const itemsQuery = trpc.useQuery([
+    "items.getAllPublished",
+    { latestId: `${itemId}` },
+  ]);
   const { data } = itemsQuery;
   const activeItem = data?.find((item) => item.id === itemId);
 

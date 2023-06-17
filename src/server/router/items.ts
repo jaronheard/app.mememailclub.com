@@ -181,6 +181,9 @@ export const items = createRouter()
     },
   })
   .query("getAllPublished", {
+    input: z.object({
+      latestId: z.string(),
+    }),
     async resolve({ ctx }) {
       const items = await ctx.prisma.item.findMany({
         where: {
