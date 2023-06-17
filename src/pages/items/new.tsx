@@ -11,7 +11,7 @@ const Page = () => {
   const { mutate, status } = trpc.useMutation("items.createItemForUser", {
     onSuccess: (data) => {
       utils.invalidateQueries();
-      router.push(`/publications/${data.publicationId}/items/${data.id}`);
+      router.replace(`/publications/${data.publicationId}/items/${data.id}`);
     },
   });
 
