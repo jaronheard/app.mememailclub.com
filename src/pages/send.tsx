@@ -15,22 +15,35 @@ const SendSignedIn = () => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [itemId, setItemId] = useState(0);
+  const [shouldSetItemId, setShouldSetItemId] = useState(true);
+  const [shouldSetOpen, setShouldSetOpen] = useState(false);
   // TODO: get only items for the current user
   const itemsQuery = trpc.useQuery(["items.getAllPublished"]);
+  const { data } = itemsQuery;
+  const activeItem = data?.find((item) => item.id === itemId);
 
   useEffect(() => {
     // Make sure we have the query param available.
-    console.log("Use effect", router);
-    if (router.asPath !== router.route && router.query?.id) {
+    if (
+      router.asPath !== router.route &&
+      router.query?.id &&
+      shouldSetItemId &&
+      !shouldSetOpen
+    ) {
       // check query param is a string, not a string[]
       if (typeof router.query.id === "string") {
-        console.log("Setting item id", router.query.id);
         setItemId(parseInt(router.query.id));
-        console.log("Setting open to true");
-        setOpen(true);
+        setShouldSetItemId(false);
+        setShouldSetOpen(true);
+        // clear the query param
+        router.replace(router.route, undefined, { shallow: true });``
       }
     }
-  }, [router]);
+    if (shouldSetOpen && activeItem) {
+      setOpen(true);
+      setShouldSetOpen(false);
+    }
+  }, [router, shouldSetItemId, shouldSetOpen, activeItem]);
 
   return (
     <>
@@ -72,8 +85,6 @@ const SendSignedIn = () => {
           </div>
         )}
         success={({ data: items }) => {
-          const activeItem = items.find((item) => item.id === itemId);
-          console.log("Active item", activeItem, !!activeItem);
           return (
             <>
               {activeItem && (
