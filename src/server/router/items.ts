@@ -100,7 +100,7 @@ async function createPostcard({
     // active: input.status === "PUBLISHED",
     description: `6"x9" postcard with your message`,
     statement_descriptor: `postcard: ${input.name.slice(0, 12)}`,
-    images: [frontPreviewCached, backPreviewCached],
+    images: [input.front, input.back],
     // default item information
     shippable: true,
     tax_code: "txcd_35020200",
@@ -435,7 +435,7 @@ export const items = createRouter()
         name: input.name,
         active: input.status === "PUBLISHED",
         statement_descriptor: `postcard: ${input.name.slice(0, 12)}`,
-        images: [frontPreviewCached, backPreviewCached],
+        images: [input.front, input.back],
       });
 
       if (!product) {
