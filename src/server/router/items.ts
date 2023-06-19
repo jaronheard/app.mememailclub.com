@@ -2,14 +2,8 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { Context, createRouter } from "./context";
 import Stripe from "stripe";
-import {
-  Configuration,
-  PostcardEditable,
-  PostcardsApi,
-} from "@lob/lob-typescript-sdk";
 import { env } from "../../env/server.mjs";
 import { itemSizeToDB } from "../../utils/itemSize";
-import { cloudinaryUrlBuilder } from "../../components/Img";
 
 const bannerHeading = encodeURIComponent("Your postcard is on its way! 📮✨");
 const bannerText = encodeURIComponent("Send another for just $1!");
@@ -27,10 +21,6 @@ const INCLUDE_PUBLICATION_FIELDS = {
     Messages: true,
   },
 };
-
-const testConfig: Configuration = new Configuration({
-  username: env.LOB_TEST_API_KEY,
-});
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
   apiVersion: "2022-11-15",
@@ -56,44 +46,6 @@ async function createPostcard({
   ctx: Context;
   input: CreatePostcard;
 }) {
-  // create a postcard using lob
-  const postcardCreate = new PostcardEditable({
-    to: {
-      name: "Jane Doe",
-      address_line1: "123 Main St",
-      address_city: "San Francisco",
-      address_state: "CA",
-      address_zip: "94111",
-    },
-    front: input.front,
-    back: input.back,
-    size: input.size,
-  });
-  const myPostcard = await new PostcardsApi(testConfig).create(postcardCreate);
-
-  // throw error if postcard creation fails
-  if (!myPostcard) {
-    throw new TRPCError({
-      code: "INTERNAL_SERVER_ERROR",
-      message: "Postcard creation failed",
-    });
-  }
-
-  const frontPreview = myPostcard.thumbnails?.[0]?.large;
-  const backPreview = myPostcard.thumbnails?.[1]?.large;
-
-  // throw error if postcard preview creation fails
-  if (!frontPreview || !backPreview) {
-    throw new TRPCError({
-      code: "INTERNAL_SERVER_ERROR",
-      message: "Postcard preview creation failed",
-    });
-  }
-
-  // cache preview images
-  const frontPreviewCached = cloudinaryUrlBuilder({ src: frontPreview });
-  const backPreviewCached = cloudinaryUrlBuilder({ src: backPreview });
-
   // stripe logic
   const product = await stripe.products.create({
     name: input.name || "Postcard",
@@ -140,13 +92,10 @@ async function createPostcard({
       description: input.description,
       front: input.front,
       back: input.back,
-      frontPreview: frontPreviewCached,
-      backPreview: backPreviewCached,
       status: input.status,
       stripeProductId: product.id,
       stripePaymentLink: paymentLink.url,
       stripePaymentLinkId: paymentLink.id,
-      postcardPreviewId: myPostcard.id,
       size: itemSizeToDB(input.size),
       test: process.env.NODE_ENV === "development",
       visibility: input.visibility,
@@ -252,30 +201,6 @@ export const items = createRouter()
       return item;
     },
   })
-  .mutation("updatePostcardPreviewRendered", {
-    input: z.object({
-      postcardPreviewId: z.string(),
-      postcardPreviewRendered: z.boolean(),
-    }),
-    async resolve({ ctx, input }) {
-      const updatedItem = await ctx.prisma.item.update({
-        where: {
-          postcardPreviewId: input.postcardPreviewId,
-        },
-        data: {
-          postcardPreviewRendered: input.postcardPreviewRendered,
-        },
-      });
-      if (!updatedItem) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Item update failed",
-        });
-      }
-
-      return updatedItem;
-    },
-  })
   .middleware(async ({ ctx, next }) => {
     // Any queries or mutations after this middleware will
     // raise an error unless there is a current session
@@ -373,46 +298,6 @@ export const items = createRouter()
       visibility: z.enum(["PUBLIC", "PRIVATE"]),
     }),
     async resolve({ ctx, input }) {
-      // create a postcard using lob
-      const postcardCreate = new PostcardEditable({
-        to: {
-          name: "Jane Doe",
-          address_line1: "123 Main St",
-          address_city: "San Francisco",
-          address_state: "CA",
-          address_zip: "94111",
-        },
-        front: input.front,
-        back: input.back,
-        size: input.size,
-      });
-      const myPostcard = await new PostcardsApi(testConfig).create(
-        postcardCreate
-      );
-
-      // throw error if postcard creation fails
-      if (!myPostcard) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Postcard creation failed",
-        });
-      }
-
-      const frontPreview = myPostcard.thumbnails?.[0]?.large;
-      const backPreview = myPostcard.thumbnails?.[1]?.large;
-
-      // throw error if postcard preview creation fails
-      if (!frontPreview || !backPreview) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Postcard preview creation failed",
-        });
-      }
-
-      // cache preview images
-      const frontPreviewCached = cloudinaryUrlBuilder({ src: frontPreview });
-      const backPreviewCached = cloudinaryUrlBuilder({ src: backPreview });
-
       const item = await ctx.prisma.item.findUnique({
         where: {
           id: input.id,
@@ -456,12 +341,8 @@ export const items = createRouter()
           description: input.description,
           front: input.front,
           back: input.back,
-          frontPreview: frontPreviewCached,
-          backPreview: backPreviewCached,
           status: input.status,
           stripeProductId: product.id,
-          postcardPreviewId: myPostcard.id,
-          postcardPreviewRendered: false,
           size: itemSizeToDB(input.size),
           visibility: input.visibility,
           // stripePaymentLink: item.stripePaymentLink,

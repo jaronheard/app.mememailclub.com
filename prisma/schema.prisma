@@ -10,26 +10,22 @@ datasource db {
 }
 
 model Item {
-  id                      Int         @id @default(autoincrement())
-  createdAt               DateTime    @default(now())
-  name                    String
-  description             String      @db.Text
-  front                   String      @db.Text
-  back                    String      @db.Text
-  status                  ItemStatus  @default(DRAFT)
-  stripeProductId         String      @unique
-  stripePaymentLinkId     String      @unique
-  stripePaymentLink       String      @db.Text
-  postcardPreviewId       String      @unique
-  postcardPreviewRendered Boolean?
-  frontPreview            String      @db.Text
-  backPreview             String      @db.Text
-  publicationId           Int
-  publication             Publication @relation(fields: [publicationId], references: [id])
-  test                    Boolean     @default(false)
-  size                    ItemSize    @default(sz_6x9)
-  Messages                Message[]
-  visibility              Visibility  @default(PRIVATE)
+  id                  Int         @id @default(autoincrement())
+  createdAt           DateTime    @default(now())
+  name                String
+  description         String      @db.Text
+  front               String      @db.Text
+  back                String      @db.Text
+  status              ItemStatus  @default(DRAFT)
+  stripeProductId     String      @unique
+  stripePaymentLinkId String      @unique
+  stripePaymentLink   String      @db.Text
+  publicationId       Int
+  publication         Publication @relation(fields: [publicationId], references: [id])
+  test                Boolean     @default(false)
+  size                ItemSize    @default(sz_6x9)
+  Messages            Message[]
+  visibility          Visibility  @default(PRIVATE)
 
   @@index([publicationId])
 }
