@@ -10,8 +10,11 @@ const Page = () => {
   const { isLoaded, isSignedIn, user } = useUser();
   const { mutate, status } = trpc.useMutation("items.createItemForUser", {
     onSuccess: (data) => {
-      utils.invalidateQueries();
-      router.replace(`/publications/${data.publicationId}/items/${data.id}`);
+      utils
+        .invalidateQueries()
+        .then(() =>
+          router.replace(`/publications/${data.publicationId}/items/${data.id}`)
+        );
     },
   });
 

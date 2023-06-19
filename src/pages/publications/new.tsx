@@ -30,8 +30,9 @@ const New = ({ user }: NewProps) => {
   });
   const createPublication = trpc.useMutation("publications.createPublication", {
     onSuccess(data) {
-      utils.invalidateQueries();
-      router.push(`/publications/${data.id}`);
+      return utils
+        .invalidateQueries()
+        .then(() => router.push(`/publications/${data.id}`));
     },
   });
 

@@ -101,9 +101,7 @@ const Item = () => {
     onSuccess(data, variables) {
       return utils
         .invalidateQueries(["publications.getOne", { id: queryStatus.id }])
-        .then(() => {
-          router.push(`/publications/${queryStatus.id}`);
-        });
+        .then(() => router.push(`/publications/${queryStatus.id}`));
     },
   });
 
