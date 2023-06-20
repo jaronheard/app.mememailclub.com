@@ -26,7 +26,6 @@ const SendSignedIn = () => {
   const activeItem = data?.find((item) => item.id === itemId);
 
   useEffect(() => {
-    console.log("useEffect - activeItem", activeItem);
     // Make sure we have the query param available.
     if (router.query?.id && shouldSetItemId && !shouldSetOpen) {
       // check query param is a string, not a string[]
