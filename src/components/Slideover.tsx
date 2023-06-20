@@ -86,8 +86,11 @@ export default function Slideover(props: {
   const { open, setOpen, itemLink, itemId, itemFront } = props;
   const createMessage = trpc.useMutation("messages.createMessage", {
     onSuccess(message) {
-      return utils.invalidateQueries();
-      .then(router.push(`${itemLink}?client_reference_id=${message.id}`));
+      return utils
+        .invalidateQueries()
+        .then(() =>
+          router.push(`${itemLink}?client_reference_id=${message.id}`)
+        );
     },
   });
 
