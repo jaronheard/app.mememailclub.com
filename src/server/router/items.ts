@@ -232,7 +232,6 @@ export const items = createRouter()
   })
   .mutation("createItemForUser", {
     input: z.object({
-      userId: z.string(),
       name: z.string(),
       description: z.string(),
       front: z.string().url(),
@@ -242,12 +241,12 @@ export const items = createRouter()
       visibility: z.enum(["PUBLIC", "PRIVATE"]),
     }),
     async resolve({ ctx, input }) {
-      if (ctx.auth.userId !== input.userId) {
+      if (!ctx.auth.userId) {
         throw new TRPCError({ code: "UNAUTHORIZED" });
       }
       const publication = await ctx.prisma.publication.findFirst({
         where: {
-          userId: input.userId,
+          userId: ctx.auth.userId,
         },
       });
       let newPublication;
@@ -255,8 +254,8 @@ export const items = createRouter()
         // create a publication for this user
         newPublication = await ctx.prisma.publication.create({
           data: {
-            authorId: input.userId,
-            userId: input.userId,
+            authorId: ctx.auth.userId,
+            userId: ctx.auth.userId,
             name: "My Postcards",
             description: "Uncategorized postcards",
             imageUrl:
