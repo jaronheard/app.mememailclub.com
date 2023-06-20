@@ -418,7 +418,7 @@ export const items = createRouter()
         });
       }
 
-      // check if user is authorized to update this item
+      // check if user is authorized to delete this item
       if (item.userId !== "anonymous" && ctx.auth.userId !== item.userId) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
