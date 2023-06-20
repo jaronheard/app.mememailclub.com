@@ -49,6 +49,7 @@ async function createPostcard({
   if (!ctx.auth.userId) {
     throw new TRPCError({
       code: "UNAUTHORIZED",
+      message: "You must be logged in to create an item",
     });
   }
 
@@ -212,7 +213,10 @@ export const items = createRouter()
     // Any queries or mutations after this middleware will
     // raise an error unless there is a current session
     if (!ctx.auth.userId) {
-      throw new TRPCError({ code: "UNAUTHORIZED" });
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "You must be logged in to perform this action",
+      });
     }
     return next();
   })
@@ -242,7 +246,10 @@ export const items = createRouter()
     }),
     async resolve({ ctx, input }) {
       if (!ctx.auth.userId) {
-        throw new TRPCError({ code: "UNAUTHORIZED" });
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "You must be logged in to create a new item",
+        });
       }
       const publication = await ctx.prisma.publication.findFirst({
         where: {
@@ -328,7 +335,11 @@ export const items = createRouter()
 
       // check if user is authorized to update this item
       if (item.userId !== "anonymous" && ctx.auth.userId !== item.userId) {
-        throw new TRPCError({ code: "UNAUTHORIZED" });
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message:
+            "You must be logged in as the correct user to update a postcard",
+        });
       }
 
       // stripe logic
@@ -409,7 +420,11 @@ export const items = createRouter()
 
       // check if user is authorized to update this item
       if (item.userId !== "anonymous" && ctx.auth.userId !== item.userId) {
-        throw new TRPCError({ code: "UNAUTHORIZED" });
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message:
+            "You must be logged in as the correct user to delete a postcard",
+        });
       }
 
       // deactive stripe product
