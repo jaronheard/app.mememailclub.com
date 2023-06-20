@@ -46,6 +46,12 @@ async function createPostcard({
   ctx: Context;
   input: CreatePostcard;
 }) {
+  if (!ctx.auth.userId) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+    });
+  }
+
   // stripe logic
   const product = await stripe.products.create({
     name: input.name || "Postcard",
@@ -98,6 +104,7 @@ async function createPostcard({
       stripePaymentLinkId: paymentLink.id,
       size: itemSizeToDB(input.size),
       test: process.env.NODE_ENV === "development",
+      userId: ctx.auth.userId,
       visibility: input.visibility,
     },
   });
@@ -211,6 +218,7 @@ export const items = createRouter()
   })
   .mutation("createItem", {
     input: z.object({
+      // TODO: ensure that the user is the owner of the publication
       publicationId: z.number(),
       name: z.string(),
       description: z.string(),
@@ -234,6 +242,9 @@ export const items = createRouter()
       visibility: z.enum(["PUBLIC", "PRIVATE"]),
     }),
     async resolve({ ctx, input }) {
+      if (ctx.auth.userId !== input.userId) {
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
       const publication = await ctx.prisma.publication.findFirst({
         where: {
           userId: input.userId,
@@ -303,6 +314,7 @@ export const items = createRouter()
           id: input.id,
         },
         select: {
+          userId: true,
           stripeProductId: true,
           stripePaymentLink: true,
         },
@@ -313,6 +325,11 @@ export const items = createRouter()
           code: "NOT_FOUND",
           message: "Stripe product or product link not found",
         });
+      }
+
+      // check if user is authorized to update this item
+      if (item.userId !== "anonymous" && ctx.auth.userId !== item.userId) {
+        throw new TRPCError({ code: "UNAUTHORIZED" });
       }
 
       // stripe logic
@@ -369,13 +386,35 @@ export const items = createRouter()
           id: input.id,
         },
         select: {
+          userId: true,
           stripeProductId: true,
           stripePaymentLinkId: true,
         },
       });
 
-      // deactive stripe product if it exists
-      if (item?.stripeProductId) {
+      // check if item exists
+      if (!item) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Item not found",
+        });
+      }
+
+      // check if stripe product and payment link exist
+      if (!item.stripeProductId || !item.stripePaymentLinkId) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Stripe product or product link not found",
+        });
+      }
+
+      // check if user is authorized to update this item
+      if (item.userId !== "anonymous" && ctx.auth.userId !== item.userId) {
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
+
+      // deactive stripe product
+      if (item.stripeProductId) {
         try {
           const updatedProduct = await stripe.products.update(
             item.stripeProductId,
@@ -387,7 +426,7 @@ export const items = createRouter()
         }
       }
 
-      // deactivate stripe payment link if it exists
+      // deactivate stripe payment link
       if (item?.stripePaymentLinkId) {
         try {
           const updatedPaymentLink = await stripe.paymentLinks.update(
@@ -400,6 +439,7 @@ export const items = createRouter()
         }
       }
 
+      // delete item
       const deletedItem = await ctx.prisma.item.delete({
         where: {
           id: input.id,
