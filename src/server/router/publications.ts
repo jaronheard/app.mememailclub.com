@@ -22,7 +22,7 @@ const HadId = z.object({
   id: z.number(),
 });
 const CreatePublication = BasePublication.merge(HasUserId);
-const UpdatePublication = BasePublication.merge(HadId).merge(HasUserId);
+const UpdatePublication = BasePublication.merge(HadId);
 
 export const publications = createRouter()
   .query("getAll", {
