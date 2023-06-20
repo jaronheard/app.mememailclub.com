@@ -1,13 +1,39 @@
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/router";
+import { useEffect, useRef, useState } from "react";
 
 export default function Banner() {
   const router = useRouter();
-  const { query } = router;
 
-  const heading = query?.bannerHeading || "New here? Us too!";
-  const text = query?.bannerText || 'Send a huge 6"x9" postcard for just $1!';
-  const showBanner = query?.bannerHeading || query?.bannerText;
+  const [heading, setHeading] = useState(
+    router.query.bannerHeading || "New here? Us too!"
+  );
+  const [text, setText] = useState(
+    router.query.bannerText || 'Send a huge 6"x9" postcard for just $1!'
+  );
+  const [showBanner, setShowBanner] = useState(false);
+
+  const callbackExecutedRef = useRef(false);
+
+  useEffect(() => {
+    if (
+      (router.query?.bannerHeading || router.query?.bannerText) &&
+      !callbackExecutedRef.current
+    ) {
+      // Remove the query parameter to prevent duplicate executions
+      const { bannerHeading, bannerText, ...queryWithoutParams } = router.query;
+      if (bannerHeading) {
+        setHeading(bannerHeading);
+      }
+      if (bannerText) {
+        setText(bannerText);
+      }
+      setShowBanner(true);
+      router.replace({ query: queryWithoutParams });
+      // Update the flag to indicate that the callback has been executed
+      callbackExecutedRef.current = true;
+    }
+  }, [router]);
 
   if (!showBanner) return null;
   else
@@ -27,9 +53,7 @@ export default function Banner() {
             <button
               type="button"
               className="flex rounded-md p-2 hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-white"
-              onClick={() => {
-                router.replace(router.pathname, undefined, { shallow: true });
-              }}
+              onClick={() => setShowBanner(false)}
             >
               <span className="sr-only">Dismiss</span>
               <XMarkIcon className="h-6 w-6 text-white" aria-hidden="true" />
