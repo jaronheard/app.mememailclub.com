@@ -19,7 +19,6 @@ import Breadcrumbs from "../../components/Breadcrumbs";
 import LoadingLayout from "../../components/LoadingLayout";
 import Button from "../../components/Button";
 import { useUser } from "@clerk/nextjs";
-import { UserResource } from "@clerk/types";
 import Head from "next/head";
 
 export type PublicationFormValues = {
@@ -55,11 +54,7 @@ const ParamsValidator = z.object({
   id: z.optional(z.string().transform((str) => Number(str))),
 });
 
-type PublicationProps = {
-  user: UserResource;
-};
-
-const Publication = ({ user }: PublicationProps) => {
+const Publication = () => {
   const router = useRouter();
   const utils = trpc.useContext();
   const [query, setQuery] = useState({ ready: false, id: 0 });
@@ -384,7 +379,7 @@ const Page = () => {
         <title>Create unique postcards - PostPostcard</title>
         <meta name="robots" content="noindex,nofollow" />
       </Head>
-      <Publication user={user} />
+      <Publication />
     </Layout>
   );
 };

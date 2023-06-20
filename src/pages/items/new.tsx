@@ -19,7 +19,6 @@ const Page = () => {
   useEffect(() => {
     if (isLoaded && isSignedIn && status === "idle") {
       mutate({
-        userId: user.id, //TODO: get from user
         name: "",
         description: "",
         front: `https://res.cloudinary.com/jaronheard/image/upload/v1685407734/6x9_postcard_front_ismigp.png`,

@@ -46,6 +46,13 @@ async function createPostcard({
   ctx: Context;
   input: CreatePostcard;
 }) {
+  if (!ctx.auth.userId) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "You must be logged in to create an item",
+    });
+  }
+
   // stripe logic
   const product = await stripe.products.create({
     name: input.name || "Postcard",
@@ -98,6 +105,7 @@ async function createPostcard({
       stripePaymentLinkId: paymentLink.id,
       size: itemSizeToDB(input.size),
       test: process.env.NODE_ENV === "development",
+      userId: ctx.auth.userId,
       visibility: input.visibility,
     },
   });
@@ -205,12 +213,16 @@ export const items = createRouter()
     // Any queries or mutations after this middleware will
     // raise an error unless there is a current session
     if (!ctx.auth.userId) {
-      throw new TRPCError({ code: "UNAUTHORIZED" });
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "You must be logged in to perform this action",
+      });
     }
     return next();
   })
   .mutation("createItem", {
     input: z.object({
+      // TODO: ensure that the user is the owner of the publication
       publicationId: z.number(),
       name: z.string(),
       description: z.string(),
@@ -224,7 +236,6 @@ export const items = createRouter()
   })
   .mutation("createItemForUser", {
     input: z.object({
-      userId: z.string(),
       name: z.string(),
       description: z.string(),
       front: z.string().url(),
@@ -234,9 +245,15 @@ export const items = createRouter()
       visibility: z.enum(["PUBLIC", "PRIVATE"]),
     }),
     async resolve({ ctx, input }) {
+      if (!ctx.auth.userId) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "You must be logged in to create a new item",
+        });
+      }
       const publication = await ctx.prisma.publication.findFirst({
         where: {
-          userId: input.userId,
+          userId: ctx.auth.userId,
         },
       });
       let newPublication;
@@ -244,8 +261,8 @@ export const items = createRouter()
         // create a publication for this user
         newPublication = await ctx.prisma.publication.create({
           data: {
-            authorId: input.userId,
-            userId: input.userId,
+            authorId: ctx.auth.userId,
+            userId: ctx.auth.userId,
             name: "My Postcards",
             description: "Uncategorized postcards",
             imageUrl:
@@ -303,6 +320,7 @@ export const items = createRouter()
           id: input.id,
         },
         select: {
+          userId: true,
           stripeProductId: true,
           stripePaymentLink: true,
         },
@@ -312,6 +330,15 @@ export const items = createRouter()
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "Stripe product or product link not found",
+        });
+      }
+
+      // check if user is authorized to update this item
+      if (item.userId !== "anonymous" && ctx.auth.userId !== item.userId) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message:
+            "You must be logged in as the correct user to update a postcard",
         });
       }
 
@@ -369,13 +396,39 @@ export const items = createRouter()
           id: input.id,
         },
         select: {
+          userId: true,
           stripeProductId: true,
           stripePaymentLinkId: true,
         },
       });
 
-      // deactive stripe product if it exists
-      if (item?.stripeProductId) {
+      // check if item exists
+      if (!item) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Item not found",
+        });
+      }
+
+      // check if stripe product and payment link exist
+      if (!item.stripeProductId || !item.stripePaymentLinkId) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Stripe product or product link not found",
+        });
+      }
+
+      // check if user is authorized to delete this item
+      if (item.userId !== "anonymous" && ctx.auth.userId !== item.userId) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message:
+            "You must be logged in as the correct user to delete a postcard",
+        });
+      }
+
+      // deactive stripe product
+      if (item.stripeProductId) {
         try {
           const updatedProduct = await stripe.products.update(
             item.stripeProductId,
@@ -387,7 +440,7 @@ export const items = createRouter()
         }
       }
 
-      // deactivate stripe payment link if it exists
+      // deactivate stripe payment link
       if (item?.stripePaymentLinkId) {
         try {
           const updatedPaymentLink = await stripe.paymentLinks.update(
@@ -400,6 +453,7 @@ export const items = createRouter()
         }
       }
 
+      // delete item
       const deletedItem = await ctx.prisma.item.delete({
         where: {
           id: input.id,

@@ -20,6 +20,7 @@ model Item {
   stripeProductId     String      @unique
   stripePaymentLinkId String      @unique
   stripePaymentLink   String      @db.Text
+  userId              String
   publicationId       Int
   publication         Publication @relation(fields: [publicationId], references: [id])
   test                Boolean     @default(false)

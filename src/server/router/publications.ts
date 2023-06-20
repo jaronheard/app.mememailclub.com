@@ -14,6 +14,7 @@ const BasePublication = z.object({
   imageUrl: z.string().url(),
   status: z.enum(["DRAFT", "PUBLISHED"]),
 });
+// TODO: check if these types are needed anymore
 const HasUserId = z.object({
   userId: z.string(),
 });
@@ -124,6 +125,36 @@ export const publications = createRouter()
   .mutation("updatePublication", {
     input: UpdatePublication,
     async resolve({ ctx, input }) {
+      // find publication
+      const publication = await ctx.prisma.publication.findUnique({
+        where: {
+          id: input.id,
+        },
+        select: {
+          userId: true,
+        },
+      });
+
+      // check if item exists
+      if (!publication) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Item not found",
+        });
+      }
+
+      // check if user is authorized
+      if (
+        publication.userId !== "anonymous" &&
+        ctx.auth.userId !== publication.userId
+      ) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message:
+            "You must be logged in as the correct user to delete a publication",
+        });
+      }
+
       const updatedPublication = await ctx.prisma.publication.update({
         where: {
           id: input.id,
@@ -138,7 +169,7 @@ export const publications = createRouter()
       if (!updatedPublication) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
-          message: "Publication not updated",
+          message: "Publication not found or not authorized",
         });
       }
       return updatedPublication;
@@ -149,6 +180,36 @@ export const publications = createRouter()
       id: z.number(),
     }),
     async resolve({ ctx, input }) {
+      // find publication
+      const publication = await ctx.prisma.publication.findUnique({
+        where: {
+          id: input.id,
+        },
+        select: {
+          userId: true,
+        },
+      });
+
+      // check if item exists
+      if (!publication) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Item not found",
+        });
+      }
+
+      // check if user is authorized
+      if (
+        publication.userId !== "anonymous" &&
+        ctx.auth.userId !== publication.userId
+      ) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message:
+            "You must be logged in as the correct user to delete a publication",
+        });
+      }
+
       const deleted = await ctx.prisma.publication.delete({
         where: {
           id: input.id,
