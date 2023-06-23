@@ -107,6 +107,33 @@ function FileUpload<FormValues extends FieldValues>({
               "facebook",
               "unsplash",
             ],
+            styles: {
+              palette: {
+                window: "#F7D832",
+                windowBorder: "#5520F8",
+                tabIcon: "#5520F8",
+                menuIcons: "#5520F8",
+                textDark: "#120F0C",
+                textLight: "#FFFCFA",
+                link: "#5520F8",
+                action: "#FF620C",
+                inactiveTabIcon: "#120F0C",
+                error: "#F44235",
+                inProgress: "#0078FF",
+                complete: "#20B832",
+                sourceBg: "#FFFCFA",
+              },
+              fonts: {
+                default: null,
+                "'Sen', sans-serif": {
+                  url: "https://fonts.googleapis.com/css2?family=Sen:wght@400;700;800&display=swap",
+                  active: true,
+                },
+              },
+              frame: {
+                background: "#120F0C90",
+              },
+            },
           }}
         >
           {({ open }) => {
