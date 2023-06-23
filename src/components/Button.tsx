@@ -61,11 +61,19 @@ function Button({
           },
           {
             "border-transparent bg-indigo-600 text-white hover:bg-indigo-700 active:bg-indigo-950":
-              variant === "primary",
+              variant === "primary" && !disabled,
             "border-indigo-700 bg-white text-indigo-700 hover:bg-gray-100 active:bg-gray-200":
-              variant === "secondary",
+              variant === "secondary" && !disabled,
             "border-transparent bg-red-100 text-red-700 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 active:bg-red-300":
-              variant === "danger",
+              variant === "danger" && !disabled,
+          },
+          {
+            "border-transparent bg-gray-400 text-white":
+              variant === "primary" && disabled,
+            "border-gray-300 bg-white text-gray-300":
+              variant === "secondary" && disabled,
+            "border-transparent bg-gray-100 text-gray-400":
+              variant === "danger" && disabled,
           },
           className
         )}
