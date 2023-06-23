@@ -149,7 +149,7 @@ interface CustomImageProps {
   transformations?: TransformerOption;
   text?: string;
   textStyle?: string;
-  contain?: boolean;
+  cover?: boolean;
 }
 
 export type NextImageCloudinaryProps = CustomImageProps & ImageProps;
@@ -164,7 +164,7 @@ const Img = ({
   keepAspectRatio = true,
   autoCrop,
   cloud = CLOUD_OPTIONS,
-  contain,
+  cover,
   transformations,
   text,
   ...rest
@@ -218,9 +218,9 @@ const Img = ({
       fill={fill}
       className={className}
       style={
-        contain
+        cover
           ? {
-              objectFit: "contain",
+              objectFit: "cover",
             }
           : {}
       }
