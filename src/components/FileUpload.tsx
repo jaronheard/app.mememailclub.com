@@ -72,7 +72,7 @@ function FileUpload<FormValues extends FieldValues>({
               height={SIZES[size].previewHeight}
               width={SIZES[size].previewWidth}
               autoCrop
-              contain
+              cover
             />
           )}
           {url && status !== "uploading" && postcardBackWithOverlay && (

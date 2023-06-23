@@ -21,8 +21,8 @@ const Page = () => {
       mutate({
         name: "",
         description: "",
-        front: `https://res.cloudinary.com/jaronheard/image/upload/v1685407734/6x9_postcard_front_ismigp.png`,
-        back: `https://res.cloudinary.com/jaronheard/image/upload/v1685407706/6x9_postcard_ztcybr.png`,
+        front: `https://res.cloudinary.com/jaronheard/image/upload/ar_1.48,c_scale/v1687555005/bluePixel_eklcos.jpg`,
+        back: `https://res.cloudinary.com/jaronheard/image/upload/ar_1.48,c_scale/v1687555005/redPixel_peptry.jpg`,
         status: "DRAFT",
         size: "6x9",
         visibility: "PRIVATE",
