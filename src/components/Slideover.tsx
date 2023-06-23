@@ -5,11 +5,11 @@ import clsx from "clsx";
 import { useForm } from "react-hook-form";
 import { trpc } from "../utils/trpc";
 import { useRouter } from "next/router";
-import Inspiration from "./Inspiration";
 import { trackGoal } from "fathom-client";
 import Img from "./Img";
 import { useUser } from "@clerk/nextjs";
 import Button from "./Button";
+import PostcardSuggestions from "./PostcardSuggestions";
 
 export type PostcardMessageOverlayFormValues = {
   msg: string;
@@ -211,7 +211,7 @@ export default function Slideover(props: {
                         </div>
                       </div>
                       <div className="relative flex-1 px-4 sm:px-6">
-                        <Inspiration />
+                        <PostcardSuggestions />
                       </div>
                     </div>
                   </div>
