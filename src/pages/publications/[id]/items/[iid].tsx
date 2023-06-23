@@ -224,34 +224,6 @@ const Item = () => {
                 </FileUpload>
               </div>
 
-              <div className="sm:col-span-4" id="name">
-                <label
-                  htmlFor="name"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Title
-                </label>
-                <div className="mt-1">
-                  <input
-                    {...register("name", { required: true })}
-                    autoComplete="off"
-                    className={clsx(
-                      "block w-full rounded-md border p-3 shadow-sm placeholder:text-gray-300  focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
-                      {
-                        "border-red-300": errors.name,
-                        "border-gray-300": !errors.name,
-                      }
-                    )}
-                    placeholder="Your postcard is your art, give it a title!"
-                  />
-                </div>
-                {errors.name && (
-                  <p className="mt-2 text-sm text-red-600" id="email-error">
-                    Title is required.
-                  </p>
-                )}
-              </div>
-
               <div className="sm:col-span-6" id="visibility">
                 <Switch.Group as="div" className="flex items-center">
                   <Switch.Label as="span" className="mr-3 w-[7ch] text-sm">
@@ -307,6 +279,41 @@ const Item = () => {
                     ? "Your postcard will be visible and available to send by anyone on PostPostcard"
                     : "Your postcard will only be visible to you"}
                 </p>
+              </div>
+
+              <div
+                className={
+                  watch("visibility") === "PUBLIC" ? "sm:col-span-4" : "hidden"
+                }
+                id="name"
+              >
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Title
+                </label>
+                <div className="mt-1">
+                  <input
+                    {...register("name", {
+                      required: watch("visibility") === "PUBLIC",
+                    })}
+                    autoComplete="off"
+                    className={clsx(
+                      "block w-full rounded-md border p-3 shadow-sm placeholder:text-gray-300  focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
+                      {
+                        "border-red-300": errors.name,
+                        "border-gray-300": !errors.name,
+                      }
+                    )}
+                    placeholder="Your postcard is your art, give it a title!"
+                  />
+                </div>
+                {errors.name && (
+                  <p className="mt-2 text-sm text-red-600" id="email-error">
+                    Title is required.
+                  </p>
+                )}
               </div>
 
               <div
@@ -406,22 +413,6 @@ const Item = () => {
                 </p>
               </div>
 
-              <div className="sm:col-span-4" id="name">
-                <label
-                  htmlFor="name"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Title
-                </label>
-                <div className="mt-1">
-                  <input
-                    className="block w-full rounded-md border p-3 shadow-sm placeholder:text-gray-300  focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    placeholder="Your postcard is your art, give it a title!"
-                    disabled
-                  />
-                </div>
-              </div>
-
               <div className="sm:col-span-6" id="visibility">
                 <Switch.Group as="div" className="flex items-center">
                   <Switch.Label as="span" className="mr-3 w-[7ch] text-sm">
@@ -456,7 +447,7 @@ const Item = () => {
                 onClick={handleSubmit((data) => {
                   updateItem.mutate({
                     id: queryStatus.iid,
-                    name: data.name,
+                    name: data.name || "Private postcard",
                     description: data.description || "Private postcard",
                     front: data.front,
                     back: data.back,
@@ -473,7 +464,7 @@ const Item = () => {
                 onClick={handleSubmit((data) => {
                   updateItem.mutate({
                     id: queryStatus.iid,
-                    name: data.name,
+                    name: data.name || "Private postcard",
                     description: data.description || "Private postcard",
                     front: data.front,
                     back: data.back,
