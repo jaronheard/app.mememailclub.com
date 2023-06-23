@@ -55,34 +55,6 @@ function FileUpload<FormValues extends FieldValues>({
         {label}
       </label>
       <div className="flex items-center gap-3">
-        <a
-          className={clsx(
-            "hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2",
-            size ? SIZES[size].previewClassNames : "h-20 w-20"
-          )}
-          href={url || "#"}
-          target="_blank"
-          rel="noreferrer"
-        >
-          {url && status !== "uploading" && !postcardBackWithOverlay && (
-            <Img
-              className={SIZES[size].previewClassNames}
-              alt="Open file"
-              src={thumbnailUrl || url}
-              height={SIZES[size].previewHeight}
-              width={SIZES[size].previewWidth}
-              autoCrop
-              cover
-            />
-          )}
-          {url && status !== "uploading" && postcardBackWithOverlay && (
-            <PostcardBackWithOverlay
-              back={thumbnailUrl || url}
-              size={size}
-              optimizeImages
-            />
-          )}
-        </a>
         <CldUploadWidget
           uploadPreset="oe6iang6"
           onUpload={(result: any, widget: any) => {
@@ -93,6 +65,7 @@ function FileUpload<FormValues extends FieldValues>({
               widget.close(); // Close widget immediately after successful upload
             }
           }}
+          onClose={() => setStatus("idle")}
           options={{
             cropping: true,
             croppingAspectRatio: SIZES[size].widthPx / SIZES[size].heightPx,
@@ -145,9 +118,41 @@ function FileUpload<FormValues extends FieldValues>({
               open();
             }
             return (
-              <Button onClick={handleOnClick} size="sm">
-                Upload
-              </Button>
+              <button
+                className="flex items-center gap-3"
+                onClick={handleOnClick}
+              >
+                <div
+                  className={clsx(
+                    "hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2",
+                    size ? SIZES[size].previewClassNames : "h-20 w-20"
+                  )}
+                >
+                  {url &&
+                    status !== "uploading" &&
+                    !postcardBackWithOverlay && (
+                      <Img
+                        className={SIZES[size].previewClassNames}
+                        alt="Open file"
+                        src={thumbnailUrl || url}
+                        height={SIZES[size].previewHeight}
+                        width={SIZES[size].previewWidth}
+                        autoCrop
+                        cover
+                      />
+                    )}
+                  {url && status !== "uploading" && postcardBackWithOverlay && (
+                    <PostcardBackWithOverlay
+                      back={thumbnailUrl || url}
+                      size={size}
+                      optimizeImages
+                    />
+                  )}
+                </div>
+                <Button visualOnly size="sm">
+                  Upload
+                </Button>
+              </button>
             );
           }}
         </CldUploadWidget>
