@@ -49,7 +49,7 @@ const Item = () => {
     getValues,
     setValue,
     watch,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<ItemFormValues>({
     defaultValues: {
       name: "",
@@ -484,8 +484,9 @@ const Item = () => {
                 })}
                 size="sm"
                 variant="secondary"
+                disabled={!isDirty}
               >
-                Save Draft
+                {isDirty ? "Save Draft" : "Saved"}
               </Button>
             </div>
           </div>
