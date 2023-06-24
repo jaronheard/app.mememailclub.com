@@ -1,5 +1,4 @@
 import { useForm } from "react-hook-form";
-import Layout from "../../components/Layout";
 import { trpc } from "../../utils/trpc";
 import clsx from "clsx";
 import { useRouter } from "next/router";
@@ -7,14 +6,10 @@ import { PublicationFormValues } from "./[id]";
 import Breadcrumbs from "../../components/Breadcrumbs";
 import Button from "../../components/Button";
 import Head from "next/head";
-import { useUser } from "@clerk/nextjs";
-import { UserResource } from "@clerk/types";
+import { RedirectToSignIn, SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
 
-type NewProps = {
-  user: UserResource;
-};
-
-const New = ({ user }: NewProps) => {
+const New = () => {
+  const { userId } = useAuth();
   const router = useRouter();
   const utils = trpc.useContext();
   const {
@@ -130,7 +125,8 @@ const New = ({ user }: NewProps) => {
             <Button
               onClick={handleSubmit((data) => {
                 createPublication.mutate({
-                  userId: user.id,
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                  userId: userId!,
                   name: data.name,
                   description: data.description,
                   imageUrl:
@@ -150,26 +146,19 @@ const New = ({ user }: NewProps) => {
 };
 
 const Page = () => {
-  const { isLoaded, isSignedIn, user } = useUser();
-
-  if (!isLoaded || !isSignedIn) {
-    return null;
-  }
-
   return (
-    <Layout
-      user={{
-        name: `${user.firstName} ${user.lastName}`,
-        email: user.primaryEmailAddress?.emailAddress,
-        imageUrl: user.imageUrl,
-      }}
-    >
+    <>
       <Head>
         <title>Create unique postcards - PostPostcard</title>
         <meta name="robots" content="noindex,nofollow" />
       </Head>
-      <New user={user} />
-    </Layout>
+      <SignedIn>
+        <New />
+      </SignedIn>
+      <SignedOut>
+        <RedirectToSignIn />
+      </SignedOut>
+    </>
   );
 };
 

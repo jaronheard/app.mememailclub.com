@@ -92,12 +92,6 @@ function Footer() {
 }
 interface LayoutProps {
   children: React.ReactNode;
-  user?: {
-    // all properties could be null or undefined
-    name?: string | null;
-    email?: string | null;
-    imageUrl?: string | null;
-  };
   title?: string;
 }
 

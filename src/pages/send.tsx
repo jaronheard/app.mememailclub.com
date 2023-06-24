@@ -1,13 +1,11 @@
 import DefaultQueryCell from "../components/DefaultQueryCell";
-import Layout from "../components/Layout";
 import { trpc } from "../utils/trpc";
 import Head from "next/head";
 import { PostcardPreviewSimple } from "../components/PostcardPreviewSimple";
 import Slideover from "../components/Slideover";
 import { useEffect, useState } from "react";
 import { trackGoal } from "fathom-client";
-import { SignedIn, SignedOut, useUser } from "@clerk/nextjs";
-import LoadingLayout from "../components/LoadingLayout";
+import { SignedIn, SignedOut } from "@clerk/nextjs";
 import { PostcardCreateSimple } from "../components/PostcardCreateSimple";
 import { useRouter } from "next/router";
 
@@ -223,24 +221,8 @@ const SendSignedOut = () => {
 };
 
 const Page = () => {
-  const { isLoaded, isSignedIn, user } = useUser();
-
-  if (!isLoaded) {
-    return <LoadingLayout />;
-  }
-
   return (
-    <Layout
-      user={
-        !isLoaded || !isSignedIn
-          ? undefined
-          : {
-              name: `${user.firstName} ${user.lastName}`,
-              email: user.primaryEmailAddress?.emailAddress,
-              imageUrl: user.imageUrl,
-            }
-      }
-    >
+    <>
       <Head>
         <title>Create unique postcards - PostPostcard</title>
         <meta name="robots" content="noindex,nofollow" />
@@ -251,7 +233,7 @@ const Page = () => {
       <SignedOut>
         <SendSignedOut />
       </SignedOut>
-    </Layout>
+    </>
   );
 };
 

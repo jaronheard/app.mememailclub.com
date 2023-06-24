@@ -1,12 +1,11 @@
 /* eslint-disable react/no-unescaped-entities */
 import { NextPage } from "next";
 import Head from "next/head";
-import Layout from "../components/Layout";
 
 // simple terms of service page
 const Privacy: NextPage = () => {
   return (
-    <Layout>
+    <>
       <Head>
         <title>Privacy policy - PostPostcard</title>
       </Head>
@@ -107,7 +106,7 @@ const Privacy: NextPage = () => {
           agree to its Terms and Conditions.
         </p>
       </div>
-    </Layout>
+    </>
   );
 };
 

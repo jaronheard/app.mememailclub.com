@@ -1,4 +1,3 @@
-import Layout from "../components/Layout";
 import {
   EnvelopeIcon,
   PencilSquareIcon,
@@ -6,7 +5,6 @@ import {
   StarIcon,
 } from "@heroicons/react/20/solid";
 import Img from "../components/Img";
-import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
 import FAQ from "../components/FAQ";
 import clsx from "clsx";
@@ -246,24 +244,4 @@ const Index = () => {
   );
 };
 
-const IndexPage = () => {
-  const { isLoaded, isSignedIn, user } = useUser();
-
-  return isLoaded && isSignedIn ? (
-    <Layout
-      user={{
-        name: `${user.firstName} ${user.lastName}`,
-        email: user.primaryEmailAddress?.emailAddress,
-        imageUrl: user.imageUrl,
-      }}
-    >
-      <Index />
-    </Layout>
-  ) : (
-    <Layout>
-      <Index />
-    </Layout>
-  );
-};
-
-export default IndexPage;
+export default Index;

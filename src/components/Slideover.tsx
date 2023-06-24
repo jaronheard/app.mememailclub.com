@@ -7,7 +7,7 @@ import { trpc } from "../utils/trpc";
 import { useRouter } from "next/router";
 import { trackGoal } from "fathom-client";
 import Img from "./Img";
-import { useUser } from "@clerk/nextjs";
+import { useAuth } from "@clerk/nextjs";
 import Button from "./Button";
 import PostcardSuggestions from "./PostcardSuggestions";
 
@@ -66,7 +66,7 @@ export default function Slideover(props: {
 }) {
   const router = useRouter();
   const utils = trpc.useContext();
-  const { user } = useUser();
+  const { userId } = useAuth();
   const { register, watch, handleSubmit, setFocus } =
     useForm<PostcardMessageOverlayFormValues>({
       defaultValues: {
@@ -199,7 +199,7 @@ export default function Slideover(props: {
                               createMessage.mutate({
                                 message: data.msg,
                                 itemId: itemId,
-                                userId: user?.id ? user.id : "unregistered",
+                                userId: userId || "unregistered",
                               });
                               trackGoal("GMZEE6ZN", 0);
                             })}
