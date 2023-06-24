@@ -250,7 +250,10 @@ const Layout = (props: LayoutProps) => {
                       <SignedOut>
                         {" "}
                         {/* Signed out users get sign in button */}
-                        <SignInButton>
+                        <SignInButton
+                          afterSignInUrl={router.pathname}
+                          afterSignUpUrl={router.pathname}
+                        >
                           <button className="relative ml-3 flex-shrink-0 rounded-md py-2 px-3 text-sm font-bold text-black hover:bg-indigo-500 hover:bg-opacity-90 hover:text-white active:bg-indigo-950">
                             Sign in
                           </button>
@@ -290,7 +293,10 @@ const Layout = (props: LayoutProps) => {
                   </SignedIn>
                   <SignedOut>
                     {/* Signed out users get sign in button */}
-                    <SignInButton>
+                    <SignInButton
+                      afterSignInUrl={router.pathname}
+                      afterSignUpUrl={router.pathname}
+                    >
                       <button className="flex w-full items-center rounded-md py-2 px-3 text-base font-bold text-black hover:bg-indigo-500 hover:bg-opacity-90 hover:text-white active:bg-indigo-950">
                         Sign in
                       </button>
