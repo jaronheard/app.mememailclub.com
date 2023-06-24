@@ -6,7 +6,8 @@ import { PublicationFormValues } from "./[id]";
 import Breadcrumbs from "../../components/Breadcrumbs";
 import Button from "../../components/Button";
 import Head from "next/head";
-import { RedirectToSignIn, SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
+import { SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
+import RedirectToSignInCurrentPage from "../../components/RedirectToSignInCurrentPage";
 
 const New = () => {
   const { userId } = useAuth();
@@ -156,7 +157,7 @@ const Page = () => {
         <New />
       </SignedIn>
       <SignedOut>
-        <RedirectToSignIn />
+        <RedirectToSignInCurrentPage />
       </SignedOut>
     </>
   );

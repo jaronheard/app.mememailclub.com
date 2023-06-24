@@ -13,9 +13,10 @@ import Button from "../../../../components/Button";
 import { ItemSizeOpts, itemSizeToClient } from "../../../../utils/itemSize";
 import { Switch } from "@headlessui/react";
 import Head from "next/head";
-import { RedirectToSignIn, SignedIn, SignedOut } from "@clerk/nextjs";
+import { SignedIn, SignedOut } from "@clerk/nextjs";
 import { PostcardPreviewSimple } from "../../../../components/PostcardPreviewSimple";
 import { SIZES } from "../../../../utils/itemSize";
+import RedirectToSignInCurrentPage from "../../../../components/RedirectToSignInCurrentPage";
 
 export type ItemFormValues = {
   name: string;
@@ -516,7 +517,7 @@ const Page = () => {
         <Item />
       </SignedIn>
       <SignedOut>
-        <RedirectToSignIn />
+        <RedirectToSignInCurrentPage />
       </SignedOut>
     </>
   );

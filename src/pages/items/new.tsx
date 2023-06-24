@@ -1,10 +1,10 @@
-import { RedirectToSignIn, SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
+import { SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
 import { trpc } from "../../utils/trpc";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import LoadingLayout from "../../components/LoadingLayout";
 
-const Page = () => {
+const SignedInNew = () => {
   const router = useRouter();
   const utils = trpc.useContext();
   const { isLoaded, isSignedIn } = useAuth();
@@ -31,14 +31,31 @@ const Page = () => {
   }, [isLoaded, isSignedIn, status, mutate]);
 
   return (
+    <LoadingLayout>
+      <p>Creating your new item...</p>
+    </LoadingLayout>
+  );
+};
+
+const SignedOutNew = () => {
+  const auth = useAuth();
+  console.log(auth);
+
+  return (
+    <LoadingLayout>
+      <p>Creating your new item...</p>
+    </LoadingLayout>
+  );
+};
+
+const Page = () => {
+  return (
     <>
       <SignedIn>
-        <LoadingLayout>
-          <p>Creating your new item...</p>
-        </LoadingLayout>
+        <SignedInNew />
       </SignedIn>
       <SignedOut>
-        <RedirectToSignIn />
+        <SignedOutNew />
       </SignedOut>
     </>
   );
