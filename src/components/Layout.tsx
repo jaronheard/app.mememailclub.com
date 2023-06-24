@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useEffect, useState } from "react";
 import clsx from "clsx";
 import { Disclosure } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
@@ -97,6 +97,34 @@ interface LayoutProps {
 
 const Layout = (props: LayoutProps) => {
   const router = useRouter();
+  const [banner, setBanner] = useState({ heading: "", text: "" });
+  const [showBanner, setShowBanner] = useState(false);
+
+  // set banner from query params
+  useEffect(() => {
+    const { bannerHeading, bannerText, ...queryWithoutParams } = router.query;
+    if (bannerHeading || bannerText) {
+      setBanner({
+        heading: bannerHeading as string,
+        text: bannerText as string,
+      });
+      setShowBanner(true);
+      router.replace({ query: queryWithoutParams }, undefined, {
+        shallow: true,
+      });
+    }
+  }, [router]);
+
+  // remove banner on route change
+  useEffect(() => {
+    const handleRouteChange = (
+      url: unknown,
+      { shallow }: { shallow: boolean }
+    ) => !shallow && setShowBanner(false);
+    router.events.on("routeChangeComplete", handleRouteChange);
+    return () => router.events.off("routeChangeComplete", handleRouteChange);
+  }, [router]);
+
   const navigation = [
     {
       name: "Send",
@@ -277,7 +305,12 @@ const Layout = (props: LayoutProps) => {
         <div className="flex min-h-screen flex-col justify-between">
           <main className="mx-auto flex w-full grow">
             <div className="mx-auto flex max-w-7xl grow flex-col px-4 py-16 sm:px-6 lg:px-8">
-              <Banner />
+              <Banner
+                heading={banner.heading}
+                text={banner.text}
+                showBanner={showBanner}
+                setShowBanner={setShowBanner}
+              />
               <div className="grow rounded-lg bg-postcard px-5 py-6 drop-shadow-sm sm:px-6">
                 {props.children}
               </div>
