@@ -11,6 +11,7 @@ import { Router } from "next/router";
 import * as Fathom from "fathom-client";
 import { useEffect } from "react";
 import { ClerkProvider } from "@clerk/nextjs";
+import Layout from "../components/Layout";
 
 // Record a pageview when route changes
 Router.events.on("routeChangeComplete", (as, routeProps) => {
@@ -26,6 +27,7 @@ const MyApp: AppType = ({ Component, pageProps: { ...pageProps } }) => {
       includedDomains: ["postpostcard.com", "www.postpostcard.com"],
     });
   }, []);
+
   return (
     <ClerkProvider
       appearance={{
@@ -37,7 +39,9 @@ const MyApp: AppType = ({ Component, pageProps: { ...pageProps } }) => {
       {...pageProps}
     >
       <ChatwootWidget />
-      <Component {...pageProps} />
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
     </ClerkProvider>
   );
 };

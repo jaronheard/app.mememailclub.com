@@ -1,4 +1,3 @@
-import Layout from "../../components/Layout";
 import { trpc } from "../../utils/trpc";
 // Import for PublicationsEmpty
 import { EyeIcon, EyeSlashIcon, PlusIcon } from "@heroicons/react/20/solid";
@@ -11,8 +10,7 @@ import Img from "../../components/Img";
 import Breadcrumbs from "../../components/Breadcrumbs";
 import Button from "../../components/Button";
 import Head from "next/head";
-import { useUser } from "@clerk/nextjs";
-import { UserResource } from "@clerk/types";
+import { RedirectToSignIn, SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
 
 const PublicationsEmpty = () => {
   return (
@@ -51,15 +49,14 @@ const PublicationsEmpty = () => {
   );
 };
 
-type PublicationsProps = {
-  user: UserResource;
-};
+const Publications = () => {
+  const { userId } = useAuth();
 
-const Publications = ({ user }: PublicationsProps) => {
   const publicationsQuery = trpc.useQuery([
     "publications.getAllByAuthor",
     {
-      userId: user.id,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      userId: userId!,
     },
   ]);
 
@@ -176,26 +173,19 @@ const Publications = ({ user }: PublicationsProps) => {
 };
 
 const Page = () => {
-  const { isLoaded, isSignedIn, user } = useUser();
-
-  if (!isLoaded || !isSignedIn) {
-    return null;
-  }
-
   return (
-    <Layout
-      user={{
-        name: `${user.firstName} ${user.lastName}`,
-        email: user.primaryEmailAddress?.emailAddress,
-        imageUrl: user.imageUrl,
-      }}
-    >
+    <>
       <Head>
         <title>Create unique postcards - PostPostcard</title>
         <meta name="robots" content="noindex,nofollow" />
       </Head>
-      <Publications user={user} />
-    </Layout>
+      <SignedIn>
+        <Publications />
+      </SignedIn>
+      <SignedOut>
+        <RedirectToSignIn />
+      </SignedOut>
+    </>
   );
 };
 

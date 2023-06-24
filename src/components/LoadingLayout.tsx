@@ -1,4 +1,3 @@
-import Layout from "./Layout";
 import Loading from "./Loading";
 
 const LoadingLayout = ({
@@ -7,10 +6,6 @@ const LoadingLayout = ({
 }: {
   message?: string;
   children?: JSX.Element;
-}): JSX.Element => (
-  <Layout>
-    <Loading message={message}>{children}</Loading>
-  </Layout>
-);
+}): JSX.Element => <Loading message={message}>{children}</Loading>;
 
 export default LoadingLayout;

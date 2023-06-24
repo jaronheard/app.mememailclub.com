@@ -1,4 +1,4 @@
-import { useUser } from "@clerk/nextjs";
+import { RedirectToSignIn, SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
 import { trpc } from "../../utils/trpc";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
@@ -7,7 +7,7 @@ import LoadingLayout from "../../components/LoadingLayout";
 const Page = () => {
   const router = useRouter();
   const utils = trpc.useContext();
-  const { isLoaded, isSignedIn, user } = useUser();
+  const { isLoaded, isSignedIn } = useAuth();
   const { mutate, status } = trpc.useMutation("items.createItemForUser", {
     onSuccess: (data) => {
       utils.invalidateQueries();
@@ -28,12 +28,19 @@ const Page = () => {
         visibility: "PRIVATE",
       });
     }
-  }, [isLoaded, isSignedIn, status, mutate, user?.id]);
+  }, [isLoaded, isSignedIn, status, mutate]);
 
   return (
-    <LoadingLayout>
-      <p>Creating your new item...</p>
-    </LoadingLayout>
+    <>
+      <SignedIn>
+        <LoadingLayout>
+          <p>Creating your new item...</p>
+        </LoadingLayout>
+      </SignedIn>
+      <SignedOut>
+        <RedirectToSignIn />
+      </SignedOut>
+    </>
   );
 };
 

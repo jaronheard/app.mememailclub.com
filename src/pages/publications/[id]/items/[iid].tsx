@@ -1,6 +1,5 @@
 import { useForm } from "react-hook-form";
 // import Link from "next/link";
-import Layout from "../../../../components/Layout";
 import { trpc } from "../../../../utils/trpc";
 import clsx from "clsx";
 import { useRouter } from "next/router";
@@ -14,7 +13,7 @@ import Button from "../../../../components/Button";
 import { ItemSizeOpts, itemSizeToClient } from "../../../../utils/itemSize";
 import { Switch } from "@headlessui/react";
 import Head from "next/head";
-import { useUser } from "@clerk/nextjs";
+import { RedirectToSignIn, SignedIn, SignedOut } from "@clerk/nextjs";
 import { PostcardPreviewSimple } from "../../../../components/PostcardPreviewSimple";
 import { SIZES } from "../../../../utils/itemSize";
 
@@ -98,7 +97,7 @@ const Item = () => {
     },
   });
   const deleteItem = trpc.useMutation("items.deleteItem", {
-    onSuccess(data, variables) {
+    onSuccess() {
       utils.invalidateQueries();
       router.push(`/publications/${queryStatus.id}`);
     },
@@ -507,26 +506,19 @@ const Item = () => {
 };
 
 const Page = () => {
-  const { isLoaded, isSignedIn, user } = useUser();
-
-  if (!isLoaded || !isSignedIn) {
-    return null;
-  }
-
   return (
-    <Layout
-      user={{
-        name: `${user.firstName} ${user.lastName}`,
-        email: user.primaryEmailAddress?.emailAddress,
-        imageUrl: user.imageUrl,
-      }}
-    >
+    <>
       <Head>
         <title>Create unique postcards - PostPostcard</title>
         <meta name="robots" content="noindex,nofollow" />
       </Head>
-      <Item />
-    </Layout>
+      <SignedIn>
+        <Item />
+      </SignedIn>
+      <SignedOut>
+        <RedirectToSignIn />
+      </SignedOut>
+    </>
   );
 };
 

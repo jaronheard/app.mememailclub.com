@@ -2,11 +2,10 @@
 import { LightBulbIcon } from "@heroicons/react/20/solid";
 import { NextPage } from "next";
 import Head from "next/head";
-import Layout from "../components/Layout";
 
 const FAQ: NextPage = () => {
   return (
-    <Layout>
+    <>
       <Head>
         <title>About us - PostPostcard</title>
       </Head>
@@ -286,7 +285,7 @@ const FAQ: NextPage = () => {
           </div>
         </div>
       </div>
-    </Layout>
+    </>
   );
 };
 

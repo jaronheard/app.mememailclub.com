@@ -18,7 +18,7 @@ import { z } from "zod";
 import Breadcrumbs from "../../components/Breadcrumbs";
 import LoadingLayout from "../../components/LoadingLayout";
 import Button from "../../components/Button";
-import { useUser } from "@clerk/nextjs";
+import { SignedIn } from "@clerk/nextjs";
 import Head from "next/head";
 
 export type PublicationFormValues = {
@@ -361,26 +361,14 @@ const Publication = () => {
 };
 
 const Page = () => {
-  const { isLoaded, isSignedIn, user } = useUser();
-
-  if (!isLoaded || !isSignedIn) {
-    return null;
-  }
-
   return (
-    <Layout
-      user={{
-        name: `${user.firstName} ${user.lastName}`,
-        email: user.primaryEmailAddress?.emailAddress,
-        imageUrl: user.imageUrl,
-      }}
-    >
+    <SignedIn>
       <Head>
         <title>Create unique postcards - PostPostcard</title>
         <meta name="robots" content="noindex,nofollow" />
       </Head>
       <Publication />
-    </Layout>
+    </SignedIn>
   );
 };
 

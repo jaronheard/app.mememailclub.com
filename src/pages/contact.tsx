@@ -1,11 +1,10 @@
 /* eslint-disable react/no-unescaped-entities */
 import { NextPage } from "next";
 import Head from "next/head";
-import Layout from "../components/Layout";
 
 const FAQ: NextPage = () => {
   return (
-    <Layout>
+    <>
       <Head>
         <title>Contact us - PostPostcard</title>
       </Head>
@@ -46,7 +45,7 @@ const FAQ: NextPage = () => {
           </div>
         </div>
       </div>
-    </Layout>
+    </>
   );
 };
 
