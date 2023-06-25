@@ -8,6 +8,7 @@ import { trackGoal } from "fathom-client";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
 import { PostcardCreateSimple } from "../components/PostcardCreateSimple";
 import { useRouter } from "next/router";
+import CategoryFilter from "../components/CategoryFilter";
 
 const SendSignedIn = () => {
   const router = useRouter();
@@ -43,7 +44,7 @@ const SendSignedIn = () => {
 
   return (
     <>
-      <div className="mx-auto my-8 max-w-7xl px-4 sm:my-12 sm:px-6 lg:px-8">
+      {/* <div className="mx-auto my-8 max-w-7xl px-4 sm:my-12 sm:px-6 lg:px-8">
         <div className="text-center">
           <h2 className="text-lg font-semibold text-indigo-600">Postcards</h2>
           <p className="mt-1 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
@@ -57,27 +58,31 @@ const SendSignedIn = () => {
             <em>*U.S. addresses only</em>
           </p>
         </div>
-      </div>
+      </div> */}
       <DefaultQueryCell
         query={itemsQuery}
         empty={() => <div>No postcards</div>}
         loading={() => (
           <div className="mx-auto max-w-2xl py-8 px-4 sm:py-12 sm:px-6 lg:max-w-7xl lg:px-8">
             <h2 className="sr-only">Products</h2>
-            <div className="grid grid-cols-1 gap-y-4 sm:grid-cols-1 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-2 lg:gap-x-8">
-              <PostcardCreateSimple onClick={() => router.push("/items/new")} />
-              {[0, 1, 2, 3, 4, 5, 6].map((item) => (
-                <PostcardPreviewSimple
-                  id={`loading-${item}`}
-                  key={item}
-                  loadingState={true}
-                  front=""
-                  name=""
-                  description=""
-                  onClick={() => null}
+            <CategoryFilter>
+              <div className="grid grid-cols-1 gap-y-4 sm:grid-cols-1 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-2 lg:gap-x-8">
+                <PostcardCreateSimple
+                  onClick={() => router.push("/items/new")}
                 />
-              ))}
-            </div>
+                {[0, 1, 2, 3, 4, 5, 6].map((item) => (
+                  <PostcardPreviewSimple
+                    id={`loading-${item}`}
+                    key={item}
+                    loadingState={true}
+                    front=""
+                    name=""
+                    description=""
+                    onClick={() => null}
+                  />
+                ))}
+              </div>
+            </CategoryFilter>
           </div>
         )}
         success={({ data: items }) => {
@@ -92,27 +97,29 @@ const SendSignedIn = () => {
               ></Slideover>
               <div className="mx-auto max-w-2xl py-8 px-4 sm:py-12 sm:px-6 lg:max-w-7xl lg:px-8">
                 <h2 className="sr-only">Products</h2>
-                <div className="grid grid-cols-1 gap-y-4 sm:grid-cols-1 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-2 lg:gap-x-8">
-                  <PostcardCreateSimple
-                    onClick={() => router.push("/items/new")}
-                  />
-                  {items.map((item) => (
-                    <PostcardPreviewSimple
-                      key={item.id}
-                      id={`postcard-${item.id}`}
-                      front={item.front}
-                      name={`${item.visibility === "PRIVATE" ? "🔒" : "🌐"} ${
-                        item.name
-                      }`}
-                      description={item.description}
-                      onClick={() => {
-                        setItemId(item.id);
-                        setOpen(true);
-                        trackGoal("1WFW5D7J", 0);
-                      }}
+                <CategoryFilter>
+                  <div className="grid grid-cols-1 gap-y-4 sm:grid-cols-1 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-2 lg:gap-x-8">
+                    <PostcardCreateSimple
+                      onClick={() => router.push("/items/new")}
                     />
-                  ))}
-                </div>
+                    {items.map((item) => (
+                      <PostcardPreviewSimple
+                        key={item.id}
+                        id={`postcard-${item.id}`}
+                        front={item.front}
+                        name={`${item.visibility === "PRIVATE" ? "🔒" : "🌐"} ${
+                          item.name
+                        }`}
+                        description={item.description}
+                        onClick={() => {
+                          setItemId(item.id);
+                          setOpen(true);
+                          trackGoal("1WFW5D7J", 0);
+                        }}
+                      />
+                    ))}
+                  </div>
+                </CategoryFilter>
               </div>
             </>
           );
@@ -144,7 +151,7 @@ const SendSignedOut = () => {
 
   return (
     <>
-      <div className="mx-auto my-8 max-w-7xl px-4 sm:my-12 sm:px-6 lg:px-8">
+      {/* <div className="mx-auto my-8 max-w-7xl px-4 sm:my-12 sm:px-6 lg:px-8">
         <div className="text-center">
           <h2 className="text-lg font-semibold text-indigo-600">Postcards</h2>
           <p className="mt-1 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
@@ -158,26 +165,28 @@ const SendSignedOut = () => {
             <em>*U.S. addresses only</em>
           </p>
         </div>
-      </div>
+      </div> */}
       <DefaultQueryCell
         query={itemsQuery}
         empty={() => <div>No postcards</div>}
         loading={() => (
           <div className="mx-auto max-w-2xl py-8 px-4 sm:py-12 sm:px-6 lg:max-w-7xl lg:px-8">
             <h2 className="sr-only">Products</h2>
-            <div className="grid grid-cols-1 gap-y-4 sm:grid-cols-1 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-2 lg:gap-x-8">
-              {[0, 1, 2, 3, 4, 5, 6, 7].map((item) => (
-                <PostcardPreviewSimple
-                  key={item}
-                  id={`loading-${item}`}
-                  loadingState={true}
-                  front=""
-                  name=""
-                  description=""
-                  onClick={() => null}
-                />
-              ))}
-            </div>
+            <CategoryFilter>
+              <div className="grid grid-cols-1 gap-y-4 sm:grid-cols-1 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-2 lg:gap-x-8">
+                {[0, 1, 2, 3, 4, 5, 6, 7].map((item) => (
+                  <PostcardPreviewSimple
+                    key={item}
+                    id={`loading-${item}`}
+                    loadingState={true}
+                    front=""
+                    name=""
+                    description=""
+                    onClick={() => null}
+                  />
+                ))}
+              </div>
+            </CategoryFilter>
           </div>
         )}
         success={({ data: items }) => {
@@ -193,27 +202,29 @@ const SendSignedOut = () => {
                   itemFront={activeItem.front}
                 ></Slideover>
               )}
-              <div className="mx-auto max-w-2xl py-8 px-4 sm:py-12 sm:px-6 lg:max-w-7xl lg:px-8">
+              <div className="mx-auto max-w-2xl lg:max-w-7xl">
                 <h2 className="sr-only">Products</h2>
-                <div className="grid grid-cols-1 gap-y-4 sm:grid-cols-1 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-2 lg:gap-x-8">
-                  <PostcardCreateSimple
-                    onClick={() => router.push("/items/new")}
-                  />
-                  {items.map((item) => (
-                    <PostcardPreviewSimple
-                      key={item.id}
-                      id={`postcard-${item.id}`}
-                      front={item.front}
-                      name={item.name}
-                      description={item.description}
-                      onClick={() => {
-                        setItemId(item.id);
-                        setOpen(true);
-                        trackGoal("1WFW5D7J", 0);
-                      }}
+                <CategoryFilter>
+                  <div className="grid grid-cols-1 gap-y-4 sm:grid-cols-1 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-2 lg:gap-x-8">
+                    <PostcardCreateSimple
+                      onClick={() => router.push("/items/new")}
                     />
-                  ))}
-                </div>
+                    {items.map((item) => (
+                      <PostcardPreviewSimple
+                        key={item.id}
+                        id={`postcard-${item.id}`}
+                        front={item.front}
+                        name={item.name}
+                        description={item.description}
+                        onClick={() => {
+                          setItemId(item.id);
+                          setOpen(true);
+                          trackGoal("1WFW5D7J", 0);
+                        }}
+                      />
+                    ))}
+                  </div>
+                </CategoryFilter>
               </div>
             </>
           );
