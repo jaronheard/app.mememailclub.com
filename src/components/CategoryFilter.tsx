@@ -12,44 +12,43 @@ import clsx from "clsx";
 
 const sortOptions = [
   { name: "Most Popular", href: "#" },
-  { name: "Best Rating", href: "#" },
   { name: "Newest", href: "#" },
 ];
 const filters = [
   {
-    id: "category",
-    name: "Category",
+    id: "visibility",
+    name: "Visibility",
     options: [
-      { value: "tees", label: "Tees" },
-      { value: "crewnecks", label: "Crewnecks" },
-      { value: "hats", label: "Hats" },
+      { value: "public", label: "Public" },
+      { value: "private", label: "Private" },
     ],
   },
   {
-    id: "brand",
-    name: "Brand",
+    id: "tone",
+    name: "Tone",
     options: [
-      { value: "clothing-company", label: "Clothing Company" },
-      { value: "fashion-inc", label: "Fashion Inc." },
-      { value: "shoes-n-more", label: "Shoes 'n More" },
+      { value: "all", label: "All" },
+      { value: "happiness", label: "Happiness" },
+      { value: "love", label: "Love" },
+      { value: "sympathy", label: "Sympathy" },
+      { value: "gratitude", label: "Gratitude" },
+      { value: "excitement", label: "Excitement" },
+      { value: "calmness", label: "Calmness" },
+      { value: "nostalgia", label: "Nostalgia" },
     ],
   },
   {
-    id: "color",
-    name: "Color",
+    id: "occasion",
+    name: "Occasion",
     options: [
-      { value: "white", label: "White" },
-      { value: "black", label: "Black" },
-      { value: "grey", label: "Grey" },
-    ],
-  },
-  {
-    id: "sizes",
-    name: "Sizes",
-    options: [
-      { value: "s", label: "S" },
-      { value: "m", label: "M" },
-      { value: "l", label: "L" },
+      { value: "all", label: "All" },
+      { value: "birthdays", label: "Birthdays" },
+      { value: "weddings", label: "Weddings" },
+      { value: "anniversaries", label: "Anniversaries" },
+      { value: "holidays", label: "Holidays" },
+      { value: "graduations", label: "Graduations" },
+      { value: "congratulations", label: "Congratulations" },
+      { value: "condolences", label: "Condolences" },
     ],
   },
 ];
