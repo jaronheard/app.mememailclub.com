@@ -35,6 +35,7 @@ const createPostcardInput = z.object({
   status: z.enum(["DRAFT", "PUBLISHED"]),
   size: z.enum(["4x6", "6x9", "6x11"]),
   visibility: z.enum(["PUBLIC", "PRIVATE"]),
+  anonymousUserId: z.string().optional(),
 });
 
 type CreatePostcard = z.infer<typeof createPostcardInput>;
@@ -46,7 +47,7 @@ async function createPostcard({
   ctx: Context;
   input: CreatePostcard;
 }) {
-  if (!ctx.auth.userId) {
+  if (!input.anonymousUserId && !ctx.auth.userId) {
     throw new TRPCError({
       code: "UNAUTHORIZED",
       message: "You must be logged in to create an item",
@@ -105,7 +106,7 @@ async function createPostcard({
       stripePaymentLinkId: paymentLink.id,
       size: itemSizeToDB(input.size),
       test: process.env.NODE_ENV === "development",
-      userId: ctx.auth.userId,
+      userId: ctx.auth.userId || input.anonymousUserId || "anonymous",
       visibility: input.visibility,
     },
   });
@@ -209,6 +210,158 @@ export const items = createRouter()
       return item;
     },
   })
+  .mutation("createItemForAnonymousUser", {
+    input: z.object({
+      name: z.string(),
+      description: z.string(),
+      front: z.string().url(),
+      back: z.string().url(),
+      status: z.enum(["DRAFT", "PUBLISHED"]),
+      size: z.enum(["4x6", "6x9", "6x11"]),
+      visibility: z.enum(["PUBLIC", "PRIVATE"]),
+      anonymousUserId: z.string(),
+    }),
+    async resolve({ ctx, input }) {
+      const publication = await ctx.prisma.publication.findFirst({
+        where: {
+          userId: input.anonymousUserId,
+        },
+      });
+      let newPublication;
+      if (!publication) {
+        // create a publication for this user
+        newPublication = await ctx.prisma.publication.create({
+          data: {
+            authorId: input.anonymousUserId,
+            userId: input.anonymousUserId,
+            name: "My Postcards",
+            description: "Uncategorized postcards",
+            imageUrl:
+              "https://res.cloudinary.com/jaronheard/image/upload/v1685474738/folder_fpgnfp.png",
+            status: "PUBLISHED",
+          },
+        });
+        if (!newPublication) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Postcard creation failed - error creating publication",
+          });
+        }
+      }
+
+      // ensure publication promise is resolved
+      const publicationId = publication?.id || newPublication?.id;
+      if (!publicationId) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Postcard creation failed - error determining publication",
+        });
+      }
+
+      const newItem = await createPostcard({
+        ctx,
+        input: {
+          publicationId: publicationId,
+          name: input.name,
+          description: input.description,
+          front: input.front,
+          back: input.back,
+          status: input.status,
+          size: input.size,
+          visibility: input.visibility,
+          anonymousUserId: input.anonymousUserId,
+        },
+      });
+      return newItem;
+    },
+  })
+  .mutation("updateItem", {
+    input: z.object({
+      id: z.number(),
+      name: z.string(),
+      description: z.string(),
+      front: z.string().url(),
+      back: z.string().url(),
+      status: z.enum(["DRAFT", "PUBLISHED"]),
+      size: z.enum(["4x6", "6x9", "6x11"]),
+      visibility: z.enum(["PUBLIC", "PRIVATE"]),
+    }),
+    async resolve({ ctx, input }) {
+      const item = await ctx.prisma.item.findUnique({
+        where: {
+          id: input.id,
+        },
+        select: {
+          userId: true,
+          stripeProductId: true,
+          stripePaymentLink: true,
+        },
+      });
+
+      if (!item || !item.stripeProductId || !item.stripePaymentLink) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Stripe product or product link not found",
+        });
+      }
+
+      // check if user is authorized to update this item
+      if (
+        !(
+          item.userId.startsWith("anonymous") || ctx.auth.userId === item.userId
+        )
+      ) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message:
+            "You must be logged in as the correct user to update a postcard",
+        });
+      }
+
+      // stripe logic
+      const product = await stripe.products.update(item.stripeProductId, {
+        name: input.name,
+        active: input.status === "PUBLISHED",
+        statement_descriptor: `postcard: ${input.name.slice(0, 12)}`,
+        images: [input.front, input.back],
+      });
+
+      if (!product) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Stripe product update failed",
+        });
+      }
+
+      // TODO: update payment link with new price
+
+      const updatedItem = await ctx.prisma.item.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          name: input.name,
+          description: input.description,
+          front: input.front,
+          back: input.back,
+          status: input.status,
+          stripeProductId: product.id,
+          size: itemSizeToDB(input.size),
+          visibility: input.visibility,
+          // stripePaymentLink: item.stripePaymentLink,
+        },
+      });
+
+      if (!updatedItem) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Item update failed",
+        });
+      }
+
+      return updatedItem;
+    },
+  })
   .middleware(async ({ ctx, next }) => {
     // Any queries or mutations after this middleware will
     // raise an error unless there is a current session
@@ -303,89 +456,6 @@ export const items = createRouter()
       return newItem;
     },
   })
-  .mutation("updateItem", {
-    input: z.object({
-      id: z.number(),
-      name: z.string(),
-      description: z.string(),
-      front: z.string().url(),
-      back: z.string().url(),
-      status: z.enum(["DRAFT", "PUBLISHED"]),
-      size: z.enum(["4x6", "6x9", "6x11"]),
-      visibility: z.enum(["PUBLIC", "PRIVATE"]),
-    }),
-    async resolve({ ctx, input }) {
-      const item = await ctx.prisma.item.findUnique({
-        where: {
-          id: input.id,
-        },
-        select: {
-          userId: true,
-          stripeProductId: true,
-          stripePaymentLink: true,
-        },
-      });
-
-      if (!item || !item.stripeProductId || !item.stripePaymentLink) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Stripe product or product link not found",
-        });
-      }
-
-      // check if user is authorized to update this item
-      if (item.userId !== "anonymous" && ctx.auth.userId !== item.userId) {
-        throw new TRPCError({
-          code: "UNAUTHORIZED",
-          message:
-            "You must be logged in as the correct user to update a postcard",
-        });
-      }
-
-      // stripe logic
-      const product = await stripe.products.update(item.stripeProductId, {
-        name: input.name,
-        active: input.status === "PUBLISHED",
-        statement_descriptor: `postcard: ${input.name.slice(0, 12)}`,
-        images: [input.front, input.back],
-      });
-
-      if (!product) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Stripe product update failed",
-        });
-      }
-
-      // TODO: update payment link with new price
-
-      const updatedItem = await ctx.prisma.item.update({
-        where: {
-          id: input.id,
-        },
-        data: {
-          name: input.name,
-          description: input.description,
-          front: input.front,
-          back: input.back,
-          status: input.status,
-          stripeProductId: product.id,
-          size: itemSizeToDB(input.size),
-          visibility: input.visibility,
-          // stripePaymentLink: item.stripePaymentLink,
-        },
-      });
-
-      if (!updatedItem) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Item update failed",
-        });
-      }
-
-      return updatedItem;
-    },
-  })
   .mutation("deleteItem", {
     input: z.object({
       id: z.number(),
@@ -419,7 +489,11 @@ export const items = createRouter()
       }
 
       // check if user is authorized to delete this item
-      if (item.userId !== "anonymous" && ctx.auth.userId !== item.userId) {
+      if (
+        !(
+          item.userId.startsWith("anonymous") || ctx.auth.userId === item.userId
+        )
+      ) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
           message:

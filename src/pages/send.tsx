@@ -127,6 +127,7 @@ const SendSignedOut = () => {
   const [open, setOpen] = useState(false);
   const [itemId, setItemId] = useState(0);
   const itemsQuery = trpc.useQuery(["items.getPublished"]);
+  // TODO: get item from anonymous user
 
   useEffect(() => {
     // Make sure we have the query param available.

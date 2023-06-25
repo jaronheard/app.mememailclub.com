@@ -13,10 +13,9 @@ import Button from "../../../../components/Button";
 import { ItemSizeOpts, itemSizeToClient } from "../../../../utils/itemSize";
 import { Switch } from "@headlessui/react";
 import Head from "next/head";
-import { SignedIn, SignedOut } from "@clerk/nextjs";
+import { SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
 import { PostcardPreviewSimple } from "../../../../components/PostcardPreviewSimple";
 import { SIZES } from "../../../../utils/itemSize";
-import RedirectToSignInCurrentPage from "../../../../components/RedirectToSignInCurrentPage";
 
 export type ItemFormValues = {
   name: string;
@@ -34,6 +33,7 @@ const ParamsValidator = z.object({
 });
 
 const Item = () => {
+  const { userId } = useAuth();
   const router = useRouter();
   const utils = trpc.useContext();
   const [queryStatus, setQueryStatus] = useState({
@@ -517,7 +517,7 @@ const Page = () => {
         <Item />
       </SignedIn>
       <SignedOut>
-        <RedirectToSignInCurrentPage />
+        <Item />
       </SignedOut>
     </>
   );
