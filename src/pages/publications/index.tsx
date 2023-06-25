@@ -10,7 +10,8 @@ import Img from "../../components/Img";
 import Breadcrumbs from "../../components/Breadcrumbs";
 import Button from "../../components/Button";
 import Head from "next/head";
-import { RedirectToSignIn, SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
+import { SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
+import RedirectToSignInCurrentPage from "../../components/RedirectToSignInCurrentPage";
 
 const PublicationsEmpty = () => {
   return (
@@ -183,7 +184,7 @@ const Page = () => {
         <Publications />
       </SignedIn>
       <SignedOut>
-        <RedirectToSignIn />
+        <RedirectToSignInCurrentPage />
       </SignedOut>
     </>
   );

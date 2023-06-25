@@ -1,6 +1,5 @@
 import { useForm } from "react-hook-form";
 import Link from "next/link";
-import Layout from "../../components/Layout";
 import { trpc } from "../../utils/trpc";
 import clsx from "clsx";
 import { useRouter } from "next/router";
@@ -18,8 +17,9 @@ import { z } from "zod";
 import Breadcrumbs from "../../components/Breadcrumbs";
 import LoadingLayout from "../../components/LoadingLayout";
 import Button from "../../components/Button";
-import { SignedIn } from "@clerk/nextjs";
+import { SignedIn, SignedOut } from "@clerk/nextjs";
 import Head from "next/head";
+import RedirectToSignInCurrentPage from "../../components/RedirectToSignInCurrentPage";
 
 export type PublicationFormValues = {
   name: string;
@@ -362,13 +362,18 @@ const Publication = () => {
 
 const Page = () => {
   return (
-    <SignedIn>
+    <>
       <Head>
         <title>Create unique postcards - PostPostcard</title>
         <meta name="robots" content="noindex,nofollow" />
       </Head>
-      <Publication />
-    </SignedIn>
+      <SignedIn>
+        <Publication />
+      </SignedIn>
+      <SignedOut>
+        <RedirectToSignInCurrentPage />
+      </SignedOut>
+    </>
   );
 };
 

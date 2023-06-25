@@ -126,7 +126,10 @@ const SendSignedOut = () => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [itemId, setItemId] = useState(0);
-  const itemsQuery = trpc.useQuery(["items.getPublished"]);
+  const itemsQuery = trpc.useQuery([
+    "items.getAllPublished",
+    { latestId: `${itemId}` },
+  ]);
 
   useEffect(() => {
     // Make sure we have the query param available.

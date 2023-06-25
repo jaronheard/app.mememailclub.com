@@ -1,10 +1,10 @@
-import { RedirectToSignIn, SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
+import { SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
 import { trpc } from "../../utils/trpc";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import LoadingLayout from "../../components/LoadingLayout";
 
-const Page = () => {
+const SignedInNew = () => {
   const router = useRouter();
   const utils = trpc.useContext();
   const { isLoaded, isSignedIn } = useAuth();
@@ -31,14 +31,57 @@ const Page = () => {
   }, [isLoaded, isSignedIn, status, mutate]);
 
   return (
+    <LoadingLayout>
+      <p>Creating your new item...</p>
+    </LoadingLayout>
+  );
+};
+
+const SignedOutNew = () => {
+  const router = useRouter();
+  const { mutate, status } = trpc.useMutation(
+    "items.createItemForAnonymousUser",
+    {
+      onSuccess: (data) => {
+        router.replace(`/publications/${data.publicationId}/items/${data.id}`);
+      },
+    }
+  );
+
+  const { data: anonymousUserId } = trpc.useQuery(["users.getUniqueUserId"], {
+    staleTime: Infinity,
+  });
+  // effect that runs mutation when a user is signed in and loaded and cleans up when the component is unmounted
+  useEffect(() => {
+    if (anonymousUserId && status === "idle") {
+      mutate({
+        name: "",
+        description: "",
+        front: `https://res.cloudinary.com/jaronheard/image/upload/ar_1.48,c_scale/v1687555005/bluePixel_eklcos.jpg`,
+        back: `https://res.cloudinary.com/jaronheard/image/upload/ar_1.48,c_scale/v1687555005/redPixel_peptry.jpg`,
+        status: "DRAFT",
+        size: "6x9",
+        visibility: "PRIVATE",
+        anonymousUserId: anonymousUserId,
+      });
+    }
+  }, [anonymousUserId, status, mutate]);
+
+  return (
+    <LoadingLayout>
+      <p>Creating a new item...</p>
+    </LoadingLayout>
+  );
+};
+
+const Page = () => {
+  return (
     <>
       <SignedIn>
-        <LoadingLayout>
-          <p>Creating your new item...</p>
-        </LoadingLayout>
+        <SignedInNew />
       </SignedIn>
       <SignedOut>
-        <RedirectToSignIn />
+        <SignedOutNew />
       </SignedOut>
     </>
   );
