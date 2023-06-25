@@ -58,6 +58,7 @@ module.exports = {
       },
       boxShadow: {
         button: "3.2px 4.8px 0px 0px hsla(29, 22%, 6%, 0.33)",
+        buttonPressed: "2.4px 3.2px 0px 0px hsla(29, 22%, 6%, 0.37)",
       },
     },
   },

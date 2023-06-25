@@ -11,15 +11,10 @@ export function PostcardCreateSimple(props: {
   return (
     <div
       role="button"
-      className="group flex flex-col overflow-hidden rounded-lg"
+      className="flex flex-col overflow-hidden rounded-lg hover:scale-[1.01] hover:opacity-90"
       onClick={props.onClick}
     >
-      <div
-        className={clsx(
-          "sm:aspect-none relative bg-gray-200 group-hover:opacity-75",
-          aspectRatio
-        )}
-      >
+      <div className={clsx("sm:aspect-none relative bg-gray-200", aspectRatio)}>
         <div>
           <Img
             src={placeholderSrc}

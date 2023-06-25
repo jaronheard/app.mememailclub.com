@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import Img from "./Img";
+import Button from "./Button";
 
 export function PostcardPreviewSimple(props: {
   id: string;
@@ -18,12 +19,12 @@ export function PostcardPreviewSimple(props: {
     <div
       id={props.id}
       role="button"
-      className="group flex flex-col overflow-hidden rounded-lg"
+      className="flex flex-col overflow-hidden rounded-lg hover:scale-[1.01] hover:opacity-90"
       onClick={props.onClick}
     >
       <div
         className={clsx(
-          "sm:aspect-none relative bg-gray-200 group-hover:opacity-75",
+          "sm:aspect-none relative bg-gray-200",
           aspectRatio,
           props.loadingState && "animate-pulse"
         )}
@@ -35,13 +36,20 @@ export function PostcardPreviewSimple(props: {
             className="h-full w-full object-cover object-center"
             fill
           />
+          <Button
+            visualOnly
+            size="sm"
+            variant="primary"
+            className="absolute right-2 bottom-2"
+          >
+            Add message
+          </Button>
         </div>
       </div>
       {!props.hideText && (
         <>
           <div className="mt-4 flex items-center justify-between text-base font-medium text-gray-900">
             <h3>{props.name || "Loading..."}</h3>
-            <p>$1</p>
           </div>
           <p className="mt-1 text-left text-sm italic text-gray-400">{`6"x9" postcard w/ message and postage`}</p>
         </>
