@@ -49,7 +49,7 @@ export function PostcardPreviewSimple(props: {
       {!props.hideText && (
         <>
           <div className="mt-4 flex items-center justify-between text-base font-medium text-gray-900">
-            <h3>{props.name || "Loading..."}</h3>
+            <h3>{props.name || "Untitled"}</h3>
           </div>
           <p className="mt-1 text-left text-sm italic text-gray-400">{`6"x9" postcard w/ message and postage`}</p>
         </>

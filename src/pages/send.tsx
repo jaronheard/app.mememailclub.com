@@ -9,6 +9,7 @@ import { SignedIn, SignedOut } from "@clerk/nextjs";
 import { PostcardCreateSimple } from "../components/PostcardCreateSimple";
 import { useRouter } from "next/router";
 import CategoryFilter from "../components/CategoryFilter";
+import { useInView } from "react-intersection-observer";
 
 const SendSignedIn = () => {
   const router = useRouter();
@@ -118,13 +119,13 @@ const SendSignedOut = () => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [itemId, setItemId] = useState(0);
-  const [page, setPage] = useState(0);
+  const { ref, inView } = useInView();
 
   const itemsQuery = trpc.useInfiniteQuery(
     [
       "items.getInfinite",
       {
-        limit: 5,
+        limit: 20,
       },
     ],
     {
@@ -132,14 +133,12 @@ const SendSignedOut = () => {
     }
   );
 
-  const handleFetchNextPage = () => {
-    itemsQuery.fetchNextPage();
-    setPage((prev) => prev + 1);
-  };
-
-  const handleFetchPreviousPage = () => {
-    setPage((prev) => prev - 1);
-  };
+  useEffect(() => {
+    if (inView) {
+      itemsQuery.fetchNextPage();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inView]);
 
   useEffect(() => {
     // Make sure we have the query param available.
@@ -154,8 +153,6 @@ const SendSignedOut = () => {
 
   return (
     <>
-      <button onClick={() => handleFetchNextPage()}>Next</button>
-      <button onClick={() => handleFetchPreviousPage()}>Previous</button>
       <DefaultQueryCell
         query={itemsQuery}
         empty={() => <div>No postcards</div>}
@@ -180,7 +177,8 @@ const SendSignedOut = () => {
           </div>
         )}
         success={({ data: infiniteData }) => {
-          const items = infiniteData.pages?.[page]?.items || [];
+          const items =
+            infiniteData.pages?.map((page) => page.items).flat() || [];
           const activeItem = items.find((item) => item.id === itemId);
           return (
             <>
@@ -221,6 +219,24 @@ const SendSignedOut = () => {
           );
         }}
       />
+      <div>
+        <button
+          ref={ref}
+          onClick={() => itemsQuery.fetchNextPage()}
+          disabled={itemsQuery.hasNextPage || itemsQuery.isFetchingNextPage}
+        >
+          {itemsQuery.isFetchingNextPage
+            ? "Loading more..."
+            : itemsQuery.hasNextPage
+            ? "Load Newer"
+            : "Nothing more to load"}
+        </button>
+      </div>
+      <div>
+        {itemsQuery.isFetching && !itemsQuery.isFetchingNextPage
+          ? "Background Updating..."
+          : null}
+      </div>
     </>
   );
 };
