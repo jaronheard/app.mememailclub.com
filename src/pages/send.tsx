@@ -10,6 +10,7 @@ import { PostcardCreateSimple } from "../components/PostcardCreateSimple";
 import { useRouter } from "next/router";
 import CategoryFilter from "../components/CategoryFilter";
 import { useInView } from "react-intersection-observer";
+import Button from "../components/Button";
 
 const SendSignedIn = () => {
   const router = useRouter();
@@ -219,18 +220,18 @@ const SendSignedOut = () => {
           );
         }}
       />
-      <div>
-        <button
-          ref={ref}
+      <div className="flex justify-center py-8" ref={ref}>
+        <Button
+          variant="secondary"
           onClick={() => itemsQuery.fetchNextPage()}
-          disabled={itemsQuery.hasNextPage || itemsQuery.isFetchingNextPage}
+          disabled={!(itemsQuery.hasNextPage || itemsQuery.isFetchingNextPage)}
         >
           {itemsQuery.isFetchingNextPage
             ? "Loading more..."
             : itemsQuery.hasNextPage
             ? "Load Newer"
             : "Nothing more to load"}
-        </button>
+        </Button>
       </div>
       <div>
         {itemsQuery.isFetching && !itemsQuery.isFetchingNextPage
