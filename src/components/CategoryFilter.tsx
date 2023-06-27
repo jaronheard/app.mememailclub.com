@@ -19,6 +19,7 @@ const filters = [
     id: "visibility",
     name: "Visibility",
     options: [
+      { value: "all", label: "All" },
       { value: "public", label: "Public" },
       { value: "private", label: "Private" },
     ],

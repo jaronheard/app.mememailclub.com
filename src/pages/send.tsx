@@ -118,10 +118,28 @@ const SendSignedOut = () => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [itemId, setItemId] = useState(0);
-  const itemsQuery = trpc.useQuery([
-    "items.getAllPublished",
-    { latestId: `${itemId}` },
-  ]);
+  const [page, setPage] = useState(0);
+
+  const itemsQuery = trpc.useInfiniteQuery(
+    [
+      "items.getInfinite",
+      {
+        limit: 5,
+      },
+    ],
+    {
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+    }
+  );
+
+  const handleFetchNextPage = () => {
+    itemsQuery.fetchNextPage();
+    setPage((prev) => prev + 1);
+  };
+
+  const handleFetchPreviousPage = () => {
+    setPage((prev) => prev - 1);
+  };
 
   useEffect(() => {
     // Make sure we have the query param available.
@@ -136,6 +154,8 @@ const SendSignedOut = () => {
 
   return (
     <>
+      <button onClick={() => handleFetchNextPage()}>Next</button>
+      <button onClick={() => handleFetchPreviousPage()}>Previous</button>
       <DefaultQueryCell
         query={itemsQuery}
         empty={() => <div>No postcards</div>}
@@ -159,7 +179,8 @@ const SendSignedOut = () => {
             </CategoryFilter>
           </div>
         )}
-        success={({ data: items }) => {
+        success={({ data: infiniteData }) => {
+          const items = infiniteData.pages?.[page]?.items || [];
           const activeItem = items.find((item) => item.id === itemId);
           return (
             <>
