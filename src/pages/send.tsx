@@ -8,9 +8,34 @@ import { trackGoal } from "fathom-client";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
 import { PostcardCreateSimple } from "../components/PostcardCreateSimple";
 import { useRouter } from "next/router";
-import CategoryFilter from "../components/CategoryFilter";
+import CategoryFilter, {
+  occasionParams,
+  sortOptionsParams,
+  toneParams,
+  visibilityParams,
+} from "../components/CategoryFilter";
 import { useInView } from "react-intersection-observer";
 import Button from "../components/Button";
+import { z } from "zod";
+
+const zSortOptions = z.enum(sortOptionsParams);
+type sortOptions = z.infer<typeof zSortOptions>;
+const zVisibilityOptions = z.enum(visibilityParams);
+type visibilityOptions = z.infer<typeof zVisibilityOptions>;
+const zToneOptions = z.enum(toneParams);
+type toneOptions = z.infer<typeof zToneOptions>;
+const zOccasionOptions = z.enum(occasionParams);
+type occasionOptions = z.infer<typeof zOccasionOptions>;
+
+const ParamsValidator = z.object({
+  ready: z.boolean().optional(),
+  sort: zSortOptions.optional(),
+  visibility: zVisibilityOptions.optional(),
+  tone: zToneOptions.optional(),
+  occasion: zOccasionOptions.optional(),
+  id: z.string().optional(),
+});
+export type SendParams = z.infer<typeof ParamsValidator>;
 
 const SendSignedIn = () => {
   const router = useRouter();
@@ -25,6 +50,11 @@ const SendSignedIn = () => {
   ]);
   const { data } = itemsQuery;
   const activeItem = data?.find((item) => item.id === itemId);
+  // queryStatus is of type params
+  const [queryStatus, setQueryStatus] = useState<SendParams>({
+    ready: false,
+    sort: "newest",
+  })
 
   useEffect(() => {
     // Make sure we have the query param available.
@@ -44,6 +74,17 @@ const SendSignedIn = () => {
     }
   }, [router, shouldSetItemId, shouldSetOpen, activeItem]);
 
+  useEffect(() => {
+    if (router.isReady) {
+      const zQuery = ParamsValidator.safeParse(router.query);
+      if (zQuery.success) {
+        setQueryStatus({
+          ready: true,
+          sort: zQuery.data.sort,
+        });
+      }
+    }
+  }, [router.isReady, router.query]);
   return (
     <>
       <DefaultQueryCell

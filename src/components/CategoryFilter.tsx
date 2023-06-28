@@ -9,58 +9,104 @@ import {
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import clsx from "clsx";
+import { SendParams } from "../pages/send";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useForm } from "react-hook-form";
 
 const sortOptions = [
-  { name: "Most Popular", href: "#" },
-  { name: "Newest", href: "#" },
+  { name: "Most Popular", href: "#", key: "most-popular" },
+  { name: "Newest", href: "#", key: "newest" },
+  { name: "Oldest", href: "#", key: "oldest" },
 ];
-const filters = [
-  {
-    id: "visibility",
-    name: "Visibility",
-    options: [
-      { value: "all", label: "All" },
-      { value: "public", label: "Public" },
-      { value: "private", label: "Private" },
-    ],
-  },
-  {
-    id: "tone",
-    name: "Tone",
-    options: [
-      { value: "all", label: "All" },
-      { value: "happiness", label: "Happiness" },
-      { value: "love", label: "Love" },
-      { value: "sympathy", label: "Sympathy" },
-      { value: "gratitude", label: "Gratitude" },
-      { value: "excitement", label: "Excitement" },
-      { value: "calmness", label: "Calmness" },
-      { value: "nostalgia", label: "Nostalgia" },
-    ],
-  },
-  {
-    id: "occasion",
-    name: "Occasion",
-    options: [
-      { value: "all", label: "All" },
-      { value: "birthdays", label: "Birthdays" },
-      { value: "weddings", label: "Weddings" },
-      { value: "anniversaries", label: "Anniversaries" },
-      { value: "holidays", label: "Holidays" },
-      { value: "graduations", label: "Graduations" },
-      { value: "congratulations", label: "Congratulations" },
-      { value: "condolences", label: "Condolences" },
-    ],
-  },
-];
+export const sortOptionsParams = ["most-popular", "newest", "oldest"] as const;
+
+const visibility = {
+  id: "visibility",
+  name: "Visibility",
+  options: [
+    { value: "all", label: "All" },
+    { value: "public", label: "Public" },
+    { value: "private", label: "Private" },
+  ],
+};
+export const visibilityParams = ["all", "public", "private"] as const;
+
+const tone = {
+  id: "tone",
+  name: "Tone",
+  options: [
+    { value: "all", label: "All" },
+    { value: "happiness", label: "Happiness" },
+    { value: "love", label: "Love" },
+    { value: "sympathy", label: "Sympathy" },
+    { value: "gratitude", label: "Gratitude" },
+    { value: "excitement", label: "Excitement" },
+    { value: "calmness", label: "Calmness" },
+    { value: "nostalgia", label: "Nostalgia" },
+  ],
+};
+export const toneParams = [
+  "all",
+  "happiness",
+  "love",
+  "sympathy",
+  "gratitude",
+  "excitement",
+  "calmness",
+  "nostalgia",
+] as const;
+
+const occasion = {
+  id: "occasion",
+  name: "Occasion",
+  options: [
+    { value: "all", label: "All" },
+    { value: "birthdays", label: "Birthdays" },
+    { value: "weddings", label: "Weddings" },
+    { value: "anniversaries", label: "Anniversaries" },
+    { value: "holidays", label: "Holidays" },
+    { value: "graduations", label: "Graduations" },
+    { value: "congratulations", label: "Congratulations" },
+    { value: "condolences", label: "Condolences" },
+  ],
+};
+export const occasionParams = [
+  "all",
+  "birthdays",
+  "weddings",
+  "anniversaries",
+  "holidays",
+  "graduations",
+  "congratulations",
+  "condolences",
+] as const;
+
+const filters = [visibility, tone, occasion];
 
 type CategoryFilterProps = {
+  params: SendParams;
   children?: React.ReactNode;
 };
 
 export default function CategoryFilter(props: CategoryFilterProps) {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    getValues,
+    setValue,
+    watch,
+    formState: { errors, isDirty },
+  } = useForm<SendParams>({
+    defaultValues: {
+      ...props.params,
+    },
+  });
 
+  console.log("watch", watch());
   return (
     <div className="">
       {/* Mobile filter dialog */}
@@ -136,10 +182,28 @@ export default function CategoryFilter(props: CategoryFilterProps) {
                                 >
                                   <input
                                     id={`filter-mobile-${section.id}-${optionIdx}`}
-                                    name={`${section.id}[]`}
-                                    defaultValue={option.value}
                                     type="checkbox"
                                     className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                    {...register(
+                                      `${section.id}-${option.value}` as any,
+                                      {
+                                        onChange: () => {
+                                          handleSubmit(
+                                            (data) => {
+                                              router.push({
+                                                query: {
+                                                  ...router.query,
+                                                  ...data,
+                                                },
+                                              });
+                                            },
+                                            (errors) => {
+                                              console.log(errors);
+                                            }
+                                          );
+                                        },
+                                      }
+                                    )}
                                   />
                                   <label
                                     htmlFor={`filter-mobile-${section.id}-${optionIdx}`}
@@ -211,15 +275,17 @@ export default function CategoryFilter(props: CategoryFilterProps) {
                     {sortOptions.map((option) => (
                       <Menu.Item key={option.name}>
                         {({ active }) => (
-                          <a
-                            href={option.href}
+                          <Link
+                            href={{
+                              query: { ...router.query, sort: option.key },
+                            }}
                             className={clsx(
                               active ? "bg-gray-100" : "",
                               "block px-4 py-2 text-sm font-medium text-gray-900"
                             )}
                           >
                             {option.name}
-                          </a>
+                          </Link>
                         )}
                       </Menu.Item>
                     ))}
