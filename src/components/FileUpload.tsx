@@ -119,7 +119,7 @@ function FileUpload<FormValues extends FieldValues>({
             }
             return (
               <button
-                className="flex items-center gap-3"
+                className="flex flex-col items-center gap-3 sm:flex-row"
                 onClick={handleOnClick}
               >
                 <div
