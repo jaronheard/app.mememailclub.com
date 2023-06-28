@@ -13,13 +13,23 @@ import { SendParams } from "../pages/send";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
+import { z } from "zod";
 
-const sortOptions = [
+const sort = [
   { name: "Most Popular", href: "#", key: "most-popular" },
   { name: "Newest", href: "#", key: "newest" },
   { name: "Oldest", href: "#", key: "oldest" },
 ];
-export const sortOptionsParams = ["most-popular", "newest", "oldest"] as const;
+
+const sortOptionsSchema = z.array(
+  z.object({
+    name: z.string(),
+    href: z.string(),
+    key: z.string(),
+  })
+);
+
+type SortOption = z.TypeOf<typeof sortOptionsSchema>;
 
 const visibility = {
   id: "visibility",
@@ -30,7 +40,6 @@ const visibility = {
     { value: "private", label: "Private" },
   ],
 };
-export const visibilityParams = ["all", "public", "private"] as const;
 
 const tone = {
   id: "tone",
@@ -46,16 +55,6 @@ const tone = {
     { value: "nostalgia", label: "Nostalgia" },
   ],
 };
-export const toneParams = [
-  "all",
-  "happiness",
-  "love",
-  "sympathy",
-  "gratitude",
-  "excitement",
-  "calmness",
-  "nostalgia",
-] as const;
 
 const occasion = {
   id: "occasion",
@@ -71,18 +70,25 @@ const occasion = {
     { value: "condolences", label: "Condolences" },
   ],
 };
-export const occasionParams = [
-  "all",
-  "birthdays",
-  "weddings",
-  "anniversaries",
-  "holidays",
-  "graduations",
-  "congratulations",
-  "condolences",
-] as const;
 
 const filters = [visibility, tone, occasion];
+
+const filterOptionsSchema = z.array(
+  z.object({
+    value: z.string(),
+    label: z.string(),
+  })
+);
+
+const filtersSchema = z.array(
+  z.object({
+    id: z.string(),
+    name: z.string(),
+    options: filterOptionsSchema,
+  })
+);
+
+type FilterOption = z.TypeOf<typeof filterOptionsSchema>;
 
 type CategoryFilterProps = {
   params: SendParams;
@@ -105,8 +111,7 @@ export default function CategoryFilter(props: CategoryFilterProps) {
       ...props.params,
     },
   });
-
-  console.log("watch", watch());
+  
   return (
     <div className="">
       {/* Mobile filter dialog */}
@@ -272,7 +277,7 @@ export default function CategoryFilter(props: CategoryFilterProps) {
               >
                 <Menu.Items className="absolute left-0 z-10 mt-2 w-40 origin-top-left rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none">
                   <div className="py-1">
-                    {sortOptions.map((option) => (
+                    {sort.map((option) => (
                       <Menu.Item key={option.name}>
                         {({ active }) => (
                           <Link
