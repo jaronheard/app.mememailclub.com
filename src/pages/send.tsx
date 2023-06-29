@@ -23,11 +23,16 @@ import clsx from "clsx";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
+import {
+  useQueryParam,
+  ObjectParam,
+  ArrayParam,
+  withDefault,
+} from "use-query-params";
 
 const sort = [
-  { name: "Most Popular", href: "#", key: "most-popular" },
-  { name: "Newest", href: "#", key: "newest" },
-  { name: "Oldest", href: "#", key: "oldest" },
+  { name: "Newest", key: "newest", field: "createdAt", order: "desc" },
+  { name: "Oldest", key: "oldest", field: "createdAt", order: "asc" },
 ];
 
 const sortOptionsSchema = z.array(
@@ -44,8 +49,8 @@ const visibility = {
   id: "visibility",
   name: "Visibility",
   options: [
-    { value: "public", label: "Public" },
-    { value: "private", label: "Private" },
+    { value: "PUBLIC", label: "Public" },
+    { value: "PRIVATE", label: "Private" },
   ],
 };
 
@@ -78,6 +83,7 @@ const occasion = {
 };
 
 const filters = [visibility, tone, occasion];
+const visibilityFilterValues = ["PUBLIC", "PRIVATE"] as const;
 
 const filterOptionsSchema = z.array(
   z.object({
@@ -102,17 +108,15 @@ type CategoryFilterProps = {
 };
 
 function CategoryFilter(props: CategoryFilterProps) {
-  const router = useRouter();
   const [open, setOpen] = useState(false);
-  const {
-    register,
-    handleSubmit,
-    reset,
-    getValues,
-    setValue,
-    watch,
-    formState: { errors, isDirty },
-  } = useForm<SendParams>({
+  // query params
+  const [activeSort, setActiveSort] = useQueryParam("sort", ObjectParam);
+  const [activeFilters, setActiveFilters] = useQueryParam(
+    "filters",
+    ArrayParam
+  );
+
+  const { register } = useForm<SendParams>({
     defaultValues: {
       ...props.params,
     },
@@ -198,20 +202,22 @@ function CategoryFilter(props: CategoryFilterProps) {
                                     {...register(
                                       `${section.id}-${option.value}` as any,
                                       {
-                                        onChange: () => {
-                                          handleSubmit(
-                                            (data) => {
-                                              router.push({
-                                                query: {
-                                                  ...router.query,
-                                                  ...data,
-                                                },
-                                              });
-                                            },
-                                            (errors) => {
-                                              console.log(errors);
+                                        onChange(event) {
+                                          const value = option.value;
+
+                                          setActiveFilters((activeFilters) => {
+                                            const newFilters = activeFilters
+                                              ? activeFilters.filter(
+                                                  (filter) => filter !== value
+                                                )
+                                              : [];
+
+                                            if (value && event.target.checked) {
+                                              newFilters.push(value);
                                             }
-                                          );
+
+                                            return newFilters;
+                                          });
                                         },
                                       }
                                     )}
@@ -286,9 +292,12 @@ function CategoryFilter(props: CategoryFilterProps) {
                     {sort.map((option) => (
                       <Menu.Item key={option.name}>
                         {({ active }) => (
-                          <Link
-                            href={{
-                              query: { ...router.query, sort: option.key },
+                          <button
+                            onClick={() => {
+                              setActiveSort({
+                                field: option.field,
+                                order: option.order,
+                              });
                             }}
                             className={clsx(
                               active ? "bg-gray-100" : "",
@@ -296,7 +305,7 @@ function CategoryFilter(props: CategoryFilterProps) {
                             )}
                           >
                             {option.name}
-                          </Link>
+                          </button>
                         )}
                       </Menu.Item>
                     ))}
@@ -350,11 +359,32 @@ function CategoryFilter(props: CategoryFilterProps) {
                         {section.options.map((option, optionIdx) => (
                           <div key={option.value} className="flex items-center">
                             <input
-                              id={`filter-${section.id}-${optionIdx}`}
-                              name={`${section.id}[]`}
+                              id={`filter-${section.id}-${option.value}`}
                               defaultValue={option.value}
                               type="checkbox"
                               className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                              {...register(
+                                `${section.id}-${option.value}` as any,
+                                {
+                                  onChange(event) {
+                                    const value = option.value;
+
+                                    setActiveFilters((activeFilters) => {
+                                      const newFilters = activeFilters
+                                        ? activeFilters.filter(
+                                            (filter) => filter !== value
+                                          )
+                                        : [];
+
+                                      if (value && event.target.checked) {
+                                        newFilters.push(value);
+                                      }
+
+                                      return newFilters;
+                                    });
+                                  },
+                                }
+                              )}
                             />
                             <label
                               htmlFor={`filter-${section.id}-${optionIdx}`}
@@ -400,11 +430,6 @@ const SendSignedIn = () => {
   ]);
   const { data } = itemsQuery;
   const activeItem = data?.find((item) => item.id === itemId);
-  // queryStatus is of type params
-  const [queryStatus, setQueryStatus] = useState<SendParams>({
-    ready: false,
-    sort: "newest",
-  });
 
   useEffect(() => {
     // Make sure we have the query param available.
@@ -424,17 +449,6 @@ const SendSignedIn = () => {
     }
   }, [router, shouldSetItemId, shouldSetOpen, activeItem]);
 
-  useEffect(() => {
-    if (router.isReady) {
-      const zQuery = ParamsValidator.safeParse(router.query);
-      if (zQuery.success) {
-        setQueryStatus({
-          ready: true,
-          sort: zQuery.data.sort,
-        });
-      }
-    }
-  }, [router.isReady, router.query]);
   return (
     <>
       <DefaultQueryCell
@@ -511,13 +525,36 @@ const SendSignedOut = () => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [itemId, setItemId] = useState(0);
+  const [activeSort, setActiveSort] = useQueryParam("sort", ObjectParam);
+  const [activeFilters, setActiveFilters] = useQueryParam(
+    "filters",
+    ArrayParam
+  );
   const { ref, inView } = useInView();
+
+  const order = z
+    .enum(["asc", "desc"])
+    .optional()
+    .nullish()
+    .safeParse(activeSort?.order);
+  const orderToUse = order.success ? order.data : undefined;
+
+  // TODO: parse the filters
+  const visibilityFilter = z
+    .array(z.enum(visibilityFilterValues))
+    .optional()
+    .nullish()
+    .safeParse(activeFilters);
+  const visibilityFilterToUse = visibilityFilter.success
+    ? visibilityFilter.data
+    : undefined;
 
   const itemsQuery = trpc.useInfiniteQuery(
     [
       "items.getInfinite",
       {
         limit: 20,
+        order: orderToUse,
       },
     ],
     {

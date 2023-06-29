@@ -125,6 +125,8 @@ export const items = createRouter()
   .query("getInfinite", {
     input: z.object({
       limit: z.number().min(1).max(100).nullish(),
+      order: z.enum(["asc", "desc"]).nullish(),
+      visibility: z.enum(["PUBLIC", "PRIVATE"]).nullish(),
       cursor: z.number().nullish(), // <-- "cursor" needs to exist, but can be any type
     }),
     async resolve({ ctx, input }) {
@@ -136,10 +138,11 @@ export const items = createRouter()
           status: {
             not: "DELETED",
           },
+          
         },
         cursor: cursor ? { id: cursor } : undefined,
         orderBy: {
-          id: "asc",
+          id: input.order || "desc",
         },
       });
       let nextCursor: typeof cursor | undefined = undefined;
