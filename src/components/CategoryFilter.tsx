@@ -21,16 +21,6 @@ const sort = [
   { name: "Oldest", href: "#", key: "oldest" },
 ];
 
-const sortOptionsSchema = z.array(
-  z.object({
-    name: z.string(),
-    href: z.string(),
-    key: z.string(),
-  })
-);
-
-type SortOption = z.TypeOf<typeof sortOptionsSchema>;
-
 const visibility = {
   id: "visibility",
   name: "Visibility",
