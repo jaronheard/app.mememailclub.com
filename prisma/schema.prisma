@@ -27,8 +27,11 @@ model Item {
   size                ItemSize    @default(sz_6x9)
   Messages            Message[]
   visibility          Visibility  @default(PRIVATE)
+  tagId               Int?
+  Tag                 Tag?        @relation(fields: [tagId], references: [id])
 
   @@index([publicationId])
+  @@index([tagId])
 }
 
 model Publication {
@@ -57,6 +60,26 @@ model Message {
 
   @@index([userId])
   @@index([itemId])
+}
+
+model TagCategory {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  name      String   @unique
+  label     String
+  Tags      Tag[]
+}
+
+model Tag {
+  id            Int          @id @default(autoincrement())
+  createdAt     DateTime     @default(now())
+  name          String       @unique
+  label         String
+  Items         Item[]
+  TagCategory   TagCategory? @relation(fields: [tagCategoryId], references: [id])
+  tagCategoryId Int?
+
+  @@index([tagCategoryId])
 }
 
 enum ItemStatus {
