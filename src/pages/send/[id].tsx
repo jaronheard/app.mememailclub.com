@@ -26,7 +26,7 @@ const ParamsValidator = z.object({
 
 const LoadingItem = () => (
   <div className="grid grid-cols-1 gap-y-4 sm:grid-cols-1 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-2 lg:gap-x-8">
-    {[0].map((item) => (
+    {[0, 1].map((item) => (
       <PostcardPreviewSimple
         key={item}
         id={`loading-${item}`}
@@ -78,6 +78,13 @@ const Item = () => {
           <p className="mt-1 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
             Add a message
           </p>
+          <p className="mx-auto mt-5 max-w-xl text-xl text-gray-500">
+            A 6&quot;x9&quot; postcard with your message delivered for{" "}
+            <span className="font-semibold text-indigo-600">$1</span>*
+          </p>
+          <p className="mx-auto max-w-xl text-xs text-gray-500">
+            <em>*U.S. addresses only</em>
+          </p>
         </div>
         <LoadingItem />
       </div>
@@ -105,6 +112,13 @@ const Item = () => {
               </h2>
               <p className="mt-1 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
                 Add a message
+              </p>
+              <p className="mx-auto mt-5 max-w-xl text-xl text-gray-500">
+                A 6&quot;x9&quot; postcard with your message delivered for{" "}
+                <span className="font-semibold text-indigo-600">$1</span>*
+              </p>
+              <p className="mx-auto max-w-xl text-xs text-gray-500">
+                <em>*U.S. addresses only</em>
               </p>
             </div>
             <div className="grid grid-cols-1 gap-y-4 sm:grid-cols-1 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-2 lg:gap-x-8">
