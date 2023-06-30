@@ -71,7 +71,17 @@ const Item = () => {
   }, [router.isReady, router.query]);
 
   if (!queryStatus.ready) {
-    return <LoadingItem />;
+    return (
+      <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:max-w-7xl lg:px-8">
+        <div className="py-24">
+          <h2 className="text-lg font-semibold text-indigo-600">Postcards</h2>
+          <p className="mt-1 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
+            Add a message
+          </p>
+        </div>
+        <LoadingItem />
+      </div>
+    );
   }
 
   return (
@@ -88,27 +98,37 @@ const Item = () => {
             itemLink={item.stripePaymentLink}
             itemFront={item.front}
           ></Slideover>
-          <div className="grid grid-cols-1 gap-y-4 sm:grid-cols-1 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-2 lg:gap-x-8">
-            <PostcardPreviewSimple
-              key={item.id}
-              id={`postcard-${item.id}`}
-              front={item.front}
-              name="Front"
-              onClick={() => {
-                setOpen(true);
-              }}
-              hideButton={true}
-            />
-            <PostcardPreviewSimple
-              key={item.id}
-              id={`postcard-${item.id}`}
-              front={item.back}
-              name="Back"
-              onClick={() => {
-                setOpen(true);
-              }}
-              hideButton={true}
-            />
+          <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:max-w-7xl lg:px-8">
+            <div className="py-24">
+              <h2 className="text-lg font-semibold text-indigo-600">
+                Postcards
+              </h2>
+              <p className="mt-1 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
+                Add a message
+              </p>
+            </div>
+            <div className="grid grid-cols-1 gap-y-4 sm:grid-cols-1 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-2 lg:gap-x-8">
+              <PostcardPreviewSimple
+                key={item.id}
+                id={`postcard-${item.id}`}
+                front={item.front}
+                name="Front"
+                onClick={() => {
+                  setOpen(true);
+                }}
+                hideButton={true}
+              />
+              <PostcardPreviewSimple
+                key={item.id}
+                id={`postcard-${item.id}`}
+                front={item.back}
+                name="Back"
+                onClick={() => {
+                  setOpen(true);
+                }}
+                hideButton={open}
+              />
+            </div>
           </div>
         </>
       )}

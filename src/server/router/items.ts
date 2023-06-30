@@ -4,7 +4,7 @@ import { Context, createRouter } from "./context";
 import Stripe from "stripe";
 import { env } from "../../env/server.mjs";
 import { itemSizeToDB } from "../../utils/itemSize";
-import { TagCategoryName, TagName } from "@prisma/client";
+import { TagName } from "@prisma/client";
 
 const bannerHeading = encodeURIComponent("Your postcard is on its way! 📮✨");
 const bannerText = encodeURIComponent("Send another for just $1!");
@@ -131,7 +131,6 @@ export const items = createRouter()
       // filters is an array of tag category names
       filters: z.array(z.string()).nullish(),
       cursor: z.number().nullish(), // <-- "cursor" needs to exist, but can be any type
-      id: z.number().nullish(), // optional id to get a single item
       anonymousUserId: z.string().nullish(), // optional anonymous user id to get a single item
     }),
     async resolve({ ctx, input }) {
@@ -139,7 +138,7 @@ export const items = createRouter()
       const limit = input.limit ?? 50;
       const { cursor } = input;
       const items = await ctx.prisma.item.findMany({
-        take: input.id ? limit : limit + 1, // get an extra item at the end which we'll use as next cursor if there is no id specified
+        take: limit + 1, // get an extra item at the end which we'll use as next cursor if there is no id specified
         where: {
           AND: [
             {
@@ -169,32 +168,6 @@ export const items = createRouter()
           id: sortOrder,
         },
       });
-      if (input.id) {
-        const item = await ctx.prisma.item.findUnique({
-          where: {
-            id: input.id,
-          },
-        });
-        if (item) {
-          if (sortOrder === "desc") {
-            // find the index of the first item with a lower id than the requested item
-            const index = items.findIndex((i) => i.id < item.id);
-            // splice in the item at that index
-            items.splice(index, 0, item);
-          } else {
-            // find the index of the first item with a higher id than the requested item
-            const index = items.findIndex((i) => i.id > item.id);
-            // splice in the item at that index
-            items.splice(index, 0, item);
-          }
-        }
-        if (!item) {
-          throw new TRPCError({
-            code: "NOT_FOUND",
-            message: "Item not found",
-          });
-        }
-      }
       let nextCursor: typeof cursor | undefined = undefined;
       if (items.length > limit) {
         const nextItem = items.pop();

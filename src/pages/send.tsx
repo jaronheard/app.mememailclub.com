@@ -587,17 +587,23 @@ export type SendParams = z.infer<typeof ParamsValidator>;
 
 const Send = () => {
   const router = useRouter();
+  // redirect for legacy query params
+  const [itemId, setItemId] = useQueryParam("id", NumberParam);
+  useEffect(() => {
+    if (itemId) {
+      router.replace(`/send/${itemId}`);
+    }
+  }, [itemId, router]);
+
   const { isSignedIn } = useAuth();
   const { data: anonymousUserId } = trpc.useQuery(["users.getUniqueUserId"], {
     staleTime: Infinity,
   });
-  const [open, setOpen] = useState(false);
   const [activeSort, setActiveSort] = useQueryParam("sort", SortOptionParam);
   const [activeFilters, setActiveFilters] = useQueryParam(
     "filters",
     ArrayParam
   );
-  const [itemId, setItemId] = useQueryParam("id", NumberParam);
   const { ref, inView } = useInView();
 
   const order = z
@@ -607,11 +613,6 @@ const Send = () => {
     .safeParse(activeSort?.order);
   const orderToUse = order.success ? order.data : undefined;
 
-  const handleClose = () => {
-    setOpen(false);
-    setItemId(undefined);
-  };
-
   // items query
   const itemsQuery = trpc.useInfiniteQuery(
     [
@@ -620,7 +621,6 @@ const Send = () => {
         limit: 20,
         order: orderToUse,
         filters: activeFilters,
-        id: itemId,
         anonymousUserId: anonymousUserId,
       },
     ],
@@ -636,13 +636,6 @@ const Send = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inView]);
-
-  // open the slideover if we have an item id
-  useEffect(() => {
-    if (itemId) {
-      setOpen(true);
-    }
-  }, [itemId]);
 
   return (
     <>
@@ -677,18 +670,8 @@ const Send = () => {
         success={({ data: infiniteData }) => {
           const items =
             infiniteData.pages?.map((page) => page.items).flat() || [];
-          const activeItem = items.find((item) => item.id === itemId);
           return (
             <>
-              {activeItem && (
-                <Slideover
-                  open={open}
-                  setOpen={handleClose}
-                  itemId={activeItem.id}
-                  itemLink={activeItem.stripePaymentLink}
-                  itemFront={activeItem.front}
-                ></Slideover>
-              )}
               <div className="mx-auto max-w-2xl lg:max-w-7xl">
                 <h2 className="sr-only">Products</h2>
                 <CategoryFilterCell
@@ -715,8 +698,7 @@ const Send = () => {
                         }
                         description={item.description}
                         onClick={() => {
-                          setItemId(item.id);
-                          setOpen(true);
+                          router.push(`/send/${item.id}`);
                           trackGoal("1WFW5D7J", 0);
                         }}
                       />
