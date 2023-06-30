@@ -63,9 +63,9 @@ model Message {
 }
 
 model TagCategory {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  name      String   @unique
+  id        Int             @id @default(autoincrement())
+  createdAt DateTime        @default(now())
+  name      TagCategoryName @unique
   label     String
   Tags      Tag[]
 }
@@ -73,13 +73,38 @@ model TagCategory {
 model Tag {
   id            Int          @id @default(autoincrement())
   createdAt     DateTime     @default(now())
-  name          String       @unique
+  name          TagName      @unique
   label         String
   Items         Item[]
   TagCategory   TagCategory? @relation(fields: [tagCategoryId], references: [id])
   tagCategoryId Int?
 
   @@index([tagCategoryId])
+}
+
+enum TagCategoryName {
+  OCCASION
+  TONE
+}
+
+enum TagName {
+  ANNIVERSARY
+  BIRTHDAY
+  CONGRATS
+  FRIENDSHIP
+  GET_WELL
+  LOVE
+  SYMPATHY
+  THANK_YOU
+  WEDDING
+  FUNNY
+  HEARTFELT
+  INSPIRATIONAL
+  ROMANTIC
+  SWEET
+  THOUGHTFUL
+  UPLIFTING
+  WITTY
 }
 
 enum ItemStatus {
