@@ -4,6 +4,7 @@ import { Context, createRouter } from "./context";
 import Stripe from "stripe";
 import { env } from "../../env/server.mjs";
 import { itemSizeToDB } from "../../utils/itemSize";
+import { TagCategoryName, TagName } from "@prisma/client";
 
 const bannerHeading = encodeURIComponent("Your postcard is on its way! 📮✨");
 const bannerText = encodeURIComponent("Send another for just $1!");
@@ -127,6 +128,8 @@ export const items = createRouter()
       limit: z.number().min(1).max(100).nullish(),
       order: z.enum(["asc", "desc"]).nullish(),
       visibility: z.enum(["PUBLIC", "PRIVATE"]).nullish(),
+      // filters is an array of tag category names
+      filters: z.array(z.string()).nullish(),
       cursor: z.number().nullish(), // <-- "cursor" needs to exist, but can be any type
     }),
     async resolve({ ctx, input }) {
@@ -138,7 +141,13 @@ export const items = createRouter()
           status: {
             not: "DELETED",
           },
-          
+          Tags: {
+            some: {
+              name: {
+                in: input.filters as TagName[],
+              },
+            },
+          },
         },
         cursor: cursor ? { id: cursor } : undefined,
         orderBy: {

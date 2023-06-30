@@ -27,11 +27,9 @@ model Item {
   size                ItemSize    @default(sz_6x9)
   Messages            Message[]
   visibility          Visibility  @default(PRIVATE)
-  tagId               Int?
-  Tag                 Tag?        @relation(fields: [tagId], references: [id])
+  Tags                Tag[]
 
   @@index([publicationId])
-  @@index([tagId])
 }
 
 model Publication {

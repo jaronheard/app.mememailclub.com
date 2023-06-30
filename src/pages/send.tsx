@@ -20,106 +20,89 @@ import {
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import clsx from "clsx";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import {
   useQueryParam,
-  ObjectParam,
-  ArrayParam,
+  ObjectParam as DefaultObjectParam,
+  ArrayParam as DefaultArrayParam,
+  QueryParamConfig,
   withDefault,
 } from "use-query-params";
+import { Tag, TagCategory } from "@prisma/client";
+
+export const ArrayParam = withDefault(
+  DefaultArrayParam,
+  undefined
+) as QueryParamConfig<string[] | undefined>;
+
+export const SortOptionParam = withDefault(
+  DefaultObjectParam,
+  undefined
+) as QueryParamConfig<SortOption | undefined>;
 
 const sort = [
-  { name: "Newest", key: "newest", field: "createdAt", order: "desc" },
-  { name: "Oldest", key: "oldest", field: "createdAt", order: "asc" },
+  { label: "Newest", name: "newest", field: "createdAt", order: "desc" },
+  { label: "Oldest", name: "oldest", field: "createdAt", order: "asc" },
 ];
 
-const sortOptionsSchema = z.array(
-  z.object({
-    name: z.string(),
-    href: z.string(),
-    key: z.string(),
-  })
-);
+const zSortOption = z.object({
+  label: z.string(),
+  name: z.string(),
+  field: z.string(),
+  order: z.string(),
+});
 
-type SortOption = z.TypeOf<typeof sortOptionsSchema>;
+const zSortOptions = z.array(zSortOption);
 
-const visibility = {
-  id: "visibility",
-  name: "Visibility",
-  options: [
-    { value: "PUBLIC", label: "Public" },
-    { value: "PRIVATE", label: "Private" },
-  ],
-};
+type SortOption = z.TypeOf<typeof zSortOption>;
+type SortOptions = z.TypeOf<typeof zSortOptions>;
 
-const tone = {
-  id: "tone",
-  name: "Tone",
-  options: [
-    { value: "happiness", label: "Happiness" },
-    { value: "love", label: "Love" },
-    { value: "sympathy", label: "Sympathy" },
-    { value: "gratitude", label: "Gratitude" },
-    { value: "excitement", label: "Excitement" },
-    { value: "calmness", label: "Calmness" },
-    { value: "nostalgia", label: "Nostalgia" },
-  ],
-};
-
-const occasion = {
-  id: "occasion",
-  name: "Occasion",
-  options: [
-    { value: "birthdays", label: "Birthdays" },
-    { value: "weddings", label: "Weddings" },
-    { value: "anniversaries", label: "Anniversaries" },
-    { value: "holidays", label: "Holidays" },
-    { value: "graduations", label: "Graduations" },
-    { value: "congratulations", label: "Congratulations" },
-    { value: "condolences", label: "Condolences" },
-  ],
-};
-
-const filters = [visibility, tone, occasion];
 const visibilityFilterValues = ["PUBLIC", "PRIVATE"] as const;
 
-const filterOptionsSchema = z.array(
-  z.object({
-    value: z.string(),
-    label: z.string(),
-  })
-);
-
-const filtersSchema = z.array(
-  z.object({
-    id: z.string(),
-    name: z.string(),
-    options: filterOptionsSchema,
-  })
-);
-
-type FilterOption = z.TypeOf<typeof filterOptionsSchema>;
-
-type CategoryFilterProps = {
-  params: SendParams;
+type CategoryFilterCellProps = {
+  activeSort?: SortOption;
+  activeFilters?: string[];
+  setActiveSort: (sort: SortOption) => void;
+  setActiveFilters: (filters: string[]) => void;
   children?: React.ReactNode;
+};
+
+function CategoryFilterCell(props: CategoryFilterCellProps) {
+  const tagsQuery = trpc.useQuery(["tags.getAllTagCategories"]);
+  return (
+    <DefaultQueryCell
+      query={tagsQuery}
+      empty={() => null}
+      loading={() => null}
+      success={({ data }) => {
+        return (
+          <CategoryFilter
+            tags={data}
+            activeSort={props.activeSort}
+            setActiveSort={props.setActiveSort}
+            activeFilters={props.activeFilters}
+            setActiveFilters={props.setActiveFilters}
+          >
+            {props.children}
+          </CategoryFilter>
+        );
+      }}
+    />
+  );
+}
+
+type CategoryFilterProps = CategoryFilterCellProps & {
+  tags: (TagCategory & { Tags: Tag[] })[];
 };
 
 function CategoryFilter(props: CategoryFilterProps) {
   const [open, setOpen] = useState(false);
-  // query params
-  const [activeSort, setActiveSort] = useQueryParam("sort", ObjectParam);
-  const [activeFilters, setActiveFilters] = useQueryParam(
-    "filters",
-    ArrayParam
-  );
-
+  const activeFilters = props.activeFilters
+    ? Object.fromEntries(props.activeFilters.map((filter) => [filter, true]))
+    : {};
   const { register } = useForm<SendParams>({
-    defaultValues: {
-      ...props.params,
-    },
+    defaultValues: activeFilters,
   });
 
   return (
@@ -164,7 +147,7 @@ function CategoryFilter(props: CategoryFilterProps) {
 
                 {/* Filters */}
                 <form className="mt-4">
-                  {filters.map((section) => (
+                  {props.tags.map((section) => (
                     <Disclosure
                       as="div"
                       key={section.name}
@@ -175,7 +158,7 @@ function CategoryFilter(props: CategoryFilterProps) {
                           <h3 className="-mx-2 -my-3 flow-root">
                             <Disclosure.Button className="flex w-full items-center justify-between bg-white px-2 py-3 text-sm text-gray-400">
                               <span className="font-medium text-gray-900">
-                                {section.name}
+                                {section.label}
                               </span>
                               <span className="ml-6 flex items-center">
                                 <ChevronDownIcon
@@ -190,37 +173,32 @@ function CategoryFilter(props: CategoryFilterProps) {
                           </h3>
                           <Disclosure.Panel className="pt-6">
                             <div className="space-y-6">
-                              {section.options.map((option, optionIdx) => (
+                              {section.Tags.map((option, optionIdx) => (
                                 <div
-                                  key={option.value}
+                                  key={option.name}
                                   className="flex items-center"
                                 >
                                   <input
                                     id={`filter-mobile-${section.id}-${optionIdx}`}
                                     type="checkbox"
                                     className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                                    {...register(
-                                      `${section.id}-${option.value}` as any,
-                                      {
-                                        onChange(event) {
-                                          const value = option.value;
+                                    {...register(`${option.name}` as any, {
+                                      onChange(event) {
+                                        const value = option.name;
 
-                                          setActiveFilters((activeFilters) => {
-                                            const newFilters = activeFilters
-                                              ? activeFilters.filter(
-                                                  (filter) => filter !== value
-                                                )
-                                              : [];
+                                        const newFilters = props.activeFilters
+                                          ? props.activeFilters.filter(
+                                              (filter) => filter !== value
+                                            )
+                                          : [];
 
-                                            if (value && event.target.checked) {
-                                              newFilters.push(value);
-                                            }
+                                        if (value && event.target.checked) {
+                                          newFilters.push(value);
+                                        }
 
-                                            return newFilters;
-                                          });
-                                        },
-                                      }
-                                    )}
+                                        props.setActiveFilters(newFilters);
+                                      },
+                                    })}
                                   />
                                   <label
                                     htmlFor={`filter-mobile-${section.id}-${optionIdx}`}
@@ -294,7 +272,9 @@ function CategoryFilter(props: CategoryFilterProps) {
                         {({ active }) => (
                           <button
                             onClick={() => {
-                              setActiveSort({
+                              props.setActiveSort({
+                                label: option.label,
+                                name: option.name,
                                 field: option.field,
                                 order: option.order,
                               });
@@ -323,7 +303,7 @@ function CategoryFilter(props: CategoryFilterProps) {
             </button>
 
             <Popover.Group className="hidden sm:flex sm:items-baseline sm:space-x-8">
-              {filters.map((section, sectionIdx) => (
+              {props.tags.map((section, sectionIdx) => (
                 <Popover
                   as="div"
                   key={section.name}
@@ -332,7 +312,7 @@ function CategoryFilter(props: CategoryFilterProps) {
                 >
                   <div>
                     <Popover.Button className="group inline-flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
-                      <span>{section.name}</span>
+                      <span>{section.label}</span>
                       {sectionIdx === 0 ? (
                         <span className="ml-1.5 rounded bg-gray-200 px-1.5 py-0.5 text-xs font-semibold tabular-nums text-gray-700">
                           1
@@ -356,35 +336,30 @@ function CategoryFilter(props: CategoryFilterProps) {
                   >
                     <Popover.Panel className="absolute right-0 z-10 mt-2 origin-top-right rounded-md bg-white p-4 shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none">
                       <form className="space-y-4">
-                        {section.options.map((option, optionIdx) => (
-                          <div key={option.value} className="flex items-center">
+                        {section.Tags.map((option, optionIdx) => (
+                          <div key={option.id} className="flex items-center">
                             <input
-                              id={`filter-${section.id}-${option.value}`}
-                              defaultValue={option.value}
+                              id={`filter-${section.id}-${option.name}`}
+                              defaultValue={option.name}
                               type="checkbox"
                               className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                              {...register(
-                                `${section.id}-${option.value}` as any,
-                                {
-                                  onChange(event) {
-                                    const value = option.value;
+                              {...register(`${option.name}` as any, {
+                                onChange(event) {
+                                  const value = option.name;
 
-                                    setActiveFilters((activeFilters) => {
-                                      const newFilters = activeFilters
-                                        ? activeFilters.filter(
-                                            (filter) => filter !== value
-                                          )
-                                        : [];
+                                  const newFilters = props.activeFilters
+                                    ? props.activeFilters.filter(
+                                        (filter) => filter !== value
+                                      )
+                                    : [];
 
-                                      if (value && event.target.checked) {
-                                        newFilters.push(value);
-                                      }
+                                  if (value && event.target.checked) {
+                                    newFilters.push(value);
+                                  }
 
-                                      return newFilters;
-                                    });
-                                  },
-                                }
-                              )}
+                                  props.setActiveFilters(newFilters);
+                                },
+                              })}
                             />
                             <label
                               htmlFor={`filter-${section.id}-${optionIdx}`}
@@ -417,115 +392,115 @@ const ParamsValidator = z.object({
 });
 export type SendParams = z.infer<typeof ParamsValidator>;
 
-const SendSignedIn = () => {
-  const router = useRouter();
-  const [open, setOpen] = useState(false);
-  const [itemId, setItemId] = useState(0);
-  const [shouldSetItemId, setShouldSetItemId] = useState(true);
-  const [shouldSetOpen, setShouldSetOpen] = useState(false);
-  // TODO: get only items for the current user
-  const itemsQuery = trpc.useQuery([
-    "items.getAllPublished",
-    { latestId: `${itemId}` },
-  ]);
-  const { data } = itemsQuery;
-  const activeItem = data?.find((item) => item.id === itemId);
+// const SendSignedIn = () => {
+//   const router = useRouter();
+//   const [open, setOpen] = useState(false);
+//   const [itemId, setItemId] = useState(0);
+//   const [shouldSetItemId, setShouldSetItemId] = useState(true);
+//   const [shouldSetOpen, setShouldSetOpen] = useState(false);
+//   // TODO: get only items for the current user
+//   const itemsQuery = trpc.useQuery([
+//     "items.getAllPublished",
+//     { latestId: `${itemId}` },
+//   ]);
+//   const { data } = itemsQuery;
+//   const activeItem = data?.find((item) => item.id === itemId);
 
-  useEffect(() => {
-    // Make sure we have the query param available.
-    if (router.query?.id && shouldSetItemId && !shouldSetOpen) {
-      // check query param is a string, not a string[]
-      if (typeof router.query.id === "string") {
-        setItemId(parseInt(router.query.id));
-        setShouldSetItemId(false);
-        setShouldSetOpen(true);
-        // clear the query param
-        router.replace(router.route, undefined, { shallow: true });
-      }
-    }
-    if (shouldSetOpen && activeItem) {
-      setOpen(true);
-      setShouldSetOpen(false);
-    }
-  }, [router, shouldSetItemId, shouldSetOpen, activeItem]);
+//   useEffect(() => {
+//     // Make sure we have the query param available.
+//     if (router.query?.id && shouldSetItemId && !shouldSetOpen) {
+//       // check query param is a string, not a string[]
+//       if (typeof router.query.id === "string") {
+//         setItemId(parseInt(router.query.id));
+//         setShouldSetItemId(false);
+//         setShouldSetOpen(true);
+//         // clear the query param
+//         router.replace(router.route, undefined, { shallow: true });
+//       }
+//     }
+//     if (shouldSetOpen && activeItem) {
+//       setOpen(true);
+//       setShouldSetOpen(false);
+//     }
+//   }, [router, shouldSetItemId, shouldSetOpen, activeItem]);
 
-  return (
-    <>
-      <DefaultQueryCell
-        query={itemsQuery}
-        empty={() => <div>No postcards</div>}
-        loading={() => (
-          <div className="mx-auto max-w-2xl lg:max-w-7xl">
-            <h2 className="sr-only">Products</h2>
-            <CategoryFilter>
-              <div className="grid grid-cols-1 gap-y-4 sm:grid-cols-1 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-2 lg:gap-x-8">
-                <PostcardCreateSimple
-                  onClick={() => router.push("/items/new")}
-                />
-                {[0, 1, 2, 3, 4, 5, 6].map((item) => (
-                  <PostcardPreviewSimple
-                    id={`loading-${item}`}
-                    key={item}
-                    loadingState={true}
-                    front=""
-                    name=""
-                    description=""
-                    onClick={() => null}
-                  />
-                ))}
-              </div>
-            </CategoryFilter>
-          </div>
-        )}
-        success={({ data: items }) => {
-          return (
-            <>
-              <Slideover
-                open={open}
-                setOpen={setOpen}
-                itemId={activeItem?.id || 0}
-                itemLink={activeItem?.stripePaymentLink || ""}
-                itemFront={activeItem?.front || ""}
-              ></Slideover>
-              <div className="mx-auto max-w-2xl lg:max-w-7xl">
-                <h2 className="sr-only">Products</h2>
-                <CategoryFilter>
-                  <div className="grid grid-cols-1 gap-y-4 sm:grid-cols-1 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-2 lg:gap-x-8">
-                    <PostcardCreateSimple
-                      onClick={() => router.push("/items/new")}
-                    />
-                    {items.map((item) => (
-                      <PostcardPreviewSimple
-                        key={item.id}
-                        id={`postcard-${item.id}`}
-                        front={item.front}
-                        name={`${item.visibility === "PRIVATE" ? "🔒" : "🌐"} ${
-                          item.name
-                        }`}
-                        description={item.description}
-                        onClick={() => {
-                          setItemId(item.id);
-                          setOpen(true);
-                          trackGoal("1WFW5D7J", 0);
-                        }}
-                      />
-                    ))}
-                  </div>
-                </CategoryFilter>
-              </div>
-            </>
-          );
-        }}
-      />
-    </>
-  );
-};
+//   return (
+//     <>
+//       <DefaultQueryCell
+//         query={itemsQuery}
+//         empty={() => <div>No postcards</div>}
+//         loading={() => (
+//           <div className="mx-auto max-w-2xl lg:max-w-7xl">
+//             <h2 className="sr-only">Products</h2>
+//             <CategoryFilterCell>
+//               <div className="grid grid-cols-1 gap-y-4 sm:grid-cols-1 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-2 lg:gap-x-8">
+//                 <PostcardCreateSimple
+//                   onClick={() => router.push("/items/new")}
+//                 />
+//                 {[0, 1, 2, 3, 4, 5, 6].map((item) => (
+//                   <PostcardPreviewSimple
+//                     id={`loading-${item}`}
+//                     key={item}
+//                     loadingState={true}
+//                     front=""
+//                     name=""
+//                     description=""
+//                     onClick={() => null}
+//                   />
+//                 ))}
+//               </div>
+//             </CategoryFilterCell>
+//           </div>
+//         )}
+//         success={({ data: items }) => {
+//           return (
+//             <>
+//               <Slideover
+//                 open={open}
+//                 setOpen={setOpen}
+//                 itemId={activeItem?.id || 0}
+//                 itemLink={activeItem?.stripePaymentLink || ""}
+//                 itemFront={activeItem?.front || ""}
+//               ></Slideover>
+//               <div className="mx-auto max-w-2xl lg:max-w-7xl">
+//                 <h2 className="sr-only">Products</h2>
+//                 <CategoryFilterCell>
+//                   <div className="grid grid-cols-1 gap-y-4 sm:grid-cols-1 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-2 lg:gap-x-8">
+//                     <PostcardCreateSimple
+//                       onClick={() => router.push("/items/new")}
+//                     />
+//                     {items.map((item) => (
+//                       <PostcardPreviewSimple
+//                         key={item.id}
+//                         id={`postcard-${item.id}`}
+//                         front={item.front}
+//                         name={`${item.visibility === "PRIVATE" ? "🔒" : "🌐"} ${
+//                           item.name
+//                         }`}
+//                         description={item.description}
+//                         onClick={() => {
+//                           setItemId(item.id);
+//                           setOpen(true);
+//                           trackGoal("1WFW5D7J", 0);
+//                         }}
+//                       />
+//                     ))}
+//                   </div>
+//                 </CategoryFilterCell>
+//               </div>
+//             </>
+//           );
+//         }}
+//       />
+//     </>
+//   );
+// };
 
 const SendSignedOut = () => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [itemId, setItemId] = useState(0);
-  const [activeSort, setActiveSort] = useQueryParam("sort", ObjectParam);
+  const [activeSort, setActiveSort] = useQueryParam("sort", SortOptionParam);
   const [activeFilters, setActiveFilters] = useQueryParam(
     "filters",
     ArrayParam
@@ -555,6 +530,7 @@ const SendSignedOut = () => {
       {
         limit: 20,
         order: orderToUse,
+        filters: activeFilters,
       },
     ],
     {
@@ -580,6 +556,8 @@ const SendSignedOut = () => {
     }
   }, [router]);
 
+  console.log(activeFilters);
+
   return (
     <>
       <DefaultQueryCell
@@ -588,7 +566,12 @@ const SendSignedOut = () => {
         loading={() => (
           <div className="mx-auto max-w-2xl lg:max-w-7xl">
             <h2 className="sr-only">Products</h2>
-            <CategoryFilter>
+            <CategoryFilterCell
+              activeFilters={activeFilters}
+              setActiveFilters={setActiveFilters}
+              activeSort={activeSort}
+              setActiveSort={setActiveSort}
+            >
               <div className="grid grid-cols-1 gap-y-4 sm:grid-cols-1 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-2 lg:gap-x-8">
                 {[0, 1, 2, 3, 4, 5, 6, 7].map((item) => (
                   <PostcardPreviewSimple
@@ -602,7 +585,7 @@ const SendSignedOut = () => {
                   />
                 ))}
               </div>
-            </CategoryFilter>
+            </CategoryFilterCell>
           </div>
         )}
         success={({ data: infiniteData }) => {
@@ -622,7 +605,12 @@ const SendSignedOut = () => {
               )}
               <div className="mx-auto max-w-2xl lg:max-w-7xl">
                 <h2 className="sr-only">Products</h2>
-                <CategoryFilter>
+                <CategoryFilterCell
+                  activeFilters={activeFilters}
+                  setActiveFilters={setActiveFilters}
+                  activeSort={activeSort}
+                  setActiveSort={setActiveSort}
+                >
                   <div className="grid grid-cols-1 gap-y-4 sm:grid-cols-1 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-2 lg:gap-x-8">
                     <PostcardCreateSimple
                       onClick={() => router.push("/items/new")}
@@ -642,7 +630,7 @@ const SendSignedOut = () => {
                       />
                     ))}
                   </div>
-                </CategoryFilter>
+                </CategoryFilterCell>
               </div>
             </>
           );
@@ -677,9 +665,9 @@ const Page = () => {
         <title>Create unique postcards - PostPostcard</title>
         <meta name="robots" content="noindex,nofollow" />
       </Head>
-      <SignedIn>
+      {/* <SignedIn>
         <SendSignedIn />
-      </SignedIn>
+      </SignedIn> */}
       <SignedOut>
         <SendSignedOut />
       </SignedOut>
