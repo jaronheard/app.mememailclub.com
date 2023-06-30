@@ -5,11 +5,12 @@ import Button from "./Button";
 export function PostcardPreviewSimple(props: {
   id: string;
   front: string;
-  name: string;
-  description: string;
+  name?: string;
+  description?: string;
   onClick: () => void;
   loadingState?: boolean;
   hideText?: boolean;
+  hideButton?: boolean;
 }): JSX.Element {
   const aspectRatio = "aspect-[925/625]";
   const placeholderSrc =
@@ -36,17 +37,19 @@ export function PostcardPreviewSimple(props: {
             className="h-full w-full object-cover object-center"
             fill
           />
-          <Button
-            visualOnly
-            size="sm"
-            variant="primary"
-            className="absolute right-2 bottom-2"
-          >
-            Add message
-          </Button>
+          {!props.hideButton && (
+            <Button
+              visualOnly
+              size="sm"
+              variant="primary"
+              className="absolute right-2 bottom-2"
+            >
+              Add message
+            </Button>
+          )}
         </div>
       </div>
-      {!props.hideText && (
+      {!props.hideText && props.name && (
         <>
           <div className="mt-4 flex items-center justify-between text-base font-medium text-gray-900">
             <h3>{props.name || "Untitled"}</h3>

@@ -5,7 +5,7 @@ import { PostcardPreviewSimple } from "../components/PostcardPreviewSimple";
 import Slideover from "../components/Slideover";
 import { useEffect, useState, Fragment } from "react";
 import { trackGoal } from "fathom-client";
-import { SignedIn, SignedOut } from "@clerk/nextjs";
+import { SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
 import { PostcardCreateSimple } from "../components/PostcardCreateSimple";
 import { useInView } from "react-intersection-observer";
 import Button from "../components/Button";
@@ -28,6 +28,7 @@ import {
   ArrayParam as DefaultArrayParam,
   QueryParamConfig,
   withDefault,
+  NumberParam,
 } from "use-query-params";
 import { Tag, TagCategory } from "@prisma/client";
 
@@ -74,7 +75,9 @@ function CategoryFilterCell(props: CategoryFilterCellProps) {
     <DefaultQueryCell
       query={tagsQuery}
       empty={() => null}
-      loading={() => null}
+      loading={() => (
+        <CategoryFilterLoading>{props.children}</CategoryFilterLoading>
+      )}
       success={({ data }) => {
         return (
           <CategoryFilter
@@ -89,6 +92,92 @@ function CategoryFilterCell(props: CategoryFilterCellProps) {
         );
       }}
     />
+  );
+}
+
+type CategoryFilterLoadingProps = {
+  children?: React.ReactNode;
+};
+
+function CategoryFilterLoading(props: CategoryFilterLoadingProps) {
+  return (
+    <div className="">
+      {/* Mobile filter dialog */}
+      <Transition.Root show={false} as={Fragment}>
+        <Dialog
+          as="div"
+          className="relative z-40 sm:hidden"
+          onClose={() => null}
+        >
+          <Transition.Child
+            as={Fragment}
+            enter="transition-opacity ease-linear duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="transition-opacity ease-linear duration-300"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-black bg-opacity-25" />
+          </Transition.Child>
+
+          <div className="fixed inset-0 z-40 flex">
+            <Transition.Child
+              as={Fragment}
+              enter="transition ease-in-out duration-300 transform"
+              enterFrom="translate-x-full"
+              enterTo="translate-x-0"
+              leave="transition ease-in-out duration-300 transform"
+              leaveFrom="translate-x-0"
+              leaveTo="translate-x-full"
+            >
+              <Dialog.Panel className="relative ml-auto flex h-full w-full max-w-xs flex-col overflow-y-auto bg-white py-4 pb-6 shadow-xl">
+                <div className="flex items-center justify-between px-4">
+                  <h2 className="text-lg font-medium text-gray-900">Filters</h2>
+                  <button
+                    type="button"
+                    className="hover: -mr-2 flex h-10 w-10 items-center justify-center rounded-md bg-white p-2 text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    onClick={() => null}
+                  >
+                    <span className="sr-only">Close menu</span>
+                    <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+                  </button>
+                </div>
+              </Dialog.Panel>
+            </Transition.Child>
+          </div>
+        </Dialog>
+      </Transition.Root>
+
+      <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:max-w-7xl lg:px-8">
+        <div className="py-24">
+          <h2 className="text-lg font-semibold text-indigo-600">Postcards</h2>
+          <p className="mt-1 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
+            Send love by mail
+          </p>
+          <p className="mx-auto mt-5 max-w-xl text-xl text-gray-500">
+            A 6&quot;x9&quot; postcard with your message delivered for{" "}
+            <span className="font-semibold text-indigo-600">$1</span>*
+          </p>
+          <p className="mx-auto max-w-xl text-xs text-gray-500">
+            <em>*U.S. addresses only</em>
+          </p>
+        </div>
+
+        <section
+          aria-labelledby="filter-heading"
+          className="border-t border-gray-200 py-6"
+        >
+          <h2 id="filter-heading" className="sr-only">
+            Product filters
+          </h2>
+          <div className="flex items-center justify-between">
+            Loading filters...
+          </div>
+        </section>
+        {props.children}
+      </div>
+    </div>
   );
 }
 
@@ -496,15 +585,19 @@ export type SendParams = z.infer<typeof ParamsValidator>;
 //   );
 // };
 
-const SendSignedOut = () => {
+const Send = () => {
   const router = useRouter();
+  const { isSignedIn } = useAuth();
+  const { data: anonymousUserId } = trpc.useQuery(["users.getUniqueUserId"], {
+    staleTime: Infinity,
+  });
   const [open, setOpen] = useState(false);
-  const [itemId, setItemId] = useState(0);
   const [activeSort, setActiveSort] = useQueryParam("sort", SortOptionParam);
   const [activeFilters, setActiveFilters] = useQueryParam(
     "filters",
     ArrayParam
   );
+  const [itemId, setItemId] = useQueryParam("id", NumberParam);
   const { ref, inView } = useInView();
 
   const order = z
@@ -514,16 +607,12 @@ const SendSignedOut = () => {
     .safeParse(activeSort?.order);
   const orderToUse = order.success ? order.data : undefined;
 
-  // TODO: parse the filters
-  const visibilityFilter = z
-    .array(z.enum(visibilityFilterValues))
-    .optional()
-    .nullish()
-    .safeParse(activeFilters);
-  const visibilityFilterToUse = visibilityFilter.success
-    ? visibilityFilter.data
-    : undefined;
+  const handleClose = () => {
+    setOpen(false);
+    setItemId(undefined);
+  };
 
+  // items query
   const itemsQuery = trpc.useInfiniteQuery(
     [
       "items.getInfinite",
@@ -531,6 +620,8 @@ const SendSignedOut = () => {
         limit: 20,
         order: orderToUse,
         filters: activeFilters,
+        id: itemId,
+        anonymousUserId: anonymousUserId,
       },
     ],
     {
@@ -538,6 +629,7 @@ const SendSignedOut = () => {
     }
   );
 
+  // infinite scroll
   useEffect(() => {
     if (inView) {
       itemsQuery.fetchNextPage();
@@ -545,18 +637,12 @@ const SendSignedOut = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inView]);
 
+  // open the slideover if we have an item id
   useEffect(() => {
-    // Make sure we have the query param available.
-    if (router.asPath !== router.route && router.query?.id) {
-      // check query param is a string, not a string[]
-      if (typeof router.query.id === "string") {
-        setItemId(parseInt(router.query.id));
-        setOpen(true);
-      }
+    if (itemId) {
+      setOpen(true);
     }
-  }, [router]);
-
-  console.log(activeFilters);
+  }, [itemId]);
 
   return (
     <>
@@ -597,7 +683,7 @@ const SendSignedOut = () => {
               {activeItem && (
                 <Slideover
                   open={open}
-                  setOpen={setOpen}
+                  setOpen={handleClose}
                   itemId={activeItem.id}
                   itemLink={activeItem.stripePaymentLink}
                   itemFront={activeItem.front}
@@ -620,7 +706,13 @@ const SendSignedOut = () => {
                         key={item.id}
                         id={`postcard-${item.id}`}
                         front={item.front}
-                        name={item.name}
+                        name={
+                          isSignedIn
+                            ? `${item.visibility === "PRIVATE" ? "🔒" : "🌐"} ${
+                                item.name
+                              }`
+                            : item.name
+                        }
                         description={item.description}
                         onClick={() => {
                           setItemId(item.id);
@@ -665,12 +757,7 @@ const Page = () => {
         <title>Create unique postcards - PostPostcard</title>
         <meta name="robots" content="noindex,nofollow" />
       </Head>
-      {/* <SignedIn>
-        <SendSignedIn />
-      </SignedIn> */}
-      <SignedOut>
-        <SendSignedOut />
-      </SignedOut>
+      <Send />
     </>
   );
 };
