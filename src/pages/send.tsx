@@ -8,7 +8,7 @@ import { SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
 import { PostcardCreateSimple } from "../components/PostcardCreateSimple";
 import { useInView } from "react-intersection-observer";
 import Button from "../components/Button";
-import { number, z } from "zod";
+import { z } from "zod";
 import {
   Dialog,
   Disclosure,
@@ -346,7 +346,7 @@ function CategoryFilter(props: CategoryFilterProps) {
                   <div className="py-1">
                     {sort.map((option) => (
                       <Menu.Item key={option.name}>
-                        {({ active }) => (
+                        {() => (
                           <button
                             onClick={() => {
                               props.setActiveSort({
@@ -451,7 +451,7 @@ function CategoryFilter(props: CategoryFilterProps) {
                                 })}
                               />
                               <label
-                                htmlFor={`filter-${section.id}-${optionIdx}`}
+                                htmlFor={`filter-${section.id}-${option.name}`}
                                 className="ml-3 whitespace-nowrap pr-6 text-sm font-medium text-gray-900"
                               >
                                 {option.label}
