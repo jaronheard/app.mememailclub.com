@@ -28,7 +28,7 @@ const LoadingItems = () => (
   <div className="py-18 grid grid-cols-1 gap-y-4 sm:grid-cols-1 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-2 lg:gap-x-8">
     {[0, 1].map((item) => (
       <PostcardPreviewSimple
-        key={item}
+        key={`loading-${item}`}
         id={`loading-${item}`}
         loadingState={true}
         front=""
@@ -94,7 +94,7 @@ const Item = () => {
             <Splash />
             <div className="grid grid-cols-1 gap-y-4 py-[4.5rem] sm:grid-cols-1 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-2 lg:gap-x-8">
               <PostcardPreviewSimple
-                key={item.id}
+                key={`postcard-front-${item.id}`}
                 id={`postcard-${item.id}`}
                 front={item.front}
                 name="Front"
@@ -104,7 +104,7 @@ const Item = () => {
                 hideButton={true}
               />
               <PostcardPreviewSimple
-                key={item.id}
+                key={`postcard-back-${item.id}`}
                 id={`postcard-${item.id}`}
                 front={item.back}
                 name="Back"

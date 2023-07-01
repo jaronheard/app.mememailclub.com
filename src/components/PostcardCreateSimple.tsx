@@ -15,14 +15,13 @@ export function PostcardCreateSimple(props: {
       onClick={props.onClick}
     >
       <div className={clsx("sm:aspect-none relative bg-gray-200", aspectRatio)}>
-        <div>
-          <Img
-            src={placeholderSrc}
-            alt=""
-            className="h-full w-full object-cover object-center"
-            fill
-          />
-        </div>
+        <Img
+          src={placeholderSrc}
+          alt=""
+          className="h-full w-full object-cover object-center"
+          fill
+          sizes="(max-width: 640px) 80vw, 40vw"
+        />
       </div>
       <div className="mt-4 flex items-center justify-between text-base font-medium text-gray-900">
         <h3>Create your own</h3>

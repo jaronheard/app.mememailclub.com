@@ -30,24 +30,23 @@ export function PostcardPreviewSimple(props: {
           props.loadingState && "animate-pulse"
         )}
       >
-        <div>
-          <Img
-            src={props.loadingState ? placeholderSrc : props.front}
-            alt=""
-            className="h-full w-full object-cover object-center"
-            fill
-          />
-          {!props.hideButton && (
-            <Button
-              visualOnly
-              size="sm"
-              variant="primary"
-              className="absolute right-2 bottom-2"
-            >
-              Add message
-            </Button>
-          )}
-        </div>
+        <Img
+          src={props.loadingState ? placeholderSrc : props.front}
+          alt=""
+          className="h-full w-full object-cover object-center"
+          fill
+          sizes="(max-width: 640px) 80vw, 40vw"
+        />
+        {!props.hideButton && (
+          <Button
+            visualOnly
+            size="sm"
+            variant="primary"
+            className="absolute right-2 bottom-2"
+          >
+            Add message
+          </Button>
+        )}
       </div>
       {!props.hideText && props.name && (
         <>
