@@ -85,6 +85,7 @@ async function createPostcard({
   const paymentLink = await stripe.paymentLinks.create({
     line_items: [{ price: product.default_price, quantity: 1 }],
     shipping_address_collection: { allowed_countries: ["US"] },
+    allow_promotion_codes: true,
     custom_text: {
       shipping_address: {
         message: "The shipping address is where we’ll send the postcard.",
