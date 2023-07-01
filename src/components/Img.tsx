@@ -150,6 +150,7 @@ interface CustomImageProps {
   text?: string;
   textStyle?: string;
   cover?: boolean;
+  rotateToPortrait?: boolean;
 }
 
 export type NextImageCloudinaryProps = CustomImageProps & ImageProps;
@@ -167,6 +168,7 @@ const Img = ({
   cover,
   transformations,
   text,
+  rotateToPortrait,
   ...rest
 }: NextImageCloudinaryProps): JSX.Element => {
   const aspectRatio = Number(height) / Number(width);
@@ -189,6 +191,7 @@ const Img = ({
                 ? [
                     {
                       quality: params.quality,
+                      rotate: rotateToPortrait ? 90 : undefined,
                       resize: {
                         ...(resize || {}),
                         width: params.width,
@@ -200,6 +203,7 @@ const Img = ({
                 : [
                     {
                       quality: params.quality,
+                      rotate: rotateToPortrait ? 90 : undefined,
                       resize: {
                         ...(resize || {}),
                         width: params.width,
