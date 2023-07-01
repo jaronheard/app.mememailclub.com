@@ -21,6 +21,7 @@ interface FileUploadProps<FormValues extends FieldValues> {
   getValues: any;
   setValue: any;
   postcardBackWithOverlay?: boolean;
+  postcardFrontWithRotation?: boolean;
   errors: FieldErrorsImpl<FormValues>;
   size: ItemSizeOpts;
   children?: React.ReactNode;
@@ -32,12 +33,16 @@ function FileUpload<FormValues extends FieldValues>({
   getValues,
   setValue,
   postcardBackWithOverlay,
+  postcardFrontWithRotation,
   size,
   errors,
   children,
 }: FileUploadProps<FormValues>) {
   const [status, setStatus] = useState("idle");
   const [thumbnailUrl, setThumbnailUrl] = useState("");
+  const [orientation, setOrientation] = useState<"portrait" | "landscape">(
+    "landscape"
+  );
 
   const url = getValues()[id];
   const setUrl = (value: PathValue<FormValues, Path<FormValues>>) =>
@@ -56,7 +61,11 @@ function FileUpload<FormValues extends FieldValues>({
       </label>
       <div className="flex items-center gap-3">
         <CldUploadWidget
-          uploadPreset="oe6iang6"
+          uploadPreset={
+            orientation === "landscape"
+              ? "6x9_postcard_landscape"
+              : "6x9_postcard_portrait"
+          }
           onUpload={(result: any, widget: any) => {
             if (result.event === "success") {
               setThumbnailUrl(result.info.thumbnail_url);
@@ -68,7 +77,10 @@ function FileUpload<FormValues extends FieldValues>({
           onClose={() => setStatus("idle")}
           options={{
             cropping: true,
-            croppingAspectRatio: SIZES[size].widthPx / SIZES[size].heightPx,
+            croppingAspectRatio:
+              orientation === "landscape"
+                ? SIZES[size].widthPx / SIZES[size].heightPx
+                : SIZES[size].heightPx / SIZES[size].widthPx,
             croppingShowBackButton: true,
             showSkipCropButton: false,
             showUploadMoreButton: false,
@@ -149,9 +161,29 @@ function FileUpload<FormValues extends FieldValues>({
                     />
                   )}
                 </div>
-                <Button visualOnly size="sm">
-                  Upload
-                </Button>
+                <div className="flex flex-col items-center gap-3">
+                  <Button visualOnly size="sm">
+                    Upload
+                  </Button>
+                  {/* orientation button, using rotation icon, positioned above upload button */}
+                  {postcardFrontWithRotation && (
+                    <button
+                      className="flex flex-col items-center gap-3 sm:flex-row"
+                      onClick={() => {
+                        if (orientation === "landscape") {
+                          setOrientation("portrait");
+                        } else {
+                          setOrientation("landscape");
+                        }
+                      }}
+                    >
+                      
+                      <span className="text-sm font-medium text-gray-700">
+                        {orientation === "landscape" ? "Portrait" : "Landscape"}
+                      </span>
+                    </button>
+                  )}
+                </div>
               </button>
             );
           }}

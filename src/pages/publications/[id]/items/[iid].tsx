@@ -214,6 +214,7 @@ const Item = () => {
                   setValue={setValue}
                   errors={errors}
                   size={watch("size")}
+                  postcardFrontWithRotation
                 >
                   Maximum file size 10MB
                 </FileUpload>
