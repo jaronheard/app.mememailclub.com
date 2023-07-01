@@ -624,18 +624,32 @@ const Send = () => {
         }}
       />
       <div className="flex justify-center py-8" ref={ref}>
-        <Button
-          variant="secondary"
-          onClick={() => itemsQuery.fetchNextPage()}
-          disabled={!(itemsQuery.hasNextPage || itemsQuery.isFetchingNextPage)}
-        >
-          {itemsQuery.isFetchingNextPage
-            ? "Loading more..."
-            : itemsQuery.hasNextPage
-            ? "Load Newer"
-            : "Nothing more to load"}
-        </Button>
+        {(itemsQuery.isFetchingNextPage || itemsQuery.hasNextPage) && (
+          <Button
+            variant="secondary"
+            onClick={() => itemsQuery.fetchNextPage()}
+            disabled={
+              !(itemsQuery.hasNextPage || itemsQuery.isFetchingNextPage)
+            }
+          >
+            {itemsQuery.isFetchingNextPage
+              ? "Loading more..."
+              : itemsQuery.hasNextPage
+              ? "Load Newer"
+              : "Nothing more to load"}
+          </Button>
+        )}
       </div>
+      {!itemsQuery.isFetchingNextPage && !itemsQuery.hasNextPage && (
+        <>
+          <div className="mx-auto flex max-w-xl justify-center italic">
+            There are no more postcards to see, but you can create your own!
+          </div>
+          <div className="flex justify-center py-8">
+            <Button href="/items/new">Create your own</Button>
+          </div>
+        </>
+      )}
       <div>
         {itemsQuery.isFetching && !itemsQuery.isFetchingNextPage
           ? "Background Updating..."
