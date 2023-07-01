@@ -357,11 +357,14 @@ function CategoryFilter(props: CategoryFilterProps) {
                               });
                             }}
                             className={clsx(
-                              active ? "bg-gray-100" : "",
-                              "block px-4 py-2 text-sm font-medium text-gray-900"
+                              "block w-full px-4 py-2 text-left text-sm font-medium text-gray-900 hover:bg-indigo-700 hover:text-white",
+                              {
+                                "font-bold":
+                                  option.name === props.activeSort?.name,
+                              }
                             )}
                           >
-                            {option.name}
+                            {option.label}
                           </button>
                         )}
                       </Menu.Item>
@@ -537,17 +540,9 @@ const Send = () => {
               setActiveSort={setActiveSort}
             >
               <div className="grid grid-cols-1 gap-y-4 sm:grid-cols-1 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-2 lg:gap-x-8">
-                {[0, 1, 2, 3, 4, 5, 6, 7].map((item) => (
-                  <PostcardPreviewSimple
-                    key={item}
-                    id={`loading-${item}`}
-                    loadingState={true}
-                    front=""
-                    name=""
-                    description=""
-                    onClick={() => null}
-                  />
-                ))}
+                <PostcardCreateSimple
+                  onClick={() => router.push("/items/new")}
+                />
               </div>
             </CategoryFilterCell>
           </div>
@@ -630,7 +625,6 @@ const Page = () => {
       <SignedOut>
         <Send />
       </SignedOut>
-      <Send />
     </>
   );
 };
