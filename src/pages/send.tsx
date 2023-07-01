@@ -49,12 +49,12 @@ function Splash() {
   );
 }
 
-export const ArrayParam = withDefault(
+const ArrayParam = withDefault(
   DefaultArrayParam,
   undefined
 ) as QueryParamConfig<string[] | undefined>;
 
-export const SortOptionParam = withDefault(
+const SortOptionParam = withDefault(
   DefaultObjectParam,
   undefined
 ) as QueryParamConfig<SortOption | undefined>;
