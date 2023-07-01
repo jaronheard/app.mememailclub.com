@@ -5,7 +5,7 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev",
-    "postinstall": "prisma generate",
+    "postinstall": "patch-package && prisma generate",
     "lint": "next lint",
     "start": "next start",
     "stripe": "stripe listen --forward-to localhost:3000/api/webhooks",
@@ -41,6 +41,7 @@
     "next-axiom": "^0.17.0",
     "next-cloudinary": "^4.12.0",
     "next-query-params": "^4.2.2",
+    "patch-package": "^7.0.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.39.2",
