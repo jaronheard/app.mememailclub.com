@@ -93,7 +93,6 @@ const Item = () => {
         ...item!,
         ...data,
       });
-      utils.invalidateQueries();
       variables.status === "DRAFT"
         ? router.push(
             `/publications/${queryStatus.id}/items/${queryStatus.iid}`
