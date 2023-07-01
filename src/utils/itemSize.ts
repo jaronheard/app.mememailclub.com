@@ -18,6 +18,7 @@ export const SIZES = {
     textSize: 24,
     textMargin: 20,
     previewClassNames: "w-[187.5px] h-[127.5px]",
+    previewClassNamesPortrait: "w-[127.5px] h-[187.5px]",
     previewWidth: 187.5,
     previewHeight: 127.5,
     // not reviewed
@@ -39,6 +40,7 @@ export const SIZES = {
     textSize: 36,
     textMargin: 30,
     previewClassNames: "w-[277.5px] h-[187.5px]",
+    previewClassNamesPortrait: "w-[187.5px] h-[277.5px]",
     previewWidth: 277.5,
     previewHeight: 187.5,
     brandingTextX: 75,
@@ -59,6 +61,7 @@ export const SIZES = {
     textSize: 36,
     textMargin: 30,
     previewClassNames: "w-[337.5px] h-[187.5px]",
+    previewClassNamesPortrait: "w-[187.5px] h-[337.5px]",
     previewWidth: 337.5,
     previewHeight: 187.5,
     // not reviewed
