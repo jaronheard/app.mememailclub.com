@@ -229,7 +229,7 @@ export const items = createRouter()
   })
   .query("getOne", {
     input: z.object({
-      id: z.number(),
+      id: z.number().optional(),
     }),
     async resolve({ ctx, input }) {
       const item = await ctx.prisma.item.findUnique({

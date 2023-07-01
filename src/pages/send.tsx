@@ -2,10 +2,9 @@ import DefaultQueryCell from "../components/DefaultQueryCell";
 import { trpc } from "../utils/trpc";
 import Head from "next/head";
 import { PostcardPreviewSimple } from "../components/PostcardPreviewSimple";
-import Slideover from "../components/Slideover";
 import { useEffect, useState, Fragment } from "react";
 import { trackGoal } from "fathom-client";
-import { SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
+import { useAuth } from "@clerk/nextjs";
 import { PostcardCreateSimple } from "../components/PostcardCreateSimple";
 import { useInView } from "react-intersection-observer";
 import Button from "../components/Button";
@@ -54,12 +53,7 @@ const zSortOption = z.object({
   order: z.string(),
 });
 
-const zSortOptions = z.array(zSortOption);
-
 type SortOption = z.TypeOf<typeof zSortOption>;
-type SortOptions = z.TypeOf<typeof zSortOptions>;
-
-const visibilityFilterValues = ["PUBLIC", "PRIVATE"] as const;
 
 type CategoryFilterCellProps = {
   activeSort?: SortOption;
@@ -271,6 +265,7 @@ function CategoryFilter(props: CategoryFilterProps) {
                                     id={`filter-mobile-${section.id}-${optionIdx}`}
                                     type="checkbox"
                                     className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                     {...register(`${option.name}` as any, {
                                       onChange(event) {
                                         const value = option.name;
@@ -432,6 +427,7 @@ function CategoryFilter(props: CategoryFilterProps) {
                               defaultValue={option.name}
                               type="checkbox"
                               className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                              // eslint-disable-next-line @typescript-eslint/no-explicit-any
                               {...register(`${option.name}` as any, {
                                 onChange(event) {
                                   const value = option.name;
@@ -588,7 +584,7 @@ export type SendParams = z.infer<typeof ParamsValidator>;
 const Send = () => {
   const router = useRouter();
   // redirect for legacy query params
-  const [itemId, setItemId] = useQueryParam("id", NumberParam);
+  const [itemId] = useQueryParam("id", NumberParam);
   useEffect(() => {
     if (itemId) {
       router.replace(`/send/${itemId}`);
