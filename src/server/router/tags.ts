@@ -4,7 +4,17 @@ export const tags = createRouter().query("getAllTagCategories", {
   async resolve({ ctx }) {
     const tagCategories = await ctx.prisma.tagCategory.findMany({
       include: {
-        Tags: true,
+        Tags: {
+          where: {
+            Items: {
+              some: {
+                id: {
+                  not: undefined,
+                },
+              },
+            },
+          },
+        },
       },
       where: {
         Tags: {
