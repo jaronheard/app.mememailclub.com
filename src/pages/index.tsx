@@ -91,7 +91,7 @@ const features = [
     name: "Create postcards",
     description:
       "Create postcard designs for your personal use, or share your designs with the world.",
-    href: "/new",
+    href: "/items/new",
     icon: PencilSquareIcon,
     cta: "Create yours",
     onClick: () => null,
