@@ -20,7 +20,7 @@ export function PostcardPreviewSimple(props: {
     <div
       id={props.id}
       role="button"
-      className="flex flex-col overflow-hidden rounded-lg hover:scale-[1.01] hover:opacity-90"
+      className="flex flex-col rounded-lg hover:scale-[1.01] hover:opacity-90"
       onClick={props.onClick}
     >
       <div
@@ -42,9 +42,10 @@ export function PostcardPreviewSimple(props: {
             visualOnly
             size="sm"
             variant="primary"
-            className="absolute right-2 bottom-2"
+            className="absolute -bottom-4 -right-2 sm:right-2 sm:bottom-2"
           >
-            Add message
+            <div className="hidden sm:block">Add message</div>
+            <div className="block sm:hidden">Add message</div>
           </Button>
         )}
       </div>
