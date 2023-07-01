@@ -9,6 +9,7 @@ import Link from "next/link";
 import FAQ from "../components/FAQ";
 import clsx from "clsx";
 import { trackGoal } from "fathom-client";
+import Button from "../components/Button";
 
 function Hero() {
   return (
@@ -44,13 +45,9 @@ function Hero() {
               and add a custom message. All without touching pen or paper!
             </p>
             <div className="mt-10 flex items-center gap-x-6">
-              <Link
-                href="/send"
-                className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                onClick={() => trackGoal("OZWMBFXQ", 0)}
-              >
+              <Button href="/send" onClick={() => trackGoal("OZWMBFXQ", 0)}>
                 Get started
-              </Link>
+              </Button>
               <a
                 href="#features"
                 className="text-sm font-semibold leading-6 text-gray-900"
@@ -220,13 +217,9 @@ function CTAFooter() {
             time!
           </p>
           <div className="mt-10 flex items-center justify-center gap-x-6">
-            <Link
-              href="/send"
-              className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              onClick={() => trackGoal("HAEWFYCR", 0)}
-            >
+            <Button href="/send" onClick={() => trackGoal("HAEWFYCR", 0)}>
               Get started
-            </Link>
+            </Button>
           </div>
         </div>
       </div>

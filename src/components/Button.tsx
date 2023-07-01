@@ -4,7 +4,8 @@ import Link from "next/link";
 type ButtonProps = {
   href?: string;
   children: React.ReactNode;
-  onClick?: (event?: React.MouseEvent<HTMLButtonElement>) => void;
+  onClick?: ((event?: React.MouseEvent<HTMLButtonElement>) => void) &
+    ((event?: React.MouseEvent<HTMLAnchorElement>) => void);
   visualOnly?: boolean;
   className?: string;
   size?: "sm" | "base";
@@ -24,13 +25,11 @@ function Button({
   disabled,
   type = "button",
 }: ButtonProps) {
-  if (href && onClick) {
-    throw new Error("Button cannot have both href and onClick");
-  }
   if (href) {
     return (
       <Link
         href={href}
+        onClick={onClick}
         className={clsx(
           "inline-flex rounded-md border px-4 py-2 font-bold shadow-button hover:translate-x-[1.2px] hover:translate-y-[1.2px] hover:shadow-buttonPressed",
           {
@@ -111,7 +110,7 @@ function Button({
       </div>
     );
   }
-  throw new Error("Button must have either href or onClick");
+  throw new Error("Button must have either href or onClick or visualOnly");
 }
 
 export default Button;
