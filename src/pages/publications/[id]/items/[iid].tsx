@@ -286,7 +286,7 @@ const Item = () => {
                 </Switch.Group>
                 <p className="mt-2 text-sm text-gray-500">
                   {watch("visibility") === "PUBLIC"
-                    ? "Your postcard will be visible and available to send by anyone on PostPostcard"
+                    ? "Your postcard will be visible and available to send by anyone on PostPostcard once it is approved by our team."
                     : "Your postcard will only be visible to you"}
                 </p>
               </div>
