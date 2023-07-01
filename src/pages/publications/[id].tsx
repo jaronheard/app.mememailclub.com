@@ -20,6 +20,7 @@ import Button from "../../components/Button";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
 import Head from "next/head";
 import RedirectToSignInCurrentPage from "../../components/RedirectToSignInCurrentPage";
+import { ITEM_DEFAULTS } from "../../utils/itemSize";
 
 export type PublicationFormValues = {
   name: string;
@@ -155,13 +156,7 @@ const Publication = () => {
                   onClick={() =>
                     createItem.mutate({
                       publicationId: publication?.id as number,
-                      name: "",
-                      description: "",
-                      front: `https://res.cloudinary.com/jaronheard/image/upload/w_2775,h_1875/v1687555005/bluePixel_eklcos.jpg`,
-                      back: `https://res.cloudinary.com/jaronheard/image/upload/w_2775,h_1875/v1687555005/redPixel_peptry.jpg`,
-                      status: "DRAFT",
-                      size: "6x9",
-                      visibility: "PRIVATE",
+                      ...ITEM_DEFAULTS,
                     })
                   }
                   size="sm"

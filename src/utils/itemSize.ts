@@ -73,3 +73,19 @@ export const SIZES = {
     qrY: 75,
   },
 };
+
+export const ITEM_DEFAULTS = {
+  name: "",
+  description: "",
+  front: `https://res.cloudinary.com/jaronheard/image/upload/w_2775,h_1875/v1687555005/bluePixel_eklcos.jpg`,
+  back: `https://res.cloudinary.com/jaronheard/image/upload/w_2775,h_1875/v1687555005/redPixel_peptry.jpg`,
+  status: "DRAFT",
+  size: "6x9",
+  visibility: "PRIVATE",
+} as const;
+
+export const PRIVATE_ITEM_DEFAULTS = {
+  ...ITEM_DEFAULTS,
+  name: "Private postcard",
+  description: "Private postcard",
+} as const;

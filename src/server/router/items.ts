@@ -3,7 +3,11 @@ import { z } from "zod";
 import { Context, createRouter } from "./context";
 import Stripe from "stripe";
 import { env } from "../../env/server.mjs";
-import { itemSizeToDB } from "../../utils/itemSize";
+import {
+  ITEM_DEFAULTS,
+  PRIVATE_ITEM_DEFAULTS,
+  itemSizeToDB,
+} from "../../utils/itemSize";
 import { TagName } from "@prisma/client";
 
 const bannerHeading = encodeURIComponent("Your postcard is on its way! 📮✨");
@@ -142,12 +146,49 @@ export const items = createRouter()
         where: {
           AND: [
             {
+              // filter out deleted items
               status: {
                 not: "DELETED",
               },
             },
+            {
+              // filter out unedited items (default values)
+              AND: [
+                {
+                  front: {
+                    not: ITEM_DEFAULTS.front,
+                  },
+                },
+                {
+                  back: {
+                    not: ITEM_DEFAULTS.back,
+                  },
+                },
+                {
+                  OR: [
+                    {
+                      name: {
+                        not: ITEM_DEFAULTS.name,
+                      },
+                    },
+                    { name: { not: PRIVATE_ITEM_DEFAULTS.name } },
+                  ],
+                },
+                {
+                  OR: [
+                    {
+                      description: {
+                        not: ITEM_DEFAULTS.description,
+                      },
+                    },
+                    { description: { not: PRIVATE_ITEM_DEFAULTS.description } },
+                  ],
+                },
+              ],
+            },
           ],
           OR: [
+            // public items with matching tags, or private items belonging to the user
             {
               visibility: "PUBLIC",
               Tags: {

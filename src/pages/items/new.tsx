@@ -3,6 +3,7 @@ import { trpc } from "../../utils/trpc";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import LoadingLayout from "../../components/LoadingLayout";
+import { ITEM_DEFAULTS } from "../../utils/itemSize";
 
 const SignedInNew = () => {
   const router = useRouter();
@@ -18,15 +19,7 @@ const SignedInNew = () => {
   // effect that runs mutation when a user is signed in and loaded and cleans up when the component is unmounted
   useEffect(() => {
     if (isLoaded && isSignedIn && status === "idle") {
-      mutate({
-        name: "",
-        description: "",
-        front: `https://res.cloudinary.com/jaronheard/image/upload/w_2775,h_1875/v1687555005/bluePixel_eklcos.jpg`,
-        back: `https://res.cloudinary.com/jaronheard/image/upload/w_2775,h_1875/v1687555005/redPixel_peptry.jpg`,
-        status: "DRAFT",
-        size: "6x9",
-        visibility: "PRIVATE",
-      });
+      mutate(ITEM_DEFAULTS);
     }
   }, [isLoaded, isSignedIn, status, mutate]);
 
@@ -55,13 +48,7 @@ const SignedOutNew = () => {
   useEffect(() => {
     if (anonymousUserId && status === "idle") {
       mutate({
-        name: "",
-        description: "",
-        front: `https://res.cloudinary.com/jaronheard/image/upload/w_2775,h_1875/v1687555005/bluePixel_eklcos.jpg`,
-        back: `https://res.cloudinary.com/jaronheard/image/upload/w_2775,h_1875/v1687555005/redPixel_peptry.jpg`,
-        status: "DRAFT",
-        size: "6x9",
-        visibility: "PRIVATE",
+        ...ITEM_DEFAULTS,
         anonymousUserId: anonymousUserId,
       });
     }
