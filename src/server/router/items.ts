@@ -4,6 +4,7 @@ import { Context, createRouter } from "./context";
 import Stripe from "stripe";
 import { env } from "../../env/server.mjs";
 import { itemSizeToDB } from "../../utils/itemSize";
+import { TagName } from "@prisma/client";
 
 const bannerHeading = encodeURIComponent("Your postcard is on its way! 📮✨");
 const bannerText = encodeURIComponent("Send another for just $1!");
@@ -122,6 +123,62 @@ async function createPostcard({
 }
 
 export const items = createRouter()
+  .query("getInfinite", {
+    input: z.object({
+      limit: z.number().min(1).max(100).nullish(),
+      order: z.enum(["asc", "desc"]).nullish(),
+      visibility: z.enum(["PUBLIC", "PRIVATE"]).nullish(),
+      // filters is an array of tag category names
+      filters: z.array(z.string()).nullish(),
+      cursor: z.number().nullish(), // <-- "cursor" needs to exist, but can be any type
+      anonymousUserId: z.string().nullish(), // optional anonymous user id to get a single item
+    }),
+    async resolve({ ctx, input }) {
+      const sortOrder = input.order || "desc";
+      const limit = input.limit ?? 50;
+      const { cursor } = input;
+      const items = await ctx.prisma.item.findMany({
+        take: limit + 1, // get an extra item at the end which we'll use as next cursor if there is no id specified
+        where: {
+          AND: [
+            {
+              status: {
+                not: "DELETED",
+              },
+            },
+          ],
+          OR: [
+            {
+              visibility: "PUBLIC",
+              Tags: {
+                some: {
+                  name: {
+                    in: input.filters as TagName[],
+                  },
+                },
+              },
+            },
+            {
+              userId: ctx.auth.userId || input.anonymousUserId || undefined,
+            },
+          ],
+        },
+        cursor: cursor ? { id: cursor } : undefined,
+        orderBy: {
+          id: sortOrder,
+        },
+      });
+      let nextCursor: typeof cursor | undefined = undefined;
+      if (items.length > limit) {
+        const nextItem = items.pop();
+        nextCursor = nextItem?.id;
+      }
+      return {
+        items,
+        nextCursor,
+      };
+    },
+  })
   .query("getAll", {
     async resolve({ ctx }) {
       const items = await ctx.prisma.item.findMany({
@@ -172,7 +229,7 @@ export const items = createRouter()
   })
   .query("getOne", {
     input: z.object({
-      id: z.number(),
+      id: z.number().optional(),
     }),
     async resolve({ ctx, input }) {
       const item = await ctx.prisma.item.findUnique({

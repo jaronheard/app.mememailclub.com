@@ -32,7 +32,7 @@ function Button({
       <Link
         href={href}
         className={clsx(
-          "inline-flex rounded-md border px-4 py-2 font-bold shadow-button",
+          "inline-flex rounded-md border px-4 py-2 font-bold shadow-button hover:translate-x-[1.2px] hover:translate-y-[1.2px] hover:shadow-buttonPressed",
           {
             "text-sm": size === "sm",
             "text-base": size === "base",
@@ -54,7 +54,7 @@ function Button({
     return (
       <button
         className={clsx(
-          "inline-flex rounded-md border px-4 py-2 font-bold shadow-button",
+          "inline-flex rounded-md border px-4 py-2 font-bold",
           {
             "text-sm": size === "sm",
             "text-base": size === "base",
@@ -66,6 +66,8 @@ function Button({
               variant === "secondary" && !disabled,
             "border-transparent bg-red-100 text-red-700 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 active:bg-red-300":
               variant === "danger" && !disabled,
+            "shadow-button hover:translate-x-[1.2px] hover:translate-y-[1.2px] hover:shadow-buttonPressed":
+              !disabled,
           },
           {
             "border-transparent bg-gray-400 text-white":
@@ -89,7 +91,7 @@ function Button({
     return (
       <div
         className={clsx(
-          "inline-flex rounded-md border px-4 py-2 font-bold shadow-button",
+          "inline-flex rounded-md border px-4 py-2 font-bold shadow-button hover:translate-x-[1.2px] hover:translate-y-[1.2px] hover:shadow-buttonPressed",
           {
             "text-sm": size === "sm",
             "text-base": size === "base",

@@ -27,6 +27,7 @@ model Item {
   size                ItemSize    @default(sz_6x9)
   Messages            Message[]
   visibility          Visibility  @default(PRIVATE)
+  Tags                Tag[]
 
   @@index([publicationId])
 }
@@ -57,6 +58,51 @@ model Message {
 
   @@index([userId])
   @@index([itemId])
+}
+
+model TagCategory {
+  id        Int             @id @default(autoincrement())
+  createdAt DateTime        @default(now())
+  name      TagCategoryName @unique
+  label     String
+  Tags      Tag[]
+}
+
+model Tag {
+  id            Int          @id @default(autoincrement())
+  createdAt     DateTime     @default(now())
+  name          TagName      @unique
+  label         String
+  Items         Item[]
+  TagCategory   TagCategory? @relation(fields: [tagCategoryId], references: [id])
+  tagCategoryId Int?
+
+  @@index([tagCategoryId])
+}
+
+enum TagCategoryName {
+  OCCASION
+  TONE
+}
+
+enum TagName {
+  ANNIVERSARY
+  BIRTHDAY
+  CONGRATS
+  FRIENDSHIP
+  GET_WELL
+  LOVE
+  SYMPATHY
+  THANK_YOU
+  WEDDING
+  FUNNY
+  HEARTFELT
+  INSPIRATIONAL
+  ROMANTIC
+  SWEET
+  THOUGHTFUL
+  UPLIFTING
+  WITTY
 }
 
 enum ItemStatus {

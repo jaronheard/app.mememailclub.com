@@ -12,6 +12,8 @@ import * as Fathom from "fathom-client";
 import { useEffect } from "react";
 import { ClerkProvider } from "@clerk/nextjs";
 import Layout from "../components/Layout";
+import NextAdapterPages from "next-query-params/pages";
+import { QueryParamProvider } from "use-query-params";
 
 // Record a pageview when route changes
 Router.events.on("routeChangeComplete", (as, routeProps) => {
@@ -40,7 +42,9 @@ const MyApp: AppType = ({ Component, pageProps: { ...pageProps } }) => {
     >
       <ChatwootWidget />
       <Layout>
-        <Component {...pageProps} />
+        <QueryParamProvider adapter={NextAdapterPages}>
+          <Component {...pageProps} />
+        </QueryParamProvider>
       </Layout>
     </ClerkProvider>
   );
