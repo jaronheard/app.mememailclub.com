@@ -239,7 +239,7 @@ function CategoryFilter(props: CategoryFilterProps) {
                   {props.tags.map((section) => (
                     <Disclosure
                       as="div"
-                      key={section.name}
+                      key={`disclosure-${section.name}`}
                       className="border-t border-gray-200 px-4 py-6"
                     >
                       {({ open }) => (
@@ -264,7 +264,7 @@ function CategoryFilter(props: CategoryFilterProps) {
                             <div className="space-y-6">
                               {section.Tags.map((option, optionIdx) => (
                                 <div
-                                  key={option.name}
+                                  key={`filter-mobile-${section.id}-${optionIdx}-wrapper`}
                                   className="flex items-center"
                                 >
                                   <input
@@ -345,7 +345,7 @@ function CategoryFilter(props: CategoryFilterProps) {
                 <Menu.Items className="absolute left-0 z-10 mt-2 w-40 origin-top-left rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none">
                   <div className="py-1">
                     {sort.map((option) => (
-                      <Menu.Item key={option.name}>
+                      <Menu.Item key={`sort-option-${option.name}`}>
                         {() => (
                           <button
                             onClick={() => {
@@ -394,7 +394,7 @@ function CategoryFilter(props: CategoryFilterProps) {
                 return (
                   <Popover
                     as="div"
-                    key={section.name}
+                    key={`desktop-menu-${section.name}`}
                     id={`desktop-menu-${sectionIdx}`}
                     className="relative inline-block text-left"
                   >
@@ -424,8 +424,11 @@ function CategoryFilter(props: CategoryFilterProps) {
                     >
                       <Popover.Panel className="absolute right-0 z-10 mt-2 origin-top-right rounded-md bg-white p-4 shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none">
                         <form className="space-y-4">
-                          {section.Tags.map((option, optionIdx) => (
-                            <div key={option.id} className="flex items-center">
+                          {section.Tags.map((option) => (
+                            <div
+                              key={`filter-wrapper-${section.id}-${option.name}`}
+                              className="flex items-center"
+                            >
                               <input
                                 id={`filter-${section.id}-${option.name}`}
                                 defaultValue={option.name}
@@ -575,7 +578,7 @@ const Send = () => {
                     />
                     {items.map((item) => (
                       <PostcardPreviewSimple
-                        key={item.id}
+                        key={`postcard-${item.id}`}
                         id={`postcard-${item.id}`}
                         front={item.front}
                         name={
