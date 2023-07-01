@@ -10,7 +10,11 @@ import { z } from "zod";
 import Breadcrumbs from "../../../../components/Breadcrumbs";
 import LoadingLayout from "../../../../components/LoadingLayout";
 import Button from "../../../../components/Button";
-import { ItemSizeOpts, itemSizeToClient } from "../../../../utils/itemSize";
+import {
+  ItemSizeOpts,
+  PRIVATE_ITEM_DEFAULTS,
+  itemSizeToClient,
+} from "../../../../utils/itemSize";
 import { Switch } from "@headlessui/react";
 import Head from "next/head";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
@@ -450,8 +454,9 @@ const Item = () => {
                 onClick={handleSubmit((data) => {
                   updateItem.mutate({
                     id: queryStatus.iid,
-                    name: data.name || "Private postcard",
-                    description: data.description || "Private postcard",
+                    name: data.name || PRIVATE_ITEM_DEFAULTS.name,
+                    description:
+                      data.description || PRIVATE_ITEM_DEFAULTS.description,
                     front: data.front,
                     back: data.back,
                     status: "PUBLISHED",
@@ -467,8 +472,9 @@ const Item = () => {
                 onClick={handleSubmit((data) => {
                   updateItem.mutate({
                     id: queryStatus.iid,
-                    name: data.name || "Private postcard",
-                    description: data.description || "Private postcard",
+                    name: data.name || PRIVATE_ITEM_DEFAULTS.name,
+                    description:
+                      data.description || PRIVATE_ITEM_DEFAULTS.description,
                     front: data.front,
                     back: data.back,
                     status: "DRAFT",

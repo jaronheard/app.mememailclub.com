@@ -83,3 +83,9 @@ export const ITEM_DEFAULTS = {
   size: "6x9",
   visibility: "PRIVATE",
 } as const;
+
+export const PRIVATE_ITEM_DEFAULTS = {
+  ...ITEM_DEFAULTS,
+  name: "Private postcard",
+  description: "Private postcard",
+} as const;

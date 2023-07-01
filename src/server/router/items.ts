@@ -3,7 +3,11 @@ import { z } from "zod";
 import { Context, createRouter } from "./context";
 import Stripe from "stripe";
 import { env } from "../../env/server.mjs";
-import { ITEM_DEFAULTS, itemSizeToDB } from "../../utils/itemSize";
+import {
+  ITEM_DEFAULTS,
+  PRIVATE_ITEM_DEFAULTS,
+  itemSizeToDB,
+} from "../../utils/itemSize";
 import { TagName } from "@prisma/client";
 
 const bannerHeading = encodeURIComponent("Your postcard is on its way! 📮✨");
@@ -161,14 +165,24 @@ export const items = createRouter()
                   },
                 },
                 {
-                  name: {
-                    not: ITEM_DEFAULTS.name,
-                  },
+                  OR: [
+                    {
+                      name: {
+                        not: ITEM_DEFAULTS.name,
+                      },
+                    },
+                    { name: { not: PRIVATE_ITEM_DEFAULTS.name } },
+                  ],
                 },
                 {
-                  description: {
-                    not: ITEM_DEFAULTS.description,
-                  },
+                  OR: [
+                    {
+                      description: {
+                        not: ITEM_DEFAULTS.description,
+                      },
+                    },
+                    { description: { not: PRIVATE_ITEM_DEFAULTS.description } },
+                  ],
                 },
               ],
             },
