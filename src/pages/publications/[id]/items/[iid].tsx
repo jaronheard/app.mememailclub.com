@@ -93,10 +93,12 @@ const Item = () => {
   const { data: item } = itemsQuery;
   const updateItem = trpc.useMutation("items.updateItem", {
     onSuccess(data, variables) {
-      utils.setQueryData(["items.getOne", { id: queryStatus.iid }], {
-        ...item!,
-        ...data,
-      });
+      item
+        ? utils.setQueryData(["items.getOne", { id: queryStatus.iid }], {
+            ...item,
+            ...data,
+          })
+        : console.error("Query data not set in updateItem, item is undefined");
       variables.status === "DRAFT"
         ? router.push(
             `/publications/${queryStatus.id}/items/${queryStatus.iid}`

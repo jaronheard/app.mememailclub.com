@@ -65,7 +65,6 @@ export default function Slideover(props: {
   itemFront: string;
 }) {
   const router = useRouter();
-  const utils = trpc.useContext();
   const { userId } = useAuth();
   const { register, watch, handleSubmit, setFocus } =
     useForm<PostcardMessageOverlayFormValues>({
