@@ -31,6 +31,24 @@ import {
 } from "use-query-params";
 import { Tag, TagCategory } from "@prisma/client";
 
+function Splash() {
+  return (
+    <div className="py-24">
+      <h2 className="text-lg font-semibold text-indigo-600">Postcards</h2>
+      <p className="mt-1 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
+        Send love by mail
+      </p>
+      <p className="mx-auto mt-5 max-w-xl text-xl text-gray-500">
+        A 6&quot;x9&quot; postcard with your message delivered for{" "}
+        <span className="font-semibold text-indigo-600">$1</span>*
+      </p>
+      <p className="mx-auto max-w-xl text-xs text-gray-500">
+        <em>*U.S. addresses only</em>
+      </p>
+    </div>
+  );
+}
+
 export const ArrayParam = withDefault(
   DefaultArrayParam,
   undefined
@@ -144,19 +162,7 @@ function CategoryFilterLoading(props: CategoryFilterLoadingProps) {
       </Transition.Root>
 
       <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:max-w-7xl lg:px-8">
-        <div className="py-24">
-          <h2 className="text-lg font-semibold text-indigo-600">Postcards</h2>
-          <p className="mt-1 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
-            Send love by mail
-          </p>
-          <p className="mx-auto mt-5 max-w-xl text-xl text-gray-500">
-            A 6&quot;x9&quot; postcard with your message delivered for{" "}
-            <span className="font-semibold text-indigo-600">$1</span>*
-          </p>
-          <p className="mx-auto max-w-xl text-xs text-gray-500">
-            <em>*U.S. addresses only</em>
-          </p>
-        </div>
+        <Splash />
 
         <section
           aria-labelledby="filter-heading"
@@ -306,20 +312,7 @@ function CategoryFilter(props: CategoryFilterProps) {
       </Transition.Root>
 
       <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:max-w-7xl lg:px-8">
-        <div className="py-24">
-          <h2 className="text-lg font-semibold text-indigo-600">Postcards</h2>
-          <p className="mt-1 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
-            Send love by mail
-          </p>
-          <p className="mx-auto mt-5 max-w-xl text-xl text-gray-500">
-            A 6&quot;x9&quot; postcard with your message delivered for{" "}
-            <span className="font-semibold text-indigo-600">$1</span>*
-          </p>
-          <p className="mx-auto max-w-xl text-xs text-gray-500">
-            <em>*U.S. addresses only</em>
-          </p>
-        </div>
-
+        <Splash />
         <section
           aria-labelledby="filter-heading"
           className="border-t border-gray-200 py-6"
