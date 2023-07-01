@@ -134,7 +134,9 @@ function FileUpload<FormValues extends FieldValues>({
               ) {
                 event?.preventDefault();
                 setStatus("uploading");
-                open();
+                if (open) {
+                  open();
+                }
               }
               return (
                 <button
@@ -229,7 +231,9 @@ function FileUpload<FormValues extends FieldValues>({
               ) {
                 event?.preventDefault();
                 setStatus("uploading");
-                open();
+                if (open) {
+                  open();
+                }
               }
               return (
                 <button
