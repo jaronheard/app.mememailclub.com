@@ -194,6 +194,8 @@ function CategoryFilter(props: CategoryFilterProps) {
     defaultValues: activeFilters,
   });
 
+  const numberOfActiveFilters = Object.keys(activeFilters).length;
+
   return (
     <div className="">
       {/* Mobile filter dialog */}
@@ -236,74 +238,88 @@ function CategoryFilter(props: CategoryFilterProps) {
 
                 {/* Filters */}
                 <form className="mt-4">
-                  {props.tags.map((section) => (
-                    <Disclosure
-                      as="div"
-                      key={`disclosure-${section.name}`}
-                      className="border-t border-gray-200 px-4 py-6"
-                    >
-                      {({ open }) => (
-                        <>
-                          <h3 className="-mx-2 -my-3 flow-root">
-                            <Disclosure.Button className="flex w-full items-center justify-between bg-white px-2 py-3 text-sm text-gray-400">
-                              <span className="font-medium text-gray-900">
-                                {section.label}
-                              </span>
-                              <span className="ml-6 flex items-center">
-                                <ChevronDownIcon
-                                  className={clsx(
-                                    open ? "-rotate-180" : "rotate-0",
-                                    "h-5 w-5 transform"
-                                  )}
-                                  aria-hidden="true"
-                                />
-                              </span>
-                            </Disclosure.Button>
-                          </h3>
-                          <Disclosure.Panel className="pt-6">
-                            <div className="space-y-6">
-                              {section.Tags.map((option, optionIdx) => (
-                                <div
-                                  key={`filter-mobile-${section.id}-${optionIdx}-wrapper`}
-                                  className="flex items-center"
-                                >
-                                  <input
-                                    id={`filter-mobile-${section.id}-${optionIdx}`}
-                                    type="checkbox"
-                                    className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                    {...register(`${option.name}` as any, {
-                                      onChange(event) {
-                                        const value = option.name;
-
-                                        const newFilters = props.activeFilters
-                                          ? props.activeFilters.filter(
-                                              (filter) => filter !== value
-                                            )
-                                          : [];
-
-                                        if (value && event.target.checked) {
-                                          newFilters.push(value);
-                                        }
-
-                                        props.setActiveFilters(newFilters);
-                                      },
-                                    })}
+                  {props.tags.map((section) => {
+                    const activeFiltersInSection = props.activeFilters
+                      ? props.activeFilters.filter((filter) =>
+                          section.Tags.find((tag) => tag.name === filter)
+                        )
+                      : [];
+                    const numberOfActiveFiltersInSection =
+                      activeFiltersInSection.length;
+                    return (
+                      <Disclosure
+                        as="div"
+                        key={`disclosure-${section.name}`}
+                        className="border-t border-gray-200 px-4 py-6"
+                      >
+                        {({ open }) => (
+                          <>
+                            <h3 className="-mx-2 -my-3 flow-root">
+                              <Disclosure.Button className="flex w-full items-center justify-between bg-white px-2 py-3 text-sm text-gray-400">
+                                <span className="font-medium text-gray-900">
+                                  {numberOfActiveFiltersInSection > 0 ? (
+                                    <span className="mr-1.5 rounded bg-gray-200 px-1.5 py-0.5 text-xs font-semibold tabular-nums text-gray-700">
+                                      {numberOfActiveFiltersInSection}
+                                    </span>
+                                  ) : null}
+                                  {section.label}
+                                </span>
+                                <span className="ml-6 flex items-center">
+                                  <ChevronDownIcon
+                                    className={clsx(
+                                      open ? "-rotate-180" : "rotate-0",
+                                      "h-5 w-5 transform"
+                                    )}
+                                    aria-hidden="true"
                                   />
-                                  <label
-                                    htmlFor={`filter-mobile-${section.id}-${optionIdx}`}
-                                    className="ml-3 text-sm text-gray-500"
+                                </span>
+                              </Disclosure.Button>
+                            </h3>
+                            <Disclosure.Panel className="pt-6">
+                              <div className="space-y-6">
+                                {section.Tags.map((option, optionIdx) => (
+                                  <div
+                                    key={`filter-mobile-${section.id}-${optionIdx}-wrapper`}
+                                    className="flex items-center"
                                   >
-                                    {option.label}
-                                  </label>
-                                </div>
-                              ))}
-                            </div>
-                          </Disclosure.Panel>
-                        </>
-                      )}
-                    </Disclosure>
-                  ))}
+                                    <input
+                                      id={`filter-mobile-${section.id}-${optionIdx}`}
+                                      type="checkbox"
+                                      className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                                      {...register(`${option.name}` as any, {
+                                        onChange(event) {
+                                          const value = option.name;
+
+                                          const newFilters = props.activeFilters
+                                            ? props.activeFilters.filter(
+                                                (filter) => filter !== value
+                                              )
+                                            : [];
+
+                                          if (value && event.target.checked) {
+                                            newFilters.push(value);
+                                          }
+
+                                          props.setActiveFilters(newFilters);
+                                        },
+                                      })}
+                                    />
+                                    <label
+                                      htmlFor={`filter-mobile-${section.id}-${optionIdx}`}
+                                      className="ml-3 text-sm text-gray-500"
+                                    >
+                                      {option.label}
+                                    </label>
+                                  </div>
+                                ))}
+                              </div>
+                            </Disclosure.Panel>
+                          </>
+                        )}
+                      </Disclosure>
+                    );
+                  })}
                 </form>
               </Dialog.Panel>
             </Transition.Child>
@@ -379,6 +395,11 @@ function CategoryFilter(props: CategoryFilterProps) {
               className="inline-block text-sm font-medium text-gray-700 hover:text-gray-900 sm:hidden"
               onClick={() => setOpen(true)}
             >
+              {numberOfActiveFilters > 0 ? (
+                <span className="mr-1.5 rounded bg-gray-200 px-1.5 py-0.5 text-xs font-semibold tabular-nums text-gray-700">
+                  {numberOfActiveFilters}
+                </span>
+              ) : null}
               Filters
             </button>
 
