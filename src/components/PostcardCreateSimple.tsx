@@ -28,7 +28,7 @@ export function PostcardCreateSimple(props: {
         <h3>Create your own</h3>
         <p>$1</p>
       </div>
-      <p className="mt-1 text-sm italic text-gray-400">{`6"x9" postcard w/ message and postage`}</p>
+      <p className="mt-1 text-left text-sm italic text-gray-400">{`6"x9" postcard w/ message and postage`}</p>
     </div>
   );
 }
