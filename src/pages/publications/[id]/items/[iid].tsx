@@ -65,6 +65,7 @@ const Item = () => {
     },
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const returnUrlUnchanged = (url: string, size: ItemSizeOpts) => {
     return url;
   };

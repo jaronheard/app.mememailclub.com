@@ -113,14 +113,14 @@ export function qrStampTransformation(
     overlay: `postpostcard-stamp-qr_fxwrje`,
   };
 }
-export function thumbnailTransformation(
+export function stripePreviewTransformation(
   size: ItemSizeOpts = "4x6"
 ): TransformerOption {
   return {
     resize: {
       type: "fit",
-      width: SIZES[size].previewWidth,
-      height: SIZES[size].previewHeight,
+      width: SIZES[size].stripePreviewWidth,
+      height: SIZES[size].stripePreviewHeight,
     },
   };
 }
@@ -158,7 +158,7 @@ export function addTextTransformationToURL({
   return buildImageUrl(publicId, options);
 }
 
-export function addThumbnailTransformationToURL({
+export function addStripePreviewTransformationToURL({
   src,
   options = { cloud: CLOUD_OPTIONS },
   size,
@@ -175,7 +175,7 @@ export function addThumbnailTransformationToURL({
   }
 
   const chaining = size
-    ? [thumbnailTransformation(size), { ...(restTransformations || {}) }]
+    ? [stripePreviewTransformation(size), { ...(restTransformations || {}) }]
     : [{ ...(restTransformations || {}) }];
 
   // add chaining to options.transforations
