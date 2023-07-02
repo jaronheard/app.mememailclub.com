@@ -65,25 +65,7 @@ const Item = () => {
     },
   });
 
-  const resizeImageUrl = (url: string, size: ItemSizeOpts) => {
-    const dpi = 300;
-    const heightInches = size === "4x6" ? 4 : size === "6x9" ? 6 : 6;
-    const widthInches = size === "4x6" ? 6 : size === "6x9" ? 9 : 11;
-    const heightInchesWithMargin = heightInches + 0.25;
-    const widthInchesWithMargin = widthInches + 0.25;
-    const heightPixels = heightInchesWithMargin * dpi;
-    const widthPixels = widthInchesWithMargin * dpi;
-
-    // if url is from picsum, resize it
-    if (url.includes("picsum")) {
-      // split url at second to last slash
-      const splitUrl = url.split("/");
-      splitUrl.pop();
-      splitUrl.pop();
-      const newUrl = splitUrl.join("/") + `/${widthPixels}/${heightPixels}`;
-      return newUrl;
-    }
-    // else return original url
+  const returnUrlUnchanged = (url: string, size: ItemSizeOpts) => {
     return url;
   };
 
@@ -172,6 +154,7 @@ const Item = () => {
           <h3 className="text-lg font-medium leading-6 text-gray-900">
             Postcard
           </h3>
+          <pre>{}</pre>
         </div>
         <DefaultQueryCell
           query={itemsQuery}
@@ -192,11 +175,11 @@ const Item = () => {
                     onChange: () => {
                       setValue(
                         "front",
-                        resizeImageUrl(watch("front"), watch("size"))
+                        returnUrlUnchanged(watch("front"), watch("size"))
                       );
                       setValue(
                         "back",
-                        resizeImageUrl(watch("back"), watch("size"))
+                        returnUrlUnchanged(watch("back"), watch("size"))
                       );
                     },
                   })}
