@@ -25,7 +25,7 @@ export function PostcardCreateSimple(props: {
       </div>
       <div className="mt-4 flex items-center justify-between text-base font-medium text-gray-900">
         <h3>Create your own</h3>
-        <p>$1</p>
+        <p>$2.99</p>
       </div>
       <p className="mt-1 text-left text-sm italic text-gray-400">{`6"x9" postcard w/ message and postage`}</p>
     </div>

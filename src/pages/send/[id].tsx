@@ -48,7 +48,7 @@ const Splash = () => (
     </p>
     <p className="mx-auto mt-5 max-w-xl text-xl text-gray-500">
       A 6&quot;x9&quot; postcard with your message delivered for{" "}
-      <span className="font-semibold text-indigo-600">$1</span>*
+      <span className="font-semibold text-indigo-600">$2.99</span>*
     </p>
     <p className="mx-auto max-w-xl text-xs text-gray-500">
       <em>*U.S. addresses only</em>

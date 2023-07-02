@@ -10,8 +10,8 @@ import {
 } from "../../utils/itemSize";
 import { TagName } from "@prisma/client";
 
-const bannerHeading = encodeURIComponent("Your postcard is on its way! 📮✨");
-const bannerText = encodeURIComponent("Send another for just $1!");
+const bannerHeading = encodeURIComponent("Your postcard is on its way! 💌");
+const bannerText = encodeURIComponent("Send another for $2.99!");
 
 const INCLUDE_PUBLICATION_FIELDS = {
   include: {
@@ -70,7 +70,7 @@ async function createPostcard({
     shippable: true,
     tax_code: "txcd_35020200",
     default_price_data: {
-      unit_amount_decimal: "100",
+      unit_amount_decimal: "299",
       currency: "usd",
     },
   });
