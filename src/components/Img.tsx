@@ -28,6 +28,11 @@ interface CloudinaryUrlBuilderArgsWithText extends CloudinaryUrlBuilderArgs {
   size: ItemSizeOpts;
 }
 
+// extend CloudinaryUrlBuilderArgs with a size property
+interface CloudinaryUrlBuilderArgsWithSize extends CloudinaryUrlBuilderArgs {
+  size: ItemSizeOpts;
+}
+
 export const cloudinaryUrlBuilder = ({
   src,
   keepAspectRatio,
@@ -108,6 +113,17 @@ export function qrStampTransformation(
     overlay: `postpostcard-stamp-qr_fxwrje`,
   };
 }
+export function stripePreviewTransformation(
+  size: ItemSizeOpts = "4x6"
+): TransformerOption {
+  return {
+    resize: {
+      type: "fit",
+      width: SIZES[size].stripePreviewWidth,
+      height: SIZES[size].stripePreviewHeight,
+    },
+  };
+}
 
 export function addTextTransformationToURL({
   src,
@@ -132,6 +148,34 @@ export function addTextTransformationToURL({
         qrStampTransformation(size),
         { ...(restTransformations || {}) },
       ]
+    : [{ ...(restTransformations || {}) }];
+
+  // add chaining to options.transforations
+  options.transformations = {
+    chaining: chaining as TransformerOption[],
+  };
+
+  return buildImageUrl(publicId, options);
+}
+
+export function addStripePreviewTransformationToURL({
+  src,
+  options = { cloud: CLOUD_OPTIONS },
+  size,
+}: CloudinaryUrlBuilderArgsWithSize): string {
+  // use remote image loading
+  const publicId = src.includes("cloudinary.com") ? extractPublicId(src) : src;
+  const { ...restTransformations } = options.transformations || {};
+
+  if (!src.includes("cloudinary.com")) {
+    options.cloud = {
+      ...CLOUD_OPTIONS,
+      storageType: STORAGE_TYPES.FETCH,
+    };
+  }
+
+  const chaining = size
+    ? [stripePreviewTransformation(size), { ...(restTransformations || {}) }]
     : [{ ...(restTransformations || {}) }];
 
   // add chaining to options.transforations

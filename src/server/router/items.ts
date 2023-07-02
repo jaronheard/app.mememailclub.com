@@ -9,6 +9,7 @@ import {
   itemSizeToDB,
 } from "../../utils/itemSize";
 import { TagName } from "@prisma/client";
+import { addStripePreviewTransformationToURL } from "../../components/Img";
 
 const bannerHeading = encodeURIComponent("Your postcard is on its way! 💌");
 const bannerText = encodeURIComponent("Send another for $2.99!");
@@ -65,7 +66,10 @@ async function createPostcard({
     // active: input.status === "PUBLISHED",
     description: `6"x9" postcard with your message`,
     statement_descriptor: `postcard: ${input.name.slice(0, 12)}`,
-    images: [input.front, input.back],
+    images: [
+      addStripePreviewTransformationToURL({ src: input.front, size: "6x9" }),
+      addStripePreviewTransformationToURL({ src: input.back, size: "6x9" }),
+    ],
     // default item information
     shippable: true,
     tax_code: "txcd_35020200",

@@ -21,6 +21,8 @@ export const SIZES = {
     previewClassNamesPortrait: "w-[127.5px] h-[187.5px]",
     previewWidth: 187.5,
     previewHeight: 127.5,
+    stripePreviewWidth: 187.5 * 2,
+    stripePreviewHeight: 127.5 * 2,
     // not reviewed
     brandingTextX: 75,
     brandingTextY: 75,
@@ -43,6 +45,8 @@ export const SIZES = {
     previewClassNamesPortrait: "w-[187.5px] h-[277.5px]",
     previewWidth: 277.5,
     previewHeight: 187.5,
+    stripePreviewWidth: 277.5 * 2,
+    stripePreviewHeight: 187.5 * 2,
     brandingTextX: 75,
     brandingTextY: 75,
     brandingTextWidth: 975,
@@ -64,6 +68,8 @@ export const SIZES = {
     previewClassNamesPortrait: "w-[187.5px] h-[337.5px]",
     previewWidth: 337.5,
     previewHeight: 187.5,
+    stripePreviewWidth: 337.5 * 2,
+    stripePreviewHeight: 187.5 * 2,
     // not reviewed
     brandingTextX: 75,
     brandingTextY: 75,
