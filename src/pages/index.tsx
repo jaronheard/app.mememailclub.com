@@ -26,7 +26,7 @@ function Hero() {
             </h1>
             <div className="hidden sm:mt-32 sm:flex lg:mt-16">
               <div className="rounded-full relative py-1 px-3 text-sm leading-6 text-gray-500 ring-1 ring-gray-900/10 hover:ring-gray-900/20">
-                To celebrate our launch, send a postcard for only $1.{" "}
+                Send a postcard for only $2.99.{" "}
                 <Link
                   href="/send"
                   className="whitespace-nowrap font-semibold text-indigo-600"
@@ -213,8 +213,7 @@ function CTAFooter() {
             Send your first postcard today!
           </h2>
           <p className="mx-auto mt-6 max-w-xl text-lg leading-8 text-gray-600">
-            Send a huge 6&quot; x 9&quot; postcard for only $1 for a limited
-            time!
+            Send a huge 6&quot; x 9&quot; postcard for only $2.99
           </p>
           <div className="mt-10 flex items-center justify-center gap-x-6">
             <Button href="/send" onClick={() => trackGoal("HAEWFYCR", 0)}>
