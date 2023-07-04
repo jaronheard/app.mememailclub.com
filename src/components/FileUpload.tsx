@@ -128,14 +128,18 @@ function FileUpload<FormValues extends FieldValues>({
         {/* start with editing this and then copy paste */}
         {orientation === "landscape" && (
           <CldUploadWidget {...cloudinaryWidgetProps}>
-            {({ open }) => {
+            {({ open, isLoading }) => {
+              const loading = isLoading || status === "loading";
+
               function handleOnClick(
                 event?: React.MouseEvent<HTMLButtonElement>
               ) {
                 event?.preventDefault();
-                setStatus("uploading");
-                if (open) {
-                  open();
+                if (!isLoading) {
+                  setStatus("uploading");
+                  if (open) {
+                    open();
+                  }
                 }
               }
               return (
@@ -153,7 +157,7 @@ function FileUpload<FormValues extends FieldValues>({
                         : "h-20 w-20"
                     )}
                   >
-                    {url && status !== "uploading" && !postcardBackWithOverlay && (
+                    {url && !loading && !postcardBackWithOverlay && (
                       <Img
                         className={
                           orientation === "landscape"
@@ -177,15 +181,13 @@ function FileUpload<FormValues extends FieldValues>({
                         // rotateToPortrait={orientation === "portrait"}
                       />
                     )}
-                    {url &&
-                      status !== "uploading" &&
-                      postcardBackWithOverlay && (
-                        <PostcardBackWithOverlay
-                          back={thumbnailUrl || url}
-                          size={size}
-                          optimizeImages
-                        />
-                      )}
+                    {url && !loading && postcardBackWithOverlay && (
+                      <PostcardBackWithOverlay
+                        back={thumbnailUrl || url}
+                        size={size}
+                        optimizeImages
+                      />
+                    )}
                   </div>
                   <div className="flex flex-col items-center gap-3">
                     <Button visualOnly size="sm">
@@ -225,14 +227,18 @@ function FileUpload<FormValues extends FieldValues>({
         )}
         {orientation === "portrait" && (
           <CldUploadWidget {...cloudinaryWidgetPropsPortrait}>
-            {({ open }) => {
+            {({ open, isLoading }) => {
+              const loading = isLoading || status === "loading";
+
               function handleOnClick(
                 event?: React.MouseEvent<HTMLButtonElement>
               ) {
                 event?.preventDefault();
-                setStatus("uploading");
-                if (open) {
-                  open();
+                if (!isLoading) {
+                  setStatus("uploading");
+                  if (open) {
+                    open();
+                  }
                 }
               }
               return (
@@ -246,29 +252,25 @@ function FileUpload<FormValues extends FieldValues>({
                       size ? SIZES[size].previewClassNamesPortrait : "h-20 w-20"
                     )}
                   >
-                    {url &&
-                      status !== "uploading" &&
-                      !postcardBackWithOverlay && (
-                        <Img
-                          className={SIZES[size].previewClassNamesPortrait}
-                          alt="Open file"
-                          src={thumbnailUrl || url}
-                          height={SIZES[size].previewWidth}
-                          width={SIZES[size].previewHeight}
-                          autoCrop
-                          cover
-                          rotateToPortrait={true}
-                        />
-                      )}
-                    {url &&
-                      status !== "uploading" &&
-                      postcardBackWithOverlay && (
-                        <PostcardBackWithOverlay
-                          back={thumbnailUrl || url}
-                          size={size}
-                          optimizeImages
-                        />
-                      )}
+                    {url && !loading && !postcardBackWithOverlay && (
+                      <Img
+                        className={SIZES[size].previewClassNamesPortrait}
+                        alt="Open file"
+                        src={thumbnailUrl || url}
+                        height={SIZES[size].previewWidth}
+                        width={SIZES[size].previewHeight}
+                        autoCrop
+                        cover
+                        rotateToPortrait={true}
+                      />
+                    )}
+                    {url && !loading && postcardBackWithOverlay && (
+                      <PostcardBackWithOverlay
+                        back={thumbnailUrl || url}
+                        size={size}
+                        optimizeImages
+                      />
+                    )}
                   </div>
                   <div className="flex flex-col items-center gap-3">
                     <Button visualOnly size="sm">
