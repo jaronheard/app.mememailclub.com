@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import { de } from "date-fns/locale";
+import Image from "next/image";
 import React from "react";
 
 interface PostcardCollectionProps {
@@ -143,7 +144,7 @@ const PostcardCollections: React.FC<PostcardCollectionsProps> = ({
     >
       <h1 className="mb-2 text-2xl font-bold text-white">{title}</h1>
       <p className="mb-4 text-white">{description}</p>
-      <div className="grid grid-cols-1 grid-cols-3 gap-4">
+      <div className="grid grid-cols-3 gap-4">
         {images.map((image, index) => (
           <div
             key={index}
@@ -154,10 +155,11 @@ const PostcardCollections: React.FC<PostcardCollectionsProps> = ({
               "overflow-hidden rounded-lg shadow sm:translate-x-0"
             )}
           >
-            <img
+            <Image
               src={image}
               alt={`Postcard ${index + 1}`}
-              className="h-auto w-full"
+              width={500}
+              height={300}
             />
           </div>
         ))}{" "}
@@ -172,7 +174,7 @@ export const SamplePostcardCollections: React.FC = () => {
 
   return (
     <div className="bg-indigo-700/10 p-4 sm:p-8 lg:col-span-2">
-      <h2 className="mb-2 text-lg font-semibold text-indigo-700gc sm:mb-8">
+      <h2 className="text-indigo-700gc mb-2 text-lg font-semibold sm:mb-8">
         Featured Collections
       </h2>
       <div className="flex flex-col gap-4 sm:flex-row sm:gap-8">
