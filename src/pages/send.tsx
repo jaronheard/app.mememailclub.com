@@ -30,26 +30,23 @@ import {
   NumberParam,
 } from "use-query-params";
 import { Tag, TagCategory } from "@prisma/client";
-import { SamplePostcardCollection } from "../components/PostcardCollection";
+import { SamplePostcardCollections } from "../components/PostcardCollection";
 
 function Splash() {
   return (
-    <>
-      <div className="py-24">
-        <h2 className="text-lg font-semibold text-indigo-600">Postcards</h2>
-        <p className="mt-1 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
-          Send love by mail
-        </p>
-        <p className="mx-auto mt-5 max-w-xl text-xl text-gray-500">
-          A 6&quot;x9&quot; postcard with your message delivered for{" "}
-          <span className="font-semibold text-indigo-600">$2.99</span>*
-        </p>
-        <p className="mx-auto max-w-xl text-xs text-gray-500">
-          <em>*U.S. addresses only</em>
-        </p>
-      </div>
-      <SamplePostcardCollection />
-    </>
+    <div className="py-24">
+      <h2 className="text-lg font-semibold text-indigo-600">Postcards</h2>
+      <p className="mt-1 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
+        Send love by mail
+      </p>
+      <p className="mx-auto mt-5 max-w-xl text-xl text-gray-500">
+        A 6&quot;x9&quot; postcard with your message delivered for{" "}
+        <span className="font-semibold text-indigo-600">$2.99</span>*
+      </p>
+      <p className="mx-auto max-w-xl text-xs text-gray-500">
+        <em>*U.S. addresses only</em>
+      </p>
+    </div>
   );
 }
 
@@ -617,24 +614,27 @@ const Send = () => {
                     <PostcardCreateSimple
                       onClick={() => router.push("/items/new")}
                     />
-                    {items.map((item) => (
-                      <PostcardPreviewSimple
-                        key={`postcard-${item.id}`}
-                        id={`postcard-${item.id}`}
-                        front={item.front}
-                        name={
-                          isSignedIn
-                            ? `${item.visibility === "PRIVATE" ? "🔒" : "🌐"} ${
-                                item.name
-                              }`
-                            : item.name
-                        }
-                        description={item.description}
-                        onClick={() => {
-                          router.push(`/send/${item.id}`);
-                          trackGoal("1WFW5D7J", 0);
-                        }}
-                      />
+                    {items.map((item, index) => (
+                      <>
+                        <PostcardPreviewSimple
+                          key={`postcard-${item.id}`}
+                          id={`postcard-${item.id}`}
+                          front={item.front}
+                          name={
+                            isSignedIn
+                              ? `${
+                                  item.visibility === "PRIVATE" ? "🔒" : "🌐"
+                                } ${item.name}`
+                              : item.name
+                          }
+                          description={item.description}
+                          onClick={() => {
+                            router.push(`/send/${item.id}`);
+                            trackGoal("1WFW5D7J", 0);
+                          }}
+                        />
+                        {index === 2 && <SamplePostcardCollections />}
+                      </>
                     ))}
                   </div>
                 </CategoryFilterCell>
