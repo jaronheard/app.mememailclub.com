@@ -507,22 +507,6 @@ const ParamsValidator = z.object({
 });
 export type SendParams = z.infer<typeof ParamsValidator>;
 
-const PostcardCollection = ({ title, description, coverImage }) => {
-  return (
-    <div className="max-w-sm overflow-hidden rounded shadow-lg">
-      <img
-        className="w-full"
-        src={coverImage}
-        alt="Postcard Collection Cover"
-      />
-      <div className="px-6 py-4">
-        <div className="mb-2 text-xl font-bold">{title}</div>
-        <p className="text-base text-gray-700">{description}</p>
-      </div>
-    </div>
-  );
-};
-
 const Send = () => {
   const router = useRouter();
   // redirect for legacy query params
