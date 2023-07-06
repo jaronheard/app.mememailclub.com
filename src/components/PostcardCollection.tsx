@@ -1,46 +1,18 @@
 import clsx from "clsx";
 import Image from "next/image";
 import React from "react";
+import { trpc } from "../utils/trpc";
+import DefaultQueryCell from "./DefaultQueryCell";
 
-const sampleCollections = [
-  {
-    title: "Roadside America",
-    description:
-      "The architectural commentator and photographer John Margolies (1940-2016) recognized the potential for beauty in the structures and signage along American roadsides.",
-    images: [
-      "https://res.cloudinary.com/jaronheard/image/upload/q_auto,f_auto/w_1200/mail/master-pnp-mrg-00000-00081u_vfxlzp",
-      "https://res.cloudinary.com/jaronheard/image/upload/q_auto,f_auto/w_1200/mail/master-pnp-mrg-06800-06848u_ptdsbp",
-      "https://res.cloudinary.com/jaronheard/image/upload/q_auto,f_auto/w_1200/mail/master-pnp-mrg-06300-06367u_vrmhte",
-    ],
-  },
-  {
-    title: "Munsell Color System",
-    description:
-      "Artist and art instructor Albert Henry Munsell (1858-1918) condensed human color perception into a streamlined and sophisticated three-dimensional visual representation.",
-    images: [
-      "https://res.cloudinary.com/jaronheard/image/upload/q_auto,f_auto/w_1200/mail/AtlasMunsellcol00Muns_0029_tmzb2h",
-      "https://res.cloudinary.com/jaronheard/image/upload/q_auto,f_auto/w_1200/mail/AtlasMunsellcol00Muns_0033_ksagls",
-      "https://res.cloudinary.com/jaronheard/image/upload/q_auto,f_auto/w_1200/mail/AtlasMunsellcol00Muns_0013_yfd7yh",
-    ],
-  },
-  {
-    title: "Email Memes",
-    description:
-      "Is sending a postcard as good as writing an email? Maybe not, but we have jokes about it.",
-    images: [
-      "https://res.cloudinary.com/jaronheard/image/upload/q_auto,f_auto/w_1200/mail/master-pnp-mrg-00000-00081u_vfxlzp",
-      "https://res.cloudinary.com/jaronheard/image/upload/q_auto,f_auto/w_1200/mail/master-pnp-mrg-06800-06848u_ptdsbp",
-      "https://res.cloudinary.com/jaronheard/image/upload/q_auto,f_auto/w_1200/mail/master-pnp-mrg-06300-06367u_vrmhte",
-    ],
-  },
-  // Add more collections as needed
-] as const;
+const placeholder6x9 =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 9 6'%3E%3C/svg%3E";
 
 interface PostcardCollectionsProps {
-  title: string;
-  description: string;
-  images: readonly string[];
+  title?: string;
+  description?: string;
+  images?: readonly string[];
   className?: string;
+  loading?: boolean;
 }
 
 const PostcardCollections: React.FC<PostcardCollectionsProps> = ({
@@ -48,7 +20,10 @@ const PostcardCollections: React.FC<PostcardCollectionsProps> = ({
   description,
   images,
   className,
+  loading,
 }) => {
+  const imagesOrPlaceholders = images ?? [placeholder6x9, placeholder6x9];
+
   return (
     <div
       className={clsx(
@@ -56,10 +31,12 @@ const PostcardCollections: React.FC<PostcardCollectionsProps> = ({
         className
       )}
     >
-      <h1 className="mb-2 text-2xl font-bold text-white">{title}</h1>
-      <p className="mb-4 text-white">{description}</p>
+      <h1 className="mb-2 text-2xl font-bold text-white">
+        {loading ? "Loading..." : title}
+      </h1>
+      <p className="mb-4 text-white">{loading ? "" : description}</p>
       <div className="grid grid-cols-3 gap-4">
-        {images.map((image, index) => (
+        {imagesOrPlaceholders.map((image, index) => (
           <div
             key={index}
             className={clsx(
@@ -70,38 +47,102 @@ const PostcardCollections: React.FC<PostcardCollectionsProps> = ({
             )}
           >
             <Image
-              src={image}
+              src={loading ? placeholder6x9 : image}
               alt={`Postcard ${index + 1}`}
-              width={500}
+              width={450}
               height={300}
             />
           </div>
-        ))}{" "}
+        ))}
       </div>
     </div>
   );
 };
 
 export const SamplePostcardCollections: React.FC = () => {
-  const one = sampleCollections[0];
-  const two = sampleCollections[1];
+  const featuredPublicationsQuery = trpc.useQuery(["publications.getFeatured"]);
 
   return (
     <div className="bg-indigo-700/10 p-4 sm:p-8 lg:col-span-2">
-      <h2 className="text-indigo-700gc mb-2 text-lg font-semibold sm:mb-8">
+      <h2 className="mb-2 text-lg font-semibold text-indigo-700 sm:mb-8">
         Featured Collections
       </h2>
-      <div className="flex flex-col gap-4 sm:flex-row sm:gap-8">
-        <PostcardCollections
-          title={one.title}
-          description={one.description}
-          images={one.images}
-        />
-        <PostcardCollections
-          title={two.title}
-          description={two.description}
-          images={two.images}
-          // className="hidden sm:block"
+      <div className="grid grid-cols-1 gap-4 sm:gap-8 md:grid-cols-2">
+        <DefaultQueryCell
+          query={featuredPublicationsQuery}
+          success={({ data: publications }) => {
+            const [firstFeaturedPublication, secondFeaturedPublication] =
+              publications;
+            if (!firstFeaturedPublication || !secondFeaturedPublication) {
+              return null;
+            }
+
+            // array of front property of first three publications.Items with null checks
+            const firstFeaturedPublicationImages = ["", "", ""].map(
+              (item, idx) => {
+                if (
+                  typeof secondFeaturedPublication?.Items[idx]?.front ===
+                  "string"
+                ) {
+                  return firstFeaturedPublication?.Items[idx]?.front as string;
+                } else {
+                  return "";
+                }
+              }
+            );
+            const secondFeaturedPublicationImages = ["", "", ""].map(
+              (item, idx) => {
+                if (
+                  typeof secondFeaturedPublication?.Items[idx]?.front ===
+                  "string"
+                ) {
+                  return secondFeaturedPublication?.Items[idx]?.front as string;
+                } else {
+                  return "";
+                }
+              }
+            );
+
+            // check for null values in array
+            const firstFeaturedPublicationImagesNullCheck =
+              firstFeaturedPublicationImages.every((image) => image.length > 0);
+            const secondFeaturedPublicationImagesNullCheck =
+              secondFeaturedPublicationImages.every(
+                (image) => image.length > 0
+              );
+
+            if (
+              !firstFeaturedPublicationImagesNullCheck ||
+              !secondFeaturedPublicationImagesNullCheck
+            ) {
+              return null;
+            }
+
+            console.log(firstFeaturedPublication);
+            console.log(secondFeaturedPublication);
+
+            return (
+              <>
+                <PostcardCollections
+                  title={firstFeaturedPublication.name}
+                  description={firstFeaturedPublication.description}
+                  images={firstFeaturedPublicationImages}
+                />
+                <PostcardCollections
+                  title={secondFeaturedPublication.name}
+                  description={secondFeaturedPublication.description}
+                  images={secondFeaturedPublicationImages}
+                  // className="hidden sm:block"
+                />
+              </>
+            );
+          }}
+          loading={() => (
+            <>
+              <PostcardCollections loading />
+              <PostcardCollections loading />
+            </>
+          )}
         />
       </div>
       {/* Other content */}
