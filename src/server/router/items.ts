@@ -141,6 +141,7 @@ export const items = createRouter()
       filters: z.array(z.string()).nullish(),
       cursor: z.number().nullish(), // <-- "cursor" needs to exist, but can be any type
       anonymousUserId: z.string().nullish(), // optional anonymous user id to get a single item
+      publicationId: z.number().nullish(), // optional anonymous user id to get a single item
     }),
     async resolve({ ctx, input }) {
       const sortOrder = input.order || "desc";

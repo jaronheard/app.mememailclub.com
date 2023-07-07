@@ -3,11 +3,13 @@ import Image from "next/image";
 import React from "react";
 import { trpc } from "../utils/trpc";
 import DefaultQueryCell from "./DefaultQueryCell";
+import Link from "next/link";
 
 const placeholder6x9 =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 9 6'%3E%3C/svg%3E";
 
 interface PostcardCollectionsProps {
+  id?: number;
   title?: string;
   description?: string;
   images?: readonly string[];
@@ -16,6 +18,7 @@ interface PostcardCollectionsProps {
 }
 
 const PostcardCollections: React.FC<PostcardCollectionsProps> = ({
+  id,
   title,
   description,
   images,
@@ -25,7 +28,8 @@ const PostcardCollections: React.FC<PostcardCollectionsProps> = ({
   const imagesOrPlaceholders = images ?? [placeholder6x9, placeholder6x9];
 
   return (
-    <div
+    <Link
+      href={`/publications/${id}/view`}
       className={clsx(
         "flex flex-col items-center justify-center bg-indigo-700 p-4",
         className
@@ -55,7 +59,7 @@ const PostcardCollections: React.FC<PostcardCollectionsProps> = ({
           </div>
         ))}
       </div>
-    </div>
+    </Link>
   );
 };
 
@@ -118,17 +122,16 @@ export const SamplePostcardCollections: React.FC = () => {
               return null;
             }
 
-            console.log(firstFeaturedPublication);
-            console.log(secondFeaturedPublication);
-
             return (
               <>
                 <PostcardCollections
+                  id={firstFeaturedPublication.id}
                   title={firstFeaturedPublication.name}
                   description={firstFeaturedPublication.description}
                   images={firstFeaturedPublicationImages}
                 />
                 <PostcardCollections
+                  id={secondFeaturedPublication.id}
                   title={secondFeaturedPublication.name}
                   description={secondFeaturedPublication.description}
                   images={secondFeaturedPublicationImages}
