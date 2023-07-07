@@ -63,7 +63,7 @@ function Hero() {
         >
           <Img
             className="aspect-[3/2] w-full bg-gray-50 object-cover lg:absolute lg:inset-0 lg:aspect-auto lg:h-full"
-            src="https://res.cloudinary.com/jaronheard/image/upload/v1672891693/mail/postcards_2_ywp9uz.png"
+            src="https://res.cloudinary.com/jaronheard/image/upload/v1688522113/IMG_2947_gixirr.jpg"
             alt="Postcard sample"
             width="1800"
             height="1200"

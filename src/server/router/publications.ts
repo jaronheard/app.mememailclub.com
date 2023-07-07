@@ -36,6 +36,20 @@ export const publications = createRouter()
       return publications;
     },
   })
+  .query("getFeatured", {
+    async resolve({ ctx }) {
+      const publications = await ctx.prisma.publication.findMany({
+        where: {
+          featured: true,
+        },
+        ...INCLUDE_RELATIONS,
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+      return publications;
+    },
+  })
   .query("getOne", {
     input: z.object({
       id: z.number(),

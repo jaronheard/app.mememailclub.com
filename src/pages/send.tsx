@@ -30,6 +30,7 @@ import {
   NumberParam,
 } from "use-query-params";
 import { Tag, TagCategory } from "@prisma/client";
+import { SamplePostcardCollections } from "../components/PostcardCollection";
 
 function Splash() {
   return (
@@ -597,24 +598,27 @@ const Send = () => {
                     <PostcardCreateSimple
                       onClick={() => router.push("/items/new")}
                     />
-                    {items.map((item) => (
-                      <PostcardPreviewSimple
-                        key={`postcard-${item.id}`}
-                        id={`postcard-${item.id}`}
-                        front={item.front}
-                        name={
-                          isSignedIn
-                            ? `${item.visibility === "PRIVATE" ? "🔒" : "🌐"} ${
-                                item.name
-                              }`
-                            : item.name
-                        }
-                        description={item.description}
-                        onClick={() => {
-                          router.push(`/send/${item.id}`);
-                          trackGoal("1WFW5D7J", 0);
-                        }}
-                      />
+                    {items.map((item, index) => (
+                      <>
+                        <PostcardPreviewSimple
+                          key={`postcard-${item.id}`}
+                          id={`postcard-${item.id}`}
+                          front={item.front}
+                          name={
+                            isSignedIn
+                              ? `${
+                                  item.visibility === "PRIVATE" ? "🔒" : "🌐"
+                                } ${item.name}`
+                              : item.name
+                          }
+                          description={item.description}
+                          onClick={() => {
+                            router.push(`/send/${item.id}`);
+                            trackGoal("1WFW5D7J", 0);
+                          }}
+                        />
+                        {index === 2 && <SamplePostcardCollections />}
+                      </>
                     ))}
                   </div>
                 </CategoryFilterCell>

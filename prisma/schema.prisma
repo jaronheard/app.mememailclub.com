@@ -43,6 +43,7 @@ model Publication {
   status      PublicationStatus @default(DRAFT)
   Items       Item[]
   test        Boolean           @default(false)
+  featured    Boolean           @default(false)
 
   @@index([userId])
 }
