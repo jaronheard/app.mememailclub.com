@@ -6,7 +6,7 @@ const faqs = [
   {
     question: "How do you print and send postcards?",
     answer:
-      "We use a third-party printing service (Lob) to print and send your postcards. Lob is a trusted printing service that has been in business for over 5 years. They print and send postcards for many other companies, including Expedia and Gusto. We use Lob because they are reliable, affordable, and have a great reputation.",
+      "We use a third-party printing service (lob.com) to print and send your postcards. We do not print or send postcards ourselves.",
   },
   {
     question: "Can I track my postcard? How long does it take to arrive?",

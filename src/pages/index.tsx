@@ -41,8 +41,8 @@ function Hero() {
               Big postcard energy
             </h1>
             <p className="mt-6 text-lg leading-8 text-gray-600">
-              Send a huge 6&quot; x 9&quot; postcard to your friends and family,
-              and add a custom message. All without touching pen or paper!
+              Send your message in style with a 6&quot; x 9&quot; postcard. Use
+              one of our designs or create your own.
             </p>
             <div className="mt-10 flex items-center gap-x-6">
               <Button href="/send" onClick={() => trackGoal("OZWMBFXQ", 0)}>
