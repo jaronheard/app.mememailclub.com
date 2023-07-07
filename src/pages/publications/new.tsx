@@ -150,7 +150,7 @@ const Page = () => {
   return (
     <>
       <Head>
-        <title>Create unique postcards - PostPostcard</title>
+        <title>Create a new postcard - PostPostcard</title>
         <meta name="robots" content="noindex,nofollow" />
       </Head>
       <SignedIn>
