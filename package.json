@@ -10,7 +10,8 @@
     "start": "next start",
     "stripe": "stripe listen --forward-to localhost:3000/api/webhooks",
     "db": "pscale connect meme-mail-club initial-setup --port 3309",
-    "db-prod": "pscale connect meme-mail-club main --port 3309"
+    "db-prod": "pscale connect meme-mail-club main --port 3309",
+    "postbuild": "next-sitemap"
   },
   "engines": {
     "npm": ">=8.0.0 <9.0.0",
@@ -41,6 +42,7 @@
     "next-axiom": "^0.17.0",
     "next-cloudinary": "^4.12.0",
     "next-query-params": "^4.2.2",
+    "next-sitemap": "^4.1.8",
     "patch-package": "^7.0.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
