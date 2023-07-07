@@ -29,7 +29,7 @@ const PostcardCollections: React.FC<PostcardCollectionsProps> = ({
 
   return (
     <Link
-      href={`/publications/${id}`}
+      href={`/publications/${id}/view`}
       className={clsx(
         "flex flex-col items-center justify-center bg-indigo-700 p-4",
         className

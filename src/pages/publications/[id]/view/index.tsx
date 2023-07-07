@@ -1,13 +1,13 @@
-import DefaultQueryCell from "../components/DefaultQueryCell";
-import { trpc } from "../utils/trpc";
+import DefaultQueryCell from "../../../../components/DefaultQueryCell";
+import { trpc } from "../../../../utils/trpc";
 import Head from "next/head";
-import { PostcardPreviewSimple } from "../components/PostcardPreviewSimple";
+import { PostcardPreviewSimple } from "../../../../components/PostcardPreviewSimple";
 import { useEffect, useState, Fragment } from "react";
 import { trackGoal } from "fathom-client";
 import { SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
-import { PostcardCreateSimple } from "../components/PostcardCreateSimple";
+import { PostcardCreateSimple } from "../../../../components/PostcardCreateSimple";
 import { useInView } from "react-intersection-observer";
-import Button from "../components/Button";
+import Button from "../../../../components/Button";
 import { z } from "zod";
 import {
   Dialog,
@@ -30,12 +30,13 @@ import {
   NumberParam,
 } from "use-query-params";
 import { Tag, TagCategory } from "@prisma/client";
-import { SamplePostcardCollections } from "../components/PostcardCollection";
 
 function Splash() {
   return (
     <div className="py-24">
-      <h2 className="text-lg font-semibold text-indigo-600">Postcards</h2>
+      <h2 className="text-lg font-semibold text-indigo-600">
+        Postcard Collection
+      </h2>
       <p className="mt-1 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
         Send love by mail
       </p>
@@ -526,7 +527,10 @@ const Send = () => {
     "filters",
     ArrayParam
   );
-  const [publicationId, setPublicationId] = useQueryParam("publicationId", NumberParam);
+  const [queryStatus, setQueryStatus] = useState({
+    ready: false,
+    id: 0,
+  });
   const { ref, inView } = useInView();
 
   const order = z
@@ -545,10 +549,12 @@ const Send = () => {
         order: orderToUse,
         filters: activeFilters,
         anonymousUserId: anonymousUserId,
-        publicationId: publicationId,
+        publicationId:
+          queryStatus.ready && queryStatus.id > 0 ? queryStatus.id : undefined,
       },
     ],
     {
+      enabled: queryStatus.ready,
       getNextPageParam: (lastPage) => lastPage.nextCursor,
     }
   );
@@ -560,6 +566,18 @@ const Send = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inView]);
+
+  useEffect(() => {
+    if (router.isReady) {
+      const zQuery = ParamsValidator.safeParse(router.query);
+      if (zQuery.success && zQuery.data.id) {
+        setQueryStatus({
+          ready: true,
+          id: Number(zQuery.data.id),
+        });
+      }
+    }
+  }, [router.isReady, router.query]);
 
   return (
     <>
@@ -619,7 +637,6 @@ const Send = () => {
                             trackGoal("1WFW5D7J", 0);
                           }}
                         />
-                        {index === 2 && <SamplePostcardCollections />}
                       </>
                     ))}
                   </div>
