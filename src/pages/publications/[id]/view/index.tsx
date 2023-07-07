@@ -615,9 +615,6 @@ const Send = () => {
                   setActiveSort={setActiveSort}
                 >
                   <div className="grid grid-cols-1 gap-y-4 sm:grid-cols-1 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-2 lg:gap-x-8">
-                    <PostcardCreateSimple
-                      onClick={() => router.push("/items/new")}
-                    />
                     {items.map((item, index) => (
                       <>
                         <PostcardPreviewSimple
@@ -640,6 +637,9 @@ const Send = () => {
                       </>
                     ))}
                   </div>
+                  <PostcardCreateSimple
+                    onClick={() => router.push("/items/new")}
+                  />
                 </CategoryFilterCell>
               </div>
             </>
