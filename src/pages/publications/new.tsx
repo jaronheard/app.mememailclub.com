@@ -151,7 +151,6 @@ const Page = () => {
     <>
       <Head>
         <title>Create a new postcard - PostPostcard</title>
-        <meta name="robots" content="noindex,nofollow" />
       </Head>
       <SignedIn>
         <New />

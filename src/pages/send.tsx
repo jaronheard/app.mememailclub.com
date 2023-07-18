@@ -526,7 +526,10 @@ const Send = () => {
     "filters",
     ArrayParam
   );
-  const [publicationId, setPublicationId] = useQueryParam("publicationId", NumberParam);
+  const [publicationId, setPublicationId] = useQueryParam(
+    "publicationId",
+    NumberParam
+  );
   const { ref, inView } = useInView();
 
   const order = z
@@ -669,8 +672,7 @@ const Page = () => {
   return (
     <>
       <Head>
-        <title>Create unique postcards - PostPostcard</title>
-        <meta name="robots" content="noindex,nofollow" />
+        <title>Send a postcards - PostPostcard</title>
       </Head>
       <SignedIn>
         <Send />
