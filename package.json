@@ -35,6 +35,8 @@
     "clsx": "^1.2.1",
     "date-fns": "^2.29.3",
     "fathom-client": "^3.5.0",
+    "mailing": "^1.0.1",
+    "mailing-core": "^1.0.1",
     "md5": "^2.3.0",
     "micro-cors": "^0.1.1",
     "nanoid": "^4.0.2",
