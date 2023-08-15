@@ -36,6 +36,17 @@ const ParamsValidator = z.object({
   iid: z.optional(z.string().transform((str) => Number(str))),
 });
 
+const disallowedChars = ["'", '"', "!", "@", "#"]; // Add or remove characters as required.
+const hasNoDisallowedChars = (value: string | undefined): boolean | string => {
+  const foundChars = disallowedChars.filter((char) => value?.includes(char));
+
+  if (foundChars.length > 0) {
+    return `These characters are not allowed: ${foundChars.join(", ")}`;
+  }
+
+  return true;
+};
+
 const Item = () => {
   const router = useRouter();
   const utils = trpc.useContext();
@@ -291,6 +302,7 @@ const Item = () => {
                   <input
                     {...register("name", {
                       required: watch("visibility") === "PUBLIC",
+                      validate: hasNoDisallowedChars,
                     })}
                     autoComplete="off"
                     className={clsx(
@@ -305,7 +317,7 @@ const Item = () => {
                 </div>
                 {errors.name && (
                   <p className="mt-2 text-sm text-red-600" id="email-error">
-                    Title is required.
+                    {errors.name.message || "Title is required."}
                   </p>
                 )}
               </div>
@@ -326,6 +338,7 @@ const Item = () => {
                   <textarea
                     {...register("description", {
                       required: watch("visibility") === "PUBLIC",
+                      validate: hasNoDisallowedChars,
                     })}
                     autoComplete="off"
                     rows={3}
@@ -341,7 +354,7 @@ const Item = () => {
                 </div>
                 {errors.description && (
                   <p className="mt-2 text-sm text-red-600" id="email-error">
-                    Description is required.
+                    {errors.description.message || "Description is required."}
                   </p>
                 )}
                 <p className="mt-2 text-sm text-gray-500">
