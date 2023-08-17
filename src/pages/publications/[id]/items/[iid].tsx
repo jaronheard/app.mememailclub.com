@@ -473,7 +473,7 @@ const Item = () => {
                 variant="secondary"
                 disabled={!isDirty}
               >
-                {isDirty ? "Save & Exit" : "Saved"}
+                {isDirty ? "Save Draft" : "Saved"}
               </Button>
             </div>
           </div>
