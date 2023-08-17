@@ -128,6 +128,17 @@ async function createPostcard({
     });
   }
 
+  // update payment link with item id
+  // not awaited because we don't want to wait for this to finish
+  stripe.paymentLinks.update(paymentLink.id, {
+    after_completion: {
+      type: "redirect",
+      redirect: {
+        url: `${env.NEXT_PUBLIC_APP_URL}/send/${newItem.id}?bannerHeading=${bannerHeading}&bannerText=${bannerText}&utm_source=stripe&utm_medium=paymentlink&utm_campaign=send`,
+      },
+    },
+  });
+
   return newItem;
 }
 
