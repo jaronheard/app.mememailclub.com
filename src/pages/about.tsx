@@ -17,11 +17,11 @@ const FAQ: NextPage = () => {
           <div className="prose mt-6">
             <p>
               PostPostcard's vision is to create opportunities for creativity
-              and connection through digital tools for physical mail.
+              and connection by providing digital tools for physical mail.
             </p>
             <p>
               PostPostcard started with an idea for a "Meme Mail Club" between
-              two friends, where you could sign up for a subscription of
+              two friends, in which you could sign up for a subscription of
               postcards featuring recent memes. We were inspired by the
               collective experience of{" "}
               <a href="https://en.wikipedia.org/wiki/Bernie_Sanders_mittens_meme">

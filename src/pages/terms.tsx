@@ -18,7 +18,7 @@ const Privacy: NextPage = () => {
           agree that you are responsible for the agreement with any applicable
           local laws. If you disagree with any of these terms, you are
           prohibited from accessing this site. The materials contained in this
-          Website are protected by copyright and trade mark law.
+          Website are protected by copyright and trademark law.
         </p>
         <h2>2. Use License</h2>
         <p>
@@ -42,12 +42,12 @@ const Privacy: NextPage = () => {
             materials; or
           </li>
           <li>
-            transferring the materials to another person or "mirror" the
-            materials on any other server.
+            transfer the materials to another person or "mirror" the materials
+            on any other server.
           </li>
         </ul>
         <p>
-          This will let PostPostcard to terminate upon violations of any of
+          PostPostcard may terminate your use license upon violations of any of
           these restrictions. Upon termination, your viewing right will also be
           terminated and you should destroy any downloaded materials in your
           possession whether it is printed or electronic format. These Terms of
@@ -68,9 +68,9 @@ const Privacy: NextPage = () => {
         </p>
         <h2>4. Limitations</h2>
         <p>
-          PostPostcard or its suppliers will not be hold accountable for any
-          damages that will arise with the use or inability to use the materials
-          on PostPostcard’s Website, even if PostPostcard or an authorize
+          PostPostcard or its suppliers will not be held accountable for any
+          damages that arise with the use or inability to use the materials on
+          PostPostcard’s Website, even if PostPostcard or an authorized
           representative of this Website has been notified, orally or written,
           of the possibility of such damage. Some jurisdiction does not allow
           limitations on implied warranties or limitations of liability for

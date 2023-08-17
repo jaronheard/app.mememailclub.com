@@ -473,7 +473,7 @@ const Item = () => {
                 variant="secondary"
                 disabled={!isDirty}
               >
-                {isDirty ? "Save Draft" : "Saved"}
+                {isDirty ? "Save & Exit" : "Saved"}
               </Button>
             </div>
           </div>
@@ -492,7 +492,7 @@ const Item = () => {
                 Delete
               </Button>
               <p className="text-sm font-medium text-red-700">
-                Warning: this action is irreversable
+                Warning: this action is irreversible
               </p>
             </div>
           </div>
