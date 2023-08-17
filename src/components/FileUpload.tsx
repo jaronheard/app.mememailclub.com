@@ -52,9 +52,6 @@ function FileUpload<FormValues extends FieldValues>({
       shouldDirty: true,
     });
 
-  console.log("url", url);
-  console.log("thumbnailUrl", thumbnailUrl);
-
   const cloudinaryWidgetProps = {
     uploadPreset: "6x9_postcard_landscape",
     onUpload: (result: any, widget: any) => {

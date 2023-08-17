@@ -42,7 +42,6 @@ export const cloudinaryUrlBuilder = ({
 }: CloudinaryUrlBuilderArgs): string => {
   // use remote image loading
   const publicId = src.includes("cloudinary.com") ? extractPublicId(src) : src;
-  console.log("publicId", publicId);
 
   if (!src.includes("cloudinary.com")) {
     options.cloud = {
