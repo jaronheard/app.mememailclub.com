@@ -1,0 +1,52 @@
+diff --git a/node_modules/cloudinary-build-url/.DS_Store b/node_modules/cloudinary-build-url/.DS_Store
+new file mode 100644
+index 0000000..4129cbf
+Binary files /dev/null and b/node_modules/cloudinary-build-url/.DS_Store differ
+diff --git a/node_modules/cloudinary-build-url/dist/.DS_Store b/node_modules/cloudinary-build-url/dist/.DS_Store
+new file mode 100644
+index 0000000..dbd2fe9
+Binary files /dev/null and b/node_modules/cloudinary-build-url/dist/.DS_Store differ
+diff --git a/node_modules/cloudinary-build-url/dist/cjs/url.js b/node_modules/cloudinary-build-url/dist/cjs/url.js
+index a4d30ac..fee2d68 100644
+--- a/node_modules/cloudinary-build-url/dist/cjs/url.js
++++ b/node_modules/cloudinary-build-url/dist/cjs/url.js
+@@ -16,12 +16,15 @@ var constants_1 = require("./constants");
+ var utils_1 = require("@cld-apis/utils");
+ var transformers_1 = require("./transformers");
+ var SHARED_CDNS = ["cloudinary-a.akamaihd.net", "res.cloudinary.com"];
+-var CLOUDINARY_REGEX = /^.+\.cloudinary\.com\/(?:[^\/]+\/)(?:(image|video|raw)\/)?(?:(upload|fetch|private|authenticated|sprite|facebook|twitter|youtube|vimeo)\/)?(?:(?:[^_/]+_[^,/]+,?)*\/)?(?:v(\d+|\w{1,2})\/)?([^\.^\s]+)(?:\.(.+))?$/;
++var CLOUDINARY_REGEX = /^.+\.cloudinary\.com\/(?:[^\/]+\/)(?:(image|video|raw)\/)?(?:(upload|fetch|private|authenticated|sprite|facebook|twitter|youtube|vimeo)\/)?(?:(?:[^_/]+_[^,/]+,?)*\/)?(?:v(\d+|\w{1,2})\/)?(.+)$/;
+ exports.extractPublicId = function (link) {
+     if (!link)
+         return '';
+     var parts = CLOUDINARY_REGEX.exec(link);
+-    return parts && parts.length > 2 ? parts[parts.length - 2] : link;
++    if (!parts) {
++        return link;
++    }
++    return parts[parts.length - 1].replace(/\.[^/.]+$/, "");
+ };
+ exports.getSignature = function (signature) {
+     if (!signature)
+diff --git a/node_modules/cloudinary-build-url/dist/esm/url.js b/node_modules/cloudinary-build-url/dist/esm/url.js
+index 3892dbf..b9da6a2 100644
+--- a/node_modules/cloudinary-build-url/dist/esm/url.js
++++ b/node_modules/cloudinary-build-url/dist/esm/url.js
+@@ -13,12 +13,15 @@ import { SEO_TYPES } from "./constants";
+ import { RESOURCE_TYPES, STORAGE_TYPES } from '@cld-apis/utils';
+ import { toTransformationStr, transform } from './transformers';
+ var SHARED_CDNS = ["cloudinary-a.akamaihd.net", "res.cloudinary.com"];
+-var CLOUDINARY_REGEX = /^.+\.cloudinary\.com\/(?:[^\/]+\/)(?:(image|video|raw)\/)?(?:(upload|fetch|private|authenticated|sprite|facebook|twitter|youtube|vimeo)\/)?(?:(?:[^_/]+_[^,/]+,?)*\/)?(?:v(\d+|\w{1,2})\/)?([^\.^\s]+)(?:\.(.+))?$/;
++var CLOUDINARY_REGEX = /^.+\.cloudinary\.com\/(?:[^\/]+\/)(?:(image|video|raw)\/)?(?:(upload|fetch|private|authenticated|sprite|facebook|twitter|youtube|vimeo)\/)?(?:(?:[^_/]+_[^,/]+,?)*\/)?(?:v(\d+|\w{1,2})\/)?(.+)$/;
+ export var extractPublicId = function (link) {
+     if (!link)
+         return '';
+     var parts = CLOUDINARY_REGEX.exec(link);
+-    return parts && parts.length > 2 ? parts[parts.length - 2] : link;
++    if (!parts) {
++        return link;
++    }
++    return parts[parts.length - 1].replace(/\.[^/.]+$/, "");
+ };
+ export var getSignature = function (signature) {
+     if (!signature)
