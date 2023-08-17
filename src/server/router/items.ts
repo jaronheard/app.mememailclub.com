@@ -425,7 +425,7 @@ export const items = createRouter()
       // stripe logic
       const product = await stripe.products.update(item.stripeProductId, {
         name: input.name,
-        active: input.status === "PUBLISHED",
+        active: true, // allow even for draft items
         statement_descriptor: `postcard: ${input.name.slice(0, 12)}`,
         images: [input.front, input.back],
       });
