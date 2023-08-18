@@ -163,6 +163,10 @@ export const items = createRouter()
         where: {
           AND: [
             {
+              // filter by publication id if specified
+              publicationId: input.publicationId || undefined,
+            },
+            {
               // filter out deleted items
               status: {
                 not: "DELETED",
