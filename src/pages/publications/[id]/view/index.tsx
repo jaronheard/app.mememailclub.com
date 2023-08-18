@@ -571,6 +571,8 @@ const Send = () => {
     if (router.isReady) {
       const zQuery = ParamsValidator.safeParse(router.query);
       if (zQuery.success && zQuery.data.id) {
+        console.log("setting query status");
+        console.log(zQuery.data.id);
         setQueryStatus({
           ready: true,
           id: Number(zQuery.data.id),
