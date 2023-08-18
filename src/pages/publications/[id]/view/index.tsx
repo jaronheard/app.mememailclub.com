@@ -638,10 +638,10 @@ const Send = () => {
                         />
                       </>
                     ))}
+                    <PostcardCreateSimple
+                      onClick={() => router.push("/items/new")}
+                    />
                   </div>
-                  <PostcardCreateSimple
-                    onClick={() => router.push("/items/new")}
-                  />
                 </CategoryFilterCell>
               </div>
             </>
