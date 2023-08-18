@@ -153,6 +153,12 @@ const Layout = (props: LayoutProps) => {
 
   return (
     <>
+      <Banner
+        heading={banner.heading}
+        text={banner.text}
+        showBanner={showBanner}
+        setShowBanner={setShowBanner}
+      />
       <Head>
         <title>PostPostcard</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -164,6 +170,12 @@ const Layout = (props: LayoutProps) => {
         >
           {({ open }) => (
             <>
+              <Banner
+                heading={banner.heading}
+                text={banner.text}
+                showBanner={showBanner}
+                setShowBanner={setShowBanner}
+              />
               <div className="mx-auto max-w-7xl px-2 sm:px-4 lg:px-8">
                 <div className="relative flex h-16 items-center justify-between bg-yellow">
                   <div className="flex items-center px-2 lg:px-0">
@@ -311,12 +323,6 @@ const Layout = (props: LayoutProps) => {
         <div className="flex min-h-screen flex-col justify-between">
           <main className="mx-auto flex w-full grow">
             <div className="mx-auto flex max-w-7xl grow flex-col px-4 py-16 sm:px-6 lg:px-8">
-              <Banner
-                heading={banner.heading}
-                text={banner.text}
-                showBanner={showBanner}
-                setShowBanner={setShowBanner}
-              />
               <div className="grow rounded-lg bg-postcard px-5 py-6 drop-shadow-sm sm:px-6">
                 {props.children}
               </div>
