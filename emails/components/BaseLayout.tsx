@@ -7,6 +7,7 @@ import {
   MjmlStyle,
   MjmlAttributes,
   MjmlAll,
+  MjmlPreview,
 } from "@faire/mjml-react";
 import {
   screens,
@@ -21,12 +22,14 @@ import {
 type BaseLayoutProps = {
   width?: number;
   style?: string;
+  preheader?: string;
   children: React.ReactNode;
 };
 
 export default function BaseLayout({
   width,
   children,
+  preheader,
   style,
 }: BaseLayoutProps) {
   return (
@@ -103,6 +106,7 @@ export default function BaseLayout({
           /* Email specific Styles */
           ${style}
       `}</MjmlStyle>
+        {preheader && <MjmlPreview>{preheader}</MjmlPreview>}
       </MjmlHead>
 
       <MjmlBody width={width}>{children}</MjmlBody>

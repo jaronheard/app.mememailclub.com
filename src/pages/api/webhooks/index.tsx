@@ -7,6 +7,9 @@ import { RequestHandler } from "next/dist/server/next";
 import { itemSizeToClient } from "../../../utils/itemSize";
 import type { Readable } from "node:stream";
 import { getAuth } from "@clerk/nextjs/server";
+import sendMail from "../../../../emails";
+import PostcardError from "../../../../emails/PostcardError";
+import { toErrorWithMessage } from "../../../utils/errors";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
   // https://github.com/stripe/stripe-node#configuration
@@ -135,8 +138,15 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
           response.status = "success";
         }
       } catch (error) {
-        console.log("error creating postcard from purchase", error);
+        sendMail({
+          to: "hi@mememailclub.com",
+          component: (
+            <PostcardError error={toErrorWithMessage(error).message} />
+          ),
+        });
+        console.error("error creating postcard from purchase", error);
         response.error = error;
+        response.status = "error";
       }
     } else if (event.type === "customer.subscription.created") {
       const subscription = event.data.object as Stripe.Subscription;
