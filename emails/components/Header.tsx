@@ -56,19 +56,7 @@ export default function Header() {
               </Link>
             </Text>
           </MjmlColumn>
-          <MjmlColumn width="58%">
-            <Text
-              align="right"
-              fontSize={fontSize.md}
-              lineHeight={lineHeight.tight}
-              fontWeight={fontWeight.bold}
-              color={colors.black}
-            >
-              Send your message in style
-              <br />
-              with a 6&quot; x 9&quot; postcard.
-            </Text>
-          </MjmlColumn>
+          <MjmlColumn width="58%"></MjmlColumn>
         </MjmlGroup>
       </MjmlSection>
     </MjmlWrapper>
