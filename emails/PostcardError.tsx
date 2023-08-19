@@ -6,15 +6,23 @@ import Heading from "./components/Heading";
 import Text from "./components/Text";
 import Header from "./components/Header";
 import { colors, spacing } from "./theme";
-import { Postcard } from "@lob/lob-typescript-sdk";
 import Link from "./components/Link";
 
-type PostcardSentProps = {
+type PostcardErrorProps = {
   includeUnsubscribe?: boolean;
-  postcard: Postcard;
+  postcardData: {
+    to: string;
+    front: string;
+    back: string;
+    size: string;
+    quantity: number;
+  };
 };
 
-const PostcardSent = ({ includeUnsubscribe, postcard }: PostcardSentProps) => {
+const PostcardError = ({
+  includeUnsubscribe,
+  postcardData,
+}: PostcardErrorProps) => {
   return (
     <BaseLayout width={600}>
       <Header />
@@ -26,13 +34,25 @@ const PostcardSent = ({ includeUnsubscribe, postcard }: PostcardSentProps) => {
         >
           <MjmlColumn>
             <Heading maxWidth={420} cssClass="h1" color={colors.black}>
-              💌 Your postcard to {postcard.to?.name} has been sent!
+              ⚠️ A postcard has errored!
             </Heading>
             <Text color={colors.black}>
-              Expected delivery date: {postcard.expected_delivery_date}
+              <Link
+                href={`https://dashboard.lob.com/addresses/${postcardData.to}`}
+              >
+                {postcardData.to}
+              </Link>
             </Text>
             <Text color={colors.black}>
-              <Link href={postcard.url}>View Postcard</Link>
+              <Link href={postcardData.front}>Front</Link>
+            </Text>
+            <Text color={colors.black}>
+              <Link href={postcardData.back}>Back</Link>
+            </Text>
+            <Text color={colors.black} paddingTop={spacing.s8}>
+              <Link href="https://dashboard.lob.com/logs?status_code%5B0%5D=401&status_code%5B1%5D=403&status_code%5B2%5D=404&status_code%5B3%5D=422&status_code%5B4%5D=429&status_code%5B5%5D=500">
+                View Lob Logs
+              </Link>
             </Text>
           </MjmlColumn>
         </MjmlSection>
@@ -45,5 +65,5 @@ const PostcardSent = ({ includeUnsubscribe, postcard }: PostcardSentProps) => {
     </BaseLayout>
   );
 };
-PostcardSent.subject = "💌 Your postcard has been sent!";
-export default PostcardSent;
+PostcardError.subject = `⚠️ A postcard has errored!`;
+export default PostcardError;

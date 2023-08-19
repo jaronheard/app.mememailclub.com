@@ -13,6 +13,8 @@ import { itemSizeToClient } from "../../utils/itemSize";
 import { addTextTransformationToURL } from "../../components/Img";
 import sendMail from "../../../emails";
 import Welcome from "../../../emails/Welcome";
+import PostcardSent from "../../../emails/PostcardSent";
+import PostcardError from "../../../emails/PostcardError";
 
 const config: Configuration = new Configuration({
   username: env.LOB_API_KEY,
@@ -109,7 +111,19 @@ export const lob = createRouter()
         sendMail({
           to: "hi@mememailclub.com",
           subject: "Test Postcard Error Email",
-          component: <Welcome />,
+          component: (
+            <PostcardError
+              postcardData={{
+                to: input.addressId,
+                front: item.front,
+                back: backWithText,
+                size: itemSizeToClient(item.size),
+                // set to send date in 5 minutes
+                // send_date: new Date(Date.now() + 5 * 60000).toISOString(),
+                quantity: input.quantity,
+              }}
+            />
+          ),
         });
         throw new TRPCError({
           code: "NOT_FOUND",
@@ -118,8 +132,7 @@ export const lob = createRouter()
       }
       sendMail({
         to: "hi@mememailclub.com",
-        subject: "Test Postcard Sent Email",
-        component: <Welcome />,
+        component: <PostcardSent postcard={myPostcard} />,
       });
       return myPostcard;
     },
