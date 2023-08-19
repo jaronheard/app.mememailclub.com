@@ -33,8 +33,8 @@ export default function BaseLayout({
     <Mjml>
       <MjmlHead>
         <MjmlFont
-          name="neue-haas-unica"
-          href="https://use.typekit.net/qqd8jtb.css"
+          name="Sen"
+          href="https://fonts.googleapis.com/css2?family=Sen:wght@400;700;800&display=swap"
         />
         <MjmlAttributes>
           <MjmlAll {...themeDefaults} />
@@ -43,7 +43,7 @@ export default function BaseLayout({
           body {
             -webkit-font-smoothing: antialiased;
             min-width: 320px;
-            background-color: ${colors.black};
+            background-color: ${colors.yellow};
           }
           a {
             color: inherit
