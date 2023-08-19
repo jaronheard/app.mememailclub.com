@@ -11,6 +11,8 @@ import { env } from "../../env/server.mjs";
 import { TRPCError } from "@trpc/server";
 import { itemSizeToClient } from "../../utils/itemSize";
 import { addTextTransformationToURL } from "../../components/Img";
+import sendMail from "../../../emails";
+import Welcome from "../../../emails/Welcome";
 
 const config: Configuration = new Configuration({
   username: env.LOB_API_KEY,
@@ -104,11 +106,21 @@ export const lob = createRouter()
       });
       const myPostcard = await new PostcardsApi(config).create(postcardCreate);
       if (!myPostcard) {
+        sendMail({
+          to: "hi@mememailclub.com",
+          subject: "Test Postcard Error Email",
+          component: <Welcome />,
+        });
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "Postcard not created from Lob API",
         });
       }
+      sendMail({
+        to: "hi@mememailclub.com",
+        subject: "Test Postcard Sent Email",
+        component: <Welcome />,
+      });
       return myPostcard;
     },
   });
