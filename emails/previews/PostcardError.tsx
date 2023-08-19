@@ -1,7 +1,7 @@
 import React from "react";
 import PostcardError from "../PostcardError";
 
-export function preview() {
+export function withPostcardData() {
   return (
     <PostcardError
       includeUnsubscribe
@@ -13,6 +13,11 @@ export function preview() {
         back: "https://res.cloudinary.com/jaronheard/image/upload/q_auto,f_auto/c_fit,w_975,bo_30px_solid_white,x_150,b_white,g_west,l_text:Futura_36:This%2520postcard%2520should%2520redirect%2520to%2520188,fl_layer_apply/c_fit,w_332,h_380,x_75,y_75,g_north_east,l_postpostcard-stamp-qr_fxwrje/redPixel_peptry",
         quantity: 1,
       }}
+      // error="Test error message"
     />
   );
+}
+
+export function withError() {
+  return <PostcardError includeUnsubscribe error="Test error message" />;
 }

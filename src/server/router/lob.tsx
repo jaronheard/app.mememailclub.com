@@ -12,7 +12,6 @@ import { TRPCError } from "@trpc/server";
 import { itemSizeToClient } from "../../utils/itemSize";
 import { addTextTransformationToURL } from "../../components/Img";
 import sendMail from "../../../emails";
-import Welcome from "../../../emails/Welcome";
 import PostcardSent from "../../../emails/PostcardSent";
 import PostcardError from "../../../emails/PostcardError";
 
