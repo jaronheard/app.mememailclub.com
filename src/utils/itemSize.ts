@@ -86,8 +86,10 @@ export const SIZES = {
 export const ITEM_DEFAULTS = {
   name: "",
   description: "",
-  front: `https://res.cloudinary.com/jaronheard/image/upload/w_2775,h_1875/v1687555005/bluePixel_eklcos.jpg`,
-  back: `https://res.cloudinary.com/jaronheard/image/upload/w_2775,h_1875/v1687555005/redPixel_peptry.jpg`,
+  front: `https://res.cloudinary.com/jaronheard/image/upload/v1692491797/bluePixel_eklcos_r17q8i.png`,
+  // front: `https://res.cloudinary.com/jaronheard/image/upload/w_2775,h_1875/v1687555005/bluePixel_eklcos.jpg`,
+  back: `https://res.cloudinary.com/jaronheard/image/upload/v1692491790/redPixel_peptry_jukrao.png`,
+  // back: `https://res.cloudinary.com/jaronheard/image/upload/w_2775,h_1875/v1687555005/redPixel_peptry.jpg`,
   status: "DRAFT",
   size: "6x9",
   visibility: "PRIVATE",
