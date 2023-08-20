@@ -107,7 +107,7 @@ export const lob = createRouter()
       });
       const myPostcard = await new PostcardsApi(config).create(postcardCreate);
       if (!myPostcard) {
-        sendMail({
+        await sendMail({
           to: "hi@mememailclub.com",
           subject: "Test Postcard Error Email",
           component: (
@@ -129,7 +129,7 @@ export const lob = createRouter()
           message: "Postcard not created from Lob API",
         });
       }
-      sendMail({
+      await sendMail({
         to: "hi@mememailclub.com",
         component: <PostcardSent postcard={myPostcard} />,
       });
