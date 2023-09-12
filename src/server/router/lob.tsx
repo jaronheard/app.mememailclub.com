@@ -108,7 +108,7 @@ export const lob = createRouter()
       const myPostcard = await new PostcardsApi(config).create(postcardCreate);
       if (!myPostcard) {
         await sendMail({
-          to: "hi@mememailclub.com",
+          to: "hi@postpostcard.com",
           subject: "Test Postcard Error Email",
           component: (
             <PostcardError
@@ -130,7 +130,7 @@ export const lob = createRouter()
         });
       }
       await sendMail({
-        to: "hi@mememailclub.com",
+        to: "hi@postpostcard.com",
         component: <PostcardSent postcard={myPostcard} />,
       });
       return myPostcard;

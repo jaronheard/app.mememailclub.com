@@ -139,7 +139,7 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
         }
       } catch (error) {
         await sendMail({
-          to: "hi@mememailclub.com",
+          to: "hi@postpostcard.com",
           component: (
             <PostcardError error={toErrorWithMessage(error).message} />
           ),

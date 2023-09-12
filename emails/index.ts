@@ -10,7 +10,7 @@ const sendMail = buildSendMail({
       pass: process.env.POSTMARK_API_KEY,
     },
   }),
-  defaultFrom: "Jaron from PostPostcard <hi@mememailclub.com>",
+  defaultFrom: "Jaron from PostPostcard <hi@postpostcard.com>",
   configPath: "./mailing.config.json",
   // optional
   // processHtml: (html: string) =>
