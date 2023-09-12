@@ -58,6 +58,7 @@ export const lob = createRouter()
       test: z.boolean().optional(),
       size: z.enum(["4x6", "6x9", "6x11"]),
       client_reference_id: z.string().optional(), // not here
+      email: z.string(),
     }),
     async resolve({ ctx, input }) {
       const message = input.client_reference_id
@@ -130,7 +131,7 @@ export const lob = createRouter()
         });
       }
       await sendMail({
-        to: "hi@postpostcard.com",
+        to: input.email,
         component: <PostcardSent postcard={myPostcard} />,
       });
       return myPostcard;
