@@ -128,6 +128,7 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
                   size: itemSizeToClient(item.size),
                   client_reference_id:
                     checkoutSession.client_reference_id || "",
+                  email: checkoutSession.customer_email || "",
                 });
                 console.log("created postcard from lob", postcard);
                 response.postcard = postcard;
