@@ -32,9 +32,9 @@ const FAQ: NextPage = () => {
                       <dd>
                         <a
                           className="font-semibold text-indigo-600"
-                          href="mailto:hi@mememailclub.com"
+                          href="mailto:hi@postpostcard.com"
                         >
-                          hi@mememailclub.com
+                          hi@postpostcard.com
                         </a>
                       </dd>
                     </div>
