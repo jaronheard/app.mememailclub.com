@@ -108,6 +108,10 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
             expand: ["line_items"],
           });
         const lineItems = checkoutSessionWithLineItems?.line_items?.data;
+        const customer = checkoutSessionWithLineItems?.customer_details;
+        console.log("customer", customer);
+        const customerEmail = customer?.email || "";
+        console.log("customerEmail", customerEmail);
 
         // create postcards to be sent
         if (lineItems && address) {
@@ -128,7 +132,7 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
                   size: itemSizeToClient(item.size),
                   client_reference_id:
                     checkoutSession.client_reference_id || "",
-                  email: checkoutSession.customer_email || "",
+                  email: customerEmail,
                 });
                 console.log("created postcard from lob", postcard);
                 response.postcard = postcard;
