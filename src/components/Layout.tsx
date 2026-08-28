@@ -87,8 +87,8 @@ function Footer() {
           ))}
         </div>
         <p className="mt-8 text-center text-base text-gray-400">
-          Made with 💖 in Portland, OR, US.<br></br>&copy; 2023 PostPostcard.
-          All rights reserved.
+          Made with 💖 in Portland, OR, US.<br></br>&copy;{" "}
+          {new Date().getFullYear()} PostPostcard. All rights reserved.
         </p>
       </div>
     </footer>

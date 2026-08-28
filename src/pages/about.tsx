@@ -30,12 +30,12 @@ const FAQ: NextPage = () => {
               , and thought it would be funny to recieve a postcard.
             </p>
             <p>
-              We launched PostPostcard to the world in March 2023. Right now,
-              the team is just me,{" "}
+              We launched PostPostcard to the world in March 2023. Things went
+              quiet for a while, and now it's back — same idea, freshly rebuilt
+              underneath. The team is still just me,{" "}
               <a href="https://www.jaronheard.com">Jaron Heard</a>, along with
               many friends who have helped out with ideas, design, and
-              development. We're working on a few new features, and we're
-              excited to see where PostPostcard goes next.
+              development. We're excited to see where PostPostcard goes next.
             </p>
             <p>Some of our ideas for the future include:</p>
             <ul>
