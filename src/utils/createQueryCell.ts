@@ -2,13 +2,12 @@
  * Cells are a declarative approach to data fetching, inspired by https://redwoodjs.com/docs/cells
  */
 import {
-  QueryObserverIdleResult,
   QueryObserverLoadingErrorResult,
   QueryObserverBaseResult,
   QueryObserverRefetchErrorResult,
   QueryObserverSuccessResult,
   UseQueryResult,
-} from "react-query";
+} from "@tanstack/react-query";
 
 type JSXElementOrNull = JSX.Element | null;
 
@@ -27,10 +26,6 @@ interface CreateQueryCellOptions<TError> {
   loading: (
     query: QueryObserverBaseResult<unknown, TError>
   ) => JSXElementOrNull;
-  /**
-   * Default idle handler for this cell (when `enabled: false`)
-   */
-  idle: (query: QueryObserverIdleResult<unknown, TError>) => JSXElementOrNull;
   loadingWhenStale?: boolean;
 }
 
@@ -44,10 +39,6 @@ interface QueryCellOptions<TData, TError> {
    * Optionally override loading state
    */
   loading?: (query: QueryObserverBaseResult<TData, TError>) => JSXElementOrNull;
-  /**
-   * Override `enabled: false`-state - defaults to same as `loading`
-   */
-  idle?: (query: QueryObserverIdleResult<TData, TError>) => JSXElementOrNull;
   loadingWhenStale?: boolean;
 }
 
@@ -91,27 +82,24 @@ export function createQueryCell<TError>(
       return opts.loading?.(query) ?? queryCellOpts.loading(query);
     }
 
-    if (query.status === "success") {
+    if (query.isSuccess) {
       if (
         "empty" in opts &&
         (query.data == null ||
           (Array.isArray(query.data) && query.data.length === 0))
       ) {
-        return opts.empty(query);
+        return opts.empty(query as QueryObserverSuccessResult<TData, TError>);
       }
       return opts.success(
         query as QueryObserverSuccessResult<NonNullable<TData>, TError>
       );
     }
 
-    if (query.status === "error") {
+    if (query.isError) {
       return opts.error?.(query) ?? queryCellOpts.error(query);
     }
-    if (query.status === "loading") {
+    if (query.isPending) {
       return opts.loading?.(query) ?? queryCellOpts.loading(query);
-    }
-    if (query.status === "idle") {
-      return opts.idle?.(query) ?? queryCellOpts.idle(query);
     }
     // impossible state
     return null;

@@ -83,7 +83,7 @@ export default function Slideover(props: {
   const hasError = tooManyLines || lineTooLong;
 
   const { open, setOpen, itemLink, itemId, itemFront } = props;
-  const createMessage = trpc.useMutation("messages.createMessage", {
+  const createMessage = trpc.messages.createMessage.useMutation({
     onSuccess(message) {
       router.push(`${itemLink}?client_reference_id=${message.id}`);
     },

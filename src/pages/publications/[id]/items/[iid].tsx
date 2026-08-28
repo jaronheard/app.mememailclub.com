@@ -49,7 +49,7 @@ const hasNoDisallowedChars = (value: string | undefined): boolean | string => {
 
 const Item = () => {
   const router = useRouter();
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
   const [queryStatus, setQueryStatus] = useState({
     ready: false,
     id: 0,
@@ -81,17 +81,23 @@ const Item = () => {
     return url;
   };
 
-  const itemsQuery = trpc.useQuery(["items.getOne", { id: queryStatus.iid }], {
-    enabled: queryStatus.ready,
-  });
+  const itemsQuery = trpc.items.getOne.useQuery(
+    { id: queryStatus.iid },
+    {
+      enabled: queryStatus.ready,
+    }
+  );
   const { data: item } = itemsQuery;
-  const updateItem = trpc.useMutation("items.updateItem", {
+  const updateItem = trpc.items.updateItem.useMutation({
     onSuccess(data, variables) {
       item
-        ? utils.setQueryData(["items.getOne", { id: queryStatus.iid }], {
-            ...item,
-            ...data,
-          })
+        ? utils.items.getOne.setData(
+            { id: queryStatus.iid },
+            {
+              ...item,
+              ...data,
+            }
+          )
         : console.error("Query data not set in updateItem, item is undefined");
       variables.status === "DRAFT"
         ? router.push(
@@ -100,9 +106,9 @@ const Item = () => {
         : router.push(`/send?id=${queryStatus.iid}`);
     },
   });
-  const deleteItem = trpc.useMutation("items.deleteItem", {
+  const deleteItem = trpc.items.deleteItem.useMutation({
     onSuccess() {
-      utils.invalidateQueries();
+      utils.invalidate();
       router.push(`/publications/${queryStatus.id}`);
     },
   });

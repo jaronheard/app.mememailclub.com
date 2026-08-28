@@ -53,13 +53,10 @@ const PublicationsEmpty = () => {
 const Publications = () => {
   const { userId } = useAuth();
 
-  const publicationsQuery = trpc.useQuery([
-    "publications.getAllByAuthor",
-    {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      userId: userId!,
-    },
-  ]);
+  const publicationsQuery = trpc.publications.getAllByAuthor.useQuery({
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    userId: userId!,
+  });
 
   return (
     <div>

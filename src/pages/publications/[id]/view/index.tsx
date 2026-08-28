@@ -84,7 +84,7 @@ type CategoryFilterCellProps = {
 };
 
 function CategoryFilterCell(props: CategoryFilterCellProps) {
-  const tagsQuery = trpc.useQuery(["tags.getAllTagCategories"]);
+  const tagsQuery = trpc.tags.getAllTagCategories.useQuery();
   return (
     <DefaultQueryCell
       query={tagsQuery}
@@ -519,9 +519,12 @@ const Send = () => {
   }, [itemId, router]);
 
   const { isSignedIn } = useAuth();
-  const { data: anonymousUserId } = trpc.useQuery(["users.getUniqueUserId"], {
-    staleTime: Infinity,
-  });
+  const { data: anonymousUserId } = trpc.users.getUniqueUserId.useQuery(
+    undefined,
+    {
+      staleTime: Infinity,
+    }
+  );
   const [activeSort, setActiveSort] = useQueryParam("sort", SortOptionParam);
   const [activeFilters, setActiveFilters] = useQueryParam(
     "filters",
@@ -541,18 +544,15 @@ const Send = () => {
   const orderToUse = order.success ? order.data : undefined;
 
   // items query
-  const itemsQuery = trpc.useInfiniteQuery(
-    [
-      "items.getInfinite",
-      {
-        limit: 20,
-        order: orderToUse,
-        filters: activeFilters,
-        anonymousUserId: anonymousUserId,
-        publicationId:
-          queryStatus.ready && queryStatus.id > 0 ? queryStatus.id : undefined,
-      },
-    ],
+  const itemsQuery = trpc.items.getInfinite.useInfiniteQuery(
+    {
+      limit: 20,
+      order: orderToUse,
+      filters: activeFilters,
+      anonymousUserId: anonymousUserId,
+      publicationId:
+        queryStatus.ready && queryStatus.id > 0 ? queryStatus.id : undefined,
+    },
     {
       enabled: queryStatus.ready,
       getNextPageParam: (lastPage) => lastPage.nextCursor,

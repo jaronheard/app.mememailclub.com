@@ -1,15 +1,17 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { createRouter } from "./context";
+import { protectedProcedure, publicProcedure, router } from "./context";
 
-export const messages = createRouter()
-  .mutation("createMessage", {
-    input: z.object({
-      message: z.string(),
-      userId: z.string(),
-      itemId: z.number(),
-    }),
-    async resolve({ ctx, input }) {
+export const messages = router({
+  createMessage: publicProcedure
+    .input(
+      z.object({
+        message: z.string(),
+        userId: z.string(),
+        itemId: z.number(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
       const message = await ctx.prisma.message.create({
         data: {
           message: input.message,
@@ -24,21 +26,14 @@ export const messages = createRouter()
         });
       }
       return message;
-    },
-  })
-  .middleware(async ({ ctx, next }) => {
-    // Any queries or mutations after this middleware will
-    // raise an error unless there is a current session
-    if (!ctx.auth.userId) {
-      throw new TRPCError({ code: "UNAUTHORIZED" });
-    }
-    return next();
-  })
-  .query("getOne", {
-    input: z.object({
-      id: z.number(),
     }),
-    async resolve({ ctx, input }) {
+  getOne: protectedProcedure
+    .input(
+      z.object({
+        id: z.number(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
       const message = await ctx.prisma.message.findUnique({
         where: {
           id: input.id,
@@ -52,13 +47,14 @@ export const messages = createRouter()
         });
       }
       return message;
-    },
-  })
-  .query("getAllByAuthor", {
-    input: z.object({
-      userId: z.string(),
     }),
-    async resolve({ ctx, input }) {
+  getAllByAuthor: protectedProcedure
+    .input(
+      z.object({
+        userId: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
       const messages = await ctx.prisma.message.findMany({
         where: {
           userId: input.userId,
@@ -68,14 +64,15 @@ export const messages = createRouter()
         },
       });
       return messages;
-    },
-  })
-  .mutation("updateMessage", {
-    input: z.object({
-      id: z.number(),
-      message: z.string(),
     }),
-    async resolve({ ctx, input }) {
+  updateMessage: protectedProcedure
+    .input(
+      z.object({
+        id: z.number(),
+        message: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
       const message = await ctx.prisma.message.update({
         where: {
           id: input.id,
@@ -91,5 +88,5 @@ export const messages = createRouter()
         });
       }
       return message;
-    },
-  });
+    }),
+});

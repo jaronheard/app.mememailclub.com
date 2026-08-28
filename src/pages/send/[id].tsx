@@ -67,9 +67,12 @@ const Item = () => {
     setOpen(false);
   };
 
-  const itemsQuery = trpc.useQuery(["items.getOne", { id }], {
-    enabled: !!id,
-  });
+  const itemsQuery = trpc.items.getOne.useQuery(
+    { id },
+    {
+      enabled: !!id,
+    }
+  );
 
   return (
     <DefaultQueryCell

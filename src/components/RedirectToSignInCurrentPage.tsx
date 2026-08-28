@@ -4,7 +4,10 @@ import { useRouter } from "next/router";
 const RedirectToSignInCurrentPage = () => {
   const { pathname } = useRouter();
   return (
-    <RedirectToSignIn afterSignInUrl={pathname} afterSignUpUrl={pathname} />
+    <RedirectToSignIn
+      signInForceRedirectUrl={pathname}
+      signUpForceRedirectUrl={pathname}
+    />
   );
 };
 

@@ -57,7 +57,7 @@ const ParamsValidator = z.object({
 
 const Publication = () => {
   const router = useRouter();
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
   const [query, setQuery] = useState({ ready: false, id: 0 });
 
   const { id } = router.query;
@@ -73,26 +73,26 @@ const Publication = () => {
       description: "",
     },
   });
-  const publicationQuery = trpc.useQuery(
-    ["publications.getOne", { id: query.id }],
+  const publicationQuery = trpc.publications.getOne.useQuery(
+    { id: query.id },
     { enabled: query.ready }
   );
   const { data: publication, isLoading } = publicationQuery;
-  const updatePublication = trpc.useMutation("publications.updatePublication", {
+  const updatePublication = trpc.publications.updatePublication.useMutation({
     onSuccess: () => {
-      utils.invalidateQueries();
+      utils.invalidate();
       router.push("/publications");
     },
   });
-  const deletePublication = trpc.useMutation("publications.deletePublication", {
+  const deletePublication = trpc.publications.deletePublication.useMutation({
     onSuccess: () => {
-      utils.invalidateQueries();
+      utils.invalidate();
       router.push("/publications");
     },
   });
-  const createItem = trpc.useMutation("items.createItem", {
+  const createItem = trpc.items.createItem.useMutation({
     onSuccess: (data) => {
-      utils.invalidateQueries();
+      utils.invalidate();
       router.push(`/publications/${query.id}/items/${data?.id}`);
     },
   });

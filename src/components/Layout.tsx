@@ -5,7 +5,7 @@ import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Sen } from "@next/font/google";
+import { Sen } from "next/font/google";
 import Banner from "./Banner";
 import Head from "next/head";
 import { trackGoal } from "fathom-client";
@@ -263,8 +263,8 @@ const Layout = (props: LayoutProps) => {
                         {" "}
                         {/* Signed out users get sign in button */}
                         <SignInButton
-                          afterSignInUrl={router.pathname}
-                          afterSignUpUrl={router.pathname}
+                          forceRedirectUrl={router.pathname}
+                          signUpForceRedirectUrl={router.pathname}
                         >
                           <button className="relative ml-3 flex-shrink-0 rounded-md py-2 px-3 text-sm font-bold text-black hover:bg-indigo-500 hover:bg-opacity-90 hover:text-white active:bg-indigo-950">
                             Sign in
@@ -306,8 +306,8 @@ const Layout = (props: LayoutProps) => {
                   <SignedOut>
                     {/* Signed out users get sign in button */}
                     <SignInButton
-                      afterSignInUrl={router.pathname}
-                      afterSignUpUrl={router.pathname}
+                      forceRedirectUrl={router.pathname}
+                      signUpForceRedirectUrl={router.pathname}
                     >
                       <button className="flex w-full items-center rounded-md py-2 px-3 text-base font-bold text-black hover:bg-indigo-500 hover:bg-opacity-90 hover:text-white active:bg-indigo-950">
                         Sign in

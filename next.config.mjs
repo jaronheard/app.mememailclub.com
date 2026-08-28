@@ -16,9 +16,12 @@ function defineNextConfig(config) {
 export default withAxiom(
   defineNextConfig({
     reactStrictMode: true,
-    swcMinify: true,
     images: {
-      domains: ["res.cloudinary.com", "lob-assets.com", "images.unsplash.com"],
+      remotePatterns: [
+        { protocol: "https", hostname: "res.cloudinary.com" },
+        { protocol: "https", hostname: "lob-assets.com" },
+        { protocol: "https", hostname: "images.unsplash.com" },
+      ],
     },
     // Next.js i18n docs: https://nextjs.org/docs/advanced-features/i18n-routing
     // i18n: {

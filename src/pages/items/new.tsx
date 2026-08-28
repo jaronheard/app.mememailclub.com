@@ -7,11 +7,11 @@ import { ITEM_DEFAULTS } from "../../utils/itemSize";
 
 const SignedInNew = () => {
   const router = useRouter();
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
   const { isLoaded, isSignedIn } = useAuth();
-  const { mutate, status } = trpc.useMutation("items.createItemForUser", {
+  const { mutate, status } = trpc.items.createItemForUser.useMutation({
     onSuccess: (data) => {
-      utils.invalidateQueries();
+      utils.invalidate();
       router.replace(`/publications/${data.publicationId}/items/${data.id}`);
     },
   });
@@ -32,18 +32,18 @@ const SignedInNew = () => {
 
 const SignedOutNew = () => {
   const router = useRouter();
-  const { mutate, status } = trpc.useMutation(
-    "items.createItemForAnonymousUser",
+  const { mutate, status } = trpc.items.createItemForAnonymousUser.useMutation({
+    onSuccess: (data) => {
+      router.replace(`/publications/${data.publicationId}/items/${data.id}`);
+    },
+  });
+
+  const { data: anonymousUserId } = trpc.users.getUniqueUserId.useQuery(
+    undefined,
     {
-      onSuccess: (data) => {
-        router.replace(`/publications/${data.publicationId}/items/${data.id}`);
-      },
+      staleTime: Infinity,
     }
   );
-
-  const { data: anonymousUserId } = trpc.useQuery(["users.getUniqueUserId"], {
-    staleTime: Infinity,
-  });
   // effect that runs mutation when a user is signed in and loaded and cleans up when the component is unmounted
   useEffect(() => {
     if (anonymousUserId && status === "idle") {

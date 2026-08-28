@@ -1,10 +1,10 @@
 import { nanoid } from "nanoid";
-import { createRouter } from "./context";
+import { publicProcedure, router } from "./context";
 
-export const users = createRouter().query("getUniqueUserId", {
-  async resolve() {
+export const users = router({
+  getUniqueUserId: publicProcedure.query(async () => {
     // generate using nanoid
     const uniqueId = `anonymous-${nanoid()}`;
     return uniqueId;
-  },
+  }),
 });

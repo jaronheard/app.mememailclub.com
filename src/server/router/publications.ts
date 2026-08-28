@@ -1,6 +1,6 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { createRouter } from "./context";
+import { protectedProcedure, publicProcedure, router } from "./context";
 
 const INCLUDE_RELATIONS = {
   include: {
@@ -24,37 +24,35 @@ const HadId = z.object({
 const CreatePublication = BasePublication.merge(HasUserId);
 const UpdatePublication = BasePublication.merge(HadId);
 
-export const publications = createRouter()
-  .query("getAll", {
-    async resolve({ ctx }) {
-      const publications = await ctx.prisma.publication.findMany({
-        ...INCLUDE_RELATIONS,
-        orderBy: {
-          createdAt: "desc",
-        },
-      });
-      return publications;
-    },
-  })
-  .query("getFeatured", {
-    async resolve({ ctx }) {
-      const publications = await ctx.prisma.publication.findMany({
-        where: {
-          featured: true,
-        },
-        ...INCLUDE_RELATIONS,
-        orderBy: {
-          createdAt: "desc",
-        },
-      });
-      return publications;
-    },
-  })
-  .query("getOne", {
-    input: z.object({
-      id: z.number(),
-    }),
-    async resolve({ ctx, input }) {
+export const publications = router({
+  getAll: publicProcedure.query(async ({ ctx }) => {
+    const publications = await ctx.prisma.publication.findMany({
+      ...INCLUDE_RELATIONS,
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+    return publications;
+  }),
+  getFeatured: publicProcedure.query(async ({ ctx }) => {
+    const publications = await ctx.prisma.publication.findMany({
+      where: {
+        featured: true,
+      },
+      ...INCLUDE_RELATIONS,
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+    return publications;
+  }),
+  getOne: publicProcedure
+    .input(
+      z.object({
+        id: z.number(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
       const publication = await ctx.prisma.publication.findUnique({
         where: {
           id: input.id,
@@ -69,13 +67,14 @@ export const publications = createRouter()
         });
       }
       return publication;
-    },
-  })
-  .query("getAllByAuthor", {
-    input: z.object({
-      userId: z.string(),
     }),
-    async resolve({ ctx, input }) {
+  getAllByAuthor: publicProcedure
+    .input(
+      z.object({
+        userId: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
       const publications = await ctx.prisma.publication.findMany({
         where: {
           userId: input.userId,
@@ -86,13 +85,14 @@ export const publications = createRouter()
         },
       });
       return publications;
-    },
-  })
-  .query("getAllByNotAuthor", {
-    input: z.object({
-      userId: z.string(),
     }),
-    async resolve({ ctx, input }) {
+  getAllByNotAuthor: publicProcedure
+    .input(
+      z.object({
+        userId: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
       const publications = await ctx.prisma.publication.findMany({
         where: {
           userId: input.userId,
@@ -103,19 +103,10 @@ export const publications = createRouter()
         },
       });
       return publications;
-    },
-  })
-  .middleware(async ({ ctx, next }) => {
-    // Any queries or mutations after this middleware will
-    // raise an error unless there is a current session
-    if (!ctx.auth.userId) {
-      throw new TRPCError({ code: "UNAUTHORIZED" });
-    }
-    return next();
-  })
-  .mutation("createPublication", {
-    input: CreatePublication,
-    async resolve({ ctx, input }) {
+    }),
+  createPublication: protectedProcedure
+    .input(CreatePublication)
+    .mutation(async ({ ctx, input }) => {
       const publication = await ctx.prisma.publication.create({
         data: {
           authorId: input.userId,
@@ -134,11 +125,10 @@ export const publications = createRouter()
         });
       }
       return publication;
-    },
-  })
-  .mutation("updatePublication", {
-    input: UpdatePublication,
-    async resolve({ ctx, input }) {
+    }),
+  updatePublication: protectedProcedure
+    .input(UpdatePublication)
+    .mutation(async ({ ctx, input }) => {
       // find publication
       const publication = await ctx.prisma.publication.findUnique({
         where: {
@@ -187,13 +177,14 @@ export const publications = createRouter()
         });
       }
       return updatedPublication;
-    },
-  })
-  .mutation("deletePublication", {
-    input: z.object({
-      id: z.number(),
     }),
-    async resolve({ ctx, input }) {
+  deletePublication: protectedProcedure
+    .input(
+      z.object({
+        id: z.number(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
       // find publication
       const publication = await ctx.prisma.publication.findUnique({
         where: {
@@ -236,5 +227,5 @@ export const publications = createRouter()
         });
       }
       return deleted;
-    },
-  });
+    }),
+});

@@ -1,7 +1,7 @@
-import { createRouter } from "./context";
+import { publicProcedure, router } from "./context";
 
-export const tags = createRouter().query("getAllTagCategories", {
-  async resolve({ ctx }) {
+export const tags = router({
+  getAllTagCategories: publicProcedure.query(async ({ ctx }) => {
     const tagCategories = await ctx.prisma.tagCategory.findMany({
       include: {
         Tags: {
@@ -27,5 +27,5 @@ export const tags = createRouter().query("getAllTagCategories", {
       },
     });
     return tagCategories;
-  },
+  }),
 });

@@ -13,7 +13,6 @@ const DefaultQueryCell = createQueryCell<TError>({
       statusCode={result.error.data?.httpStatus ?? 500}
     />
   ),
-  idle: () => <Loading />,
   loading: () => <Loading />,
 });
 

@@ -1,50 +1,42 @@
-# Create T3 App
+# PostPostcard
 
-This is an app bootstrapped according to the [init.tips](https://init.tips) stack, also known as the T3-Stack.
+Send real, physical postcards from the browser — [postpostcard.com](https://postpostcard.com). Built on the T3 stack (Next.js pages router + tRPC + Prisma).
 
-## Why are there `.js` files in here?
+## Stack
 
-As per [T3-Axiom #3](https://github.com/t3-oss/create-t3-app/tree/next#3-typesafety-isnt-optional), we take typesafety as a first class citizen. Unfortunately, not all frameworks and plugins support TypeScript which means some of the configuration files have to be `.js` files.
+- [Next.js 15](https://nextjs.org) (pages router) with React 18
+- [tRPC 11](https://trpc.io) + [TanStack Query 5](https://tanstack.com/query)
+- [Prisma 6](https://prisma.io) against PlanetScale MySQL (`relationMode = "prisma"`)
+- [Clerk 6](https://clerk.com) for auth (`clerkMiddleware`, all routes public by default)
+- [Stripe](https://stripe.com) Checkout + webhooks for payment
+- [Lob](https://lob.com) for postcard printing and mailing
+- [Cloudinary](https://cloudinary.com) for image storage/transforms
+- [Tailwind CSS 3](https://tailwindcss.com)
+- [mailing](https://github.com/sofn-xyz/mailing) + MJML for transactional email
+- Axiom (logging) and Fathom (analytics)
 
-We try to emphasize that these files are javascript for a reason, by explicitly declaring its type (`cjs` or `mjs`) depending on what's supported by the library it is used by. Also, all the `js` files in this project are still typechecked using a `@ts-check` comment at the top.
+## Development
 
-## What's next? How do I make an app with this?
+Requires Node 20+ (see `.nvmrc`). Copy env vars into `.env` (see `src/env/schema.mjs` for the required keys).
 
-We try to keep this project as simple as possible, so you can start with the most basic configuration and then move on to more advanced configuration.
+```bash
+npm install        # also applies patches + generates Prisma client
+npm run dev        # app on localhost:3000
+npm run db         # PlanetScale proxy for the dev branch (port 3309)
+npm run stripe     # forward Stripe webhook events to localhost
+npm run mailing    # email template preview server
+```
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+Checks:
 
-- [Next-Auth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [TailwindCSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io) (using @next version? [see v10 docs here](https://trpc.io/docs/v10/))
+```bash
+npm run typecheck
+npm run lint
+npm run build
+```
 
-Also checkout these awesome tutorials on `create-t3-app`.
+## Notes
 
-- [Build a Blog With the T3 Stack - tRPC, TypeScript, Next.js, Prisma & Zod](https://www.youtube.com/watch?v=syEWlxVFUrY)
-- [Build a Live Chat Application with the T3 Stack - TypeScript, Tailwind, tRPC](https://www.youtube.com/watch?v=dXRRY37MPuk)
-- [Build a full stack app with create-t3-app](https://www.nexxel.dev/blog/ct3a-guestbook)
-- [A first look at create-t3-app](https://dev.to/ajcwebdev/a-first-look-at-create-t3-app-1i8f)
-
-## How do I deploy this?
-
-### Vercel
-
-We recommend deploying to [Vercel](https://vercel.com/?utm_source=t3-oss&utm_campaign=oss). It makes it super easy to deploy NextJs apps.
-
-- Push your code to a GitHub repository.
-- Go to [Vercel](https://vercel.com/?utm_source=t3-oss&utm_campaign=oss) and sign up with GitHub.
-- Create a Project and import the repository you pushed your code to.
-- Add your environment variables.
-- Click **Deploy**
-- Now whenever you push a change to your repository, Vercel will automatically redeploy your website!
-
-### Docker
-
-You can also dockerize this stack and deploy a container. See the [Docker deployment page](https://create-t3-app-nu.vercel.app/en/deployment/docker) for details.
-
-## Useful resources
-
-Here are some resources that we commonly refer to:
-
-- [Protecting routes with Next-Auth.js](https://next-auth.js.org/configuration/nextjs#unstable_getserversession)
+- `patches/` pins fixes for `@heroicons/react@2.0.13` and `cloudinary-build-url@0.2.4`; keep those exact versions or drop the patches deliberately.
+- The Stripe webhook (`src/pages/api/webhooks`) reads shipping details from both the current (`collected_information.shipping_details`) and legacy top-level payload shapes, so the webhook endpoint's pinned API version in the Stripe dashboard can be upgraded independently.
+- Deploys on Vercel; `postbuild` generates the sitemap from `NEXT_PUBLIC_APP_URL`.
