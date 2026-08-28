@@ -53,13 +53,10 @@ const PublicationsEmpty = () => {
 const Publications = () => {
   const { userId } = useAuth();
 
-  const publicationsQuery = trpc.useQuery([
-    "publications.getAllByAuthor",
-    {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      userId: userId!,
-    },
-  ]);
+  const publicationsQuery = trpc.publications.getAllByAuthor.useQuery({
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    userId: userId!,
+  });
 
   return (
     <div>
@@ -80,7 +77,7 @@ const Publications = () => {
                       >
                         <div className="flex items-center px-4 py-4 sm:px-6">
                           <div className="flex min-w-0 flex-1 items-center">
-                            <div className="flex-shrink-0">
+                            <div className="shrink-0">
                               <Img
                                 className="h-20 w-20 rounded-md"
                                 src={publication.imageUrl || ""}
@@ -104,7 +101,7 @@ const Publications = () => {
                                     id="postcards"
                                   >
                                     <EnvelopeOpenIcon
-                                      className="h-5 w-5 flex-shrink-0 text-gray-400"
+                                      className="h-5 w-5 shrink-0 text-gray-400"
                                       aria-hidden="true"
                                     />
                                     <span className="">
@@ -132,13 +129,13 @@ const Publications = () => {
                                   <p className="mt-2 flex items-center text-sm text-gray-500">
                                     {publication.status === "DRAFT" && (
                                       <EyeSlashIcon
-                                        className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                                        className="mr-1.5 h-5 w-5 shrink-0 text-gray-400"
                                         aria-hidden="true"
                                       />
                                     )}
                                     {publication.status === "PUBLISHED" && (
                                       <EyeIcon
-                                        className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                                        className="mr-1.5 h-5 w-5 shrink-0 text-gray-400"
                                         aria-hidden="true"
                                       />
                                     )}

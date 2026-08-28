@@ -62,7 +62,7 @@ function Hero() {
           className="relative lg:col-span-5 lg:-mr-8 xl:absolute xl:inset-0 xl:left-1/2 xl:mr-0"
         >
           <Img
-            className="aspect-[3/2] w-full bg-gray-50 object-cover lg:absolute lg:inset-0 lg:aspect-auto lg:h-full"
+            className="aspect-3/2 w-full bg-gray-50 object-cover lg:absolute lg:inset-0 lg:aspect-auto lg:h-full"
             src="https://res.cloudinary.com/jaronheard/image/upload/v1688522113/IMG_2947_gixirr.jpg"
             alt="Postcard sample"
             width="1800"

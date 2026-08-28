@@ -12,7 +12,7 @@ import RedirectToSignInCurrentPage from "../../components/RedirectToSignInCurren
 const New = () => {
   const { userId } = useAuth();
   const router = useRouter();
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
   const {
     register,
     handleSubmit,
@@ -24,9 +24,9 @@ const New = () => {
       description: "",
     },
   });
-  const createPublication = trpc.useMutation("publications.createPublication", {
+  const createPublication = trpc.publications.createPublication.useMutation({
     onSuccess(data) {
-      utils.invalidateQueries();
+      utils.invalidate();
       router.push(`/publications/${data.id}`);
     },
   });

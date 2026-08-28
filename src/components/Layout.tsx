@@ -1,11 +1,15 @@
 import { Fragment, useEffect, useState } from "react";
 import clsx from "clsx";
-import { Disclosure } from "@headlessui/react";
+import {
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
+} from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Sen } from "@next/font/google";
+import { Sen } from "next/font/google";
 import Banner from "./Banner";
 import Head from "next/head";
 import { trackGoal } from "fathom-client";
@@ -179,7 +183,7 @@ const Layout = (props: LayoutProps) => {
               <div className="mx-auto max-w-7xl px-2 sm:px-4 lg:px-8">
                 <div className="relative flex h-16 items-center justify-between bg-yellow">
                   <div className="flex items-center px-2 lg:px-0">
-                    <Link href="/" className="flex-shrink-0">
+                    <Link href="/" className="shrink-0">
                       <svg
                         width="26"
                         height="37"
@@ -227,7 +231,7 @@ const Layout = (props: LayoutProps) => {
                             onClick={item.onClick}
                           >
                             {/* <item.Icon
-                            className="mr-1.5 inline-block h-5 w-5 flex-shrink-0"
+                            className="mr-1.5 inline-block h-5 w-5 shrink-0"
                             aria-hidden="true"
                           /> */}
                             {item.name}
@@ -238,7 +242,7 @@ const Layout = (props: LayoutProps) => {
                   </div>
                   <div className="flex lg:hidden">
                     {/* Mobile menu button */}
-                    <Disclosure.Button className="inline-flex items-center justify-center rounded-md bg-transparent p-2 text-indigo-200 hover:bg-indigo-500 hover:bg-opacity-90 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-700 hover:focus:ring-white active:bg-indigo-950">
+                    <DisclosureButton className="inline-flex items-center justify-center rounded-md bg-transparent p-2 text-indigo-200 hover:bg-indigo-500 hover:bg-opacity-90 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-700 hover:focus:ring-white active:bg-indigo-950">
                       <span className="sr-only">Open main menu</span>
                       {open ? (
                         <XMarkIcon
@@ -251,7 +255,7 @@ const Layout = (props: LayoutProps) => {
                           aria-hidden="true"
                         />
                       )}
-                    </Disclosure.Button>
+                    </DisclosureButton>
                   </div>
                   <div className="hidden lg:ml-4 lg:block">
                     <div className="flex items-center">
@@ -263,10 +267,10 @@ const Layout = (props: LayoutProps) => {
                         {" "}
                         {/* Signed out users get sign in button */}
                         <SignInButton
-                          afterSignInUrl={router.pathname}
-                          afterSignUpUrl={router.pathname}
+                          forceRedirectUrl={router.pathname}
+                          signUpForceRedirectUrl={router.pathname}
                         >
-                          <button className="relative ml-3 flex-shrink-0 rounded-md py-2 px-3 text-sm font-bold text-black hover:bg-indigo-500 hover:bg-opacity-90 hover:text-white active:bg-indigo-950">
+                          <button className="relative ml-3 shrink-0 rounded-md py-2 px-3 text-sm font-bold text-black hover:bg-indigo-500 hover:bg-opacity-90 hover:text-white active:bg-indigo-950">
                             Sign in
                           </button>
                         </SignInButton>
@@ -276,10 +280,10 @@ const Layout = (props: LayoutProps) => {
                 </div>
               </div>
 
-              <Disclosure.Panel className="lg:hidden">
+              <DisclosurePanel className="lg:hidden">
                 <div className="space-y-1 px-2 pt-2 pb-3">
                   {navigation.map((item) => (
-                    <Disclosure.Button
+                    <DisclosureButton
                       key={item.name}
                       as="a"
                       href={item.href}
@@ -293,7 +297,7 @@ const Layout = (props: LayoutProps) => {
                       onClick={item.onClick}
                     >
                       {item.name}
-                    </Disclosure.Button>
+                    </DisclosureButton>
                   ))}
                 </div>
                 <div className="border-t border-gray-300 px-2 pb-3 pt-4 ">
@@ -306,8 +310,8 @@ const Layout = (props: LayoutProps) => {
                   <SignedOut>
                     {/* Signed out users get sign in button */}
                     <SignInButton
-                      afterSignInUrl={router.pathname}
-                      afterSignUpUrl={router.pathname}
+                      forceRedirectUrl={router.pathname}
+                      signUpForceRedirectUrl={router.pathname}
                     >
                       <button className="flex w-full items-center rounded-md py-2 px-3 text-base font-bold text-black hover:bg-indigo-500 hover:bg-opacity-90 hover:text-white active:bg-indigo-950">
                         Sign in
@@ -315,7 +319,7 @@ const Layout = (props: LayoutProps) => {
                     </SignInButton>
                   </SignedOut>
                 </div>
-              </Disclosure.Panel>
+              </DisclosurePanel>
             </>
           )}
         </Disclosure>

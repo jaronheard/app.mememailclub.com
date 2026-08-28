@@ -1,6 +1,6 @@
 import { useState } from "react";
 import {
-  FieldErrorsImpl,
+  FieldErrors,
   FieldPath,
   FieldValues,
   Path,
@@ -23,7 +23,7 @@ interface FileUploadProps<FormValues extends FieldValues> {
   setValue: any;
   postcardBackWithOverlay?: boolean;
   postcardFrontWithRotation?: boolean;
-  errors: FieldErrorsImpl<FormValues>;
+  errors: FieldErrors<FormValues>;
   size: ItemSizeOpts;
   children?: React.ReactNode;
 }
@@ -54,7 +54,7 @@ function FileUpload<FormValues extends FieldValues>({
 
   const cloudinaryWidgetProps = {
     uploadPreset: "6x9_postcard_landscape",
-    onUpload: (result: any, widget: any) => {
+    onSuccess: (result: any, { widget }: any) => {
       if (result.event === "success") {
         setThumbnailUrl(result.info.thumbnail_url);
         setUrl(result.info.secure_url);
@@ -292,7 +292,7 @@ function FileUpload<FormValues extends FieldValues>({
                           className={clsx([
                             "-mb-2.5 h-6 w-6 text-indigo-700",
                             {
-                              "-ml-1 mr-1 rotate-[225deg] -scale-y-100":
+                              "-ml-1 mr-1 rotate-225 -scale-y-100":
                                 orientation === "portrait",
                             },
                           ])}

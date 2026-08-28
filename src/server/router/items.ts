@@ -1,6 +1,6 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { Context, createRouter } from "./context";
+import { Context, publicProcedure, router } from "./context";
 import Stripe from "stripe";
 import { env } from "../../env/server.mjs";
 import {
@@ -28,9 +28,7 @@ const INCLUDE_PUBLICATION_FIELDS = {
   },
 };
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
-  apiVersion: "2022-11-15",
-});
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
 
 const createPostcardInput = z.object({
   publicationId: z.number(),
@@ -142,19 +140,33 @@ async function createPostcard({
   return newItem;
 }
 
-export const items = createRouter()
-  .query("getInfinite", {
-    input: z.object({
-      limit: z.number().min(1).max(100).nullish(),
-      order: z.enum(["asc", "desc"]).nullish(),
-      visibility: z.enum(["PUBLIC", "PRIVATE"]).nullish(),
-      // filters is an array of tag category names
-      filters: z.array(z.string()).nullish(),
-      cursor: z.number().nullish(), // <-- "cursor" needs to exist, but can be any type
-      anonymousUserId: z.string().nullish(), // optional anonymous user id to get a single item
-      publicationId: z.number().nullish(), // optional anonymous user id to get a single item
-    }),
-    async resolve({ ctx, input }) {
+const authedProcedure = publicProcedure.use(({ ctx, next }) => {
+  // Any queries or mutations using this procedure will
+  // raise an error unless there is a current session
+  if (!ctx.auth.userId) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "You must be logged in to perform this action",
+    });
+  }
+  return next();
+});
+
+export const items = router({
+  getInfinite: publicProcedure
+    .input(
+      z.object({
+        limit: z.number().min(1).max(100).nullish(),
+        order: z.enum(["asc", "desc"]).nullish(),
+        visibility: z.enum(["PUBLIC", "PRIVATE"]).nullish(),
+        // filters is an array of tag category names
+        filters: z.array(z.string()).nullish(),
+        cursor: z.number().nullish(), // <-- "cursor" needs to exist, but can be any type
+        anonymousUserId: z.string().nullish(), // optional anonymous user id to get a single item
+        publicationId: z.number().nullish(), // optional anonymous user id to get a single item
+      })
+    )
+    .query(async ({ ctx, input }) => {
       const sortOrder = input.order || "desc";
       const limit = input.limit ?? 50;
       const { cursor } = input;
@@ -239,10 +251,8 @@ export const items = createRouter()
         items,
         nextCursor,
       };
-    },
-  })
-  .query("getAll", {
-    async resolve({ ctx }) {
+    }),
+  getAll: publicProcedure.query(async ({ ctx }) => {
       const items = await ctx.prisma.item.findMany({
         where: {
           status: {
@@ -255,13 +265,14 @@ export const items = createRouter()
         },
       });
       return items;
-    },
-  })
-  .query("getAllPublished", {
-    input: z.object({
-      latestId: z.string(),
     }),
-    async resolve({ ctx }) {
+  getAllPublished: publicProcedure
+    .input(
+      z.object({
+        latestId: z.string(),
+      })
+    )
+    .query(async ({ ctx }) => {
       const items = await ctx.prisma.item.findMany({
         where: {
           status: "PUBLISHED",
@@ -272,10 +283,8 @@ export const items = createRouter()
         },
       });
       return items;
-    },
-  })
-  .query("getPublished", {
-    async resolve({ ctx }) {
+    }),
+  getPublished: publicProcedure.query(async ({ ctx }) => {
       const items = await ctx.prisma.item.findMany({
         where: {
           status: "PUBLISHED",
@@ -287,13 +296,14 @@ export const items = createRouter()
         },
       });
       return items;
-    },
-  })
-  .query("getOne", {
-    input: z.object({
-      id: z.number().optional(),
     }),
-    async resolve({ ctx, input }) {
+  getOne: publicProcedure
+    .input(
+      z.object({
+        id: z.number().optional(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
       const item = await ctx.prisma.item.findUnique({
         where: {
           id: input.id,
@@ -307,13 +317,14 @@ export const items = createRouter()
         });
       }
       return item;
-    },
-  })
-  .query("getOneByStripeProductId", {
-    input: z.object({
-      stripeProductId: z.string(),
     }),
-    async resolve({ ctx, input }) {
+  getOneByStripeProductId: publicProcedure
+    .input(
+      z.object({
+        stripeProductId: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
       const item = await ctx.prisma.item.findUnique({
         where: {
           stripeProductId: input.stripeProductId,
@@ -327,20 +338,21 @@ export const items = createRouter()
         });
       }
       return item;
-    },
-  })
-  .mutation("createItemForAnonymousUser", {
-    input: z.object({
-      name: z.string(),
-      description: z.string(),
-      front: z.string().url(),
-      back: z.string().url(),
-      status: z.enum(["DRAFT", "PUBLISHED"]),
-      size: z.enum(["4x6", "6x9", "6x11"]),
-      visibility: z.enum(["PUBLIC", "PRIVATE"]),
-      anonymousUserId: z.string(),
     }),
-    async resolve({ ctx, input }) {
+  createItemForAnonymousUser: publicProcedure
+    .input(
+      z.object({
+        name: z.string(),
+        description: z.string(),
+        front: z.string().url(),
+        back: z.string().url(),
+        status: z.enum(["DRAFT", "PUBLISHED"]),
+        size: z.enum(["4x6", "6x9", "6x11"]),
+        visibility: z.enum(["PUBLIC", "PRIVATE"]),
+        anonymousUserId: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
       const publication = await ctx.prisma.publication.findFirst({
         where: {
           userId: input.anonymousUserId,
@@ -392,20 +404,21 @@ export const items = createRouter()
         },
       });
       return newItem;
-    },
-  })
-  .mutation("updateItem", {
-    input: z.object({
-      id: z.number(),
-      name: z.string(),
-      description: z.string(),
-      front: z.string().url(),
-      back: z.string().url(),
-      status: z.enum(["DRAFT", "PUBLISHED"]),
-      size: z.enum(["4x6", "6x9", "6x11"]),
-      visibility: z.enum(["PUBLIC", "PRIVATE"]),
     }),
-    async resolve({ ctx, input }) {
+  updateItem: publicProcedure
+    .input(
+      z.object({
+        id: z.number(),
+        name: z.string(),
+        description: z.string(),
+        front: z.string().url(),
+        back: z.string().url(),
+        status: z.enum(["DRAFT", "PUBLISHED"]),
+        size: z.enum(["4x6", "6x9", "6x11"]),
+        visibility: z.enum(["PUBLIC", "PRIVATE"]),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
       const item = await ctx.prisma.item.findUnique({
         where: {
           id: input.id,
@@ -479,44 +492,35 @@ export const items = createRouter()
       }
 
       return updatedItem;
-    },
-  })
-  .middleware(async ({ ctx, next }) => {
-    // Any queries or mutations after this middleware will
-    // raise an error unless there is a current session
-    if (!ctx.auth.userId) {
-      throw new TRPCError({
-        code: "UNAUTHORIZED",
-        message: "You must be logged in to perform this action",
-      });
-    }
-    return next();
-  })
-  .mutation("createItem", {
-    input: z.object({
-      // TODO: ensure that the user is the owner of the publication
-      publicationId: z.number(),
-      name: z.string(),
-      description: z.string(),
-      front: z.string().url(),
-      back: z.string().url(),
-      status: z.enum(["DRAFT", "PUBLISHED"]),
-      size: z.enum(["4x6", "6x9", "6x11"]),
-      visibility: z.enum(["PUBLIC", "PRIVATE"]),
     }),
-    resolve: createPostcard,
-  })
-  .mutation("createItemForUser", {
-    input: z.object({
-      name: z.string(),
-      description: z.string(),
-      front: z.string().url(),
-      back: z.string().url(),
-      status: z.enum(["DRAFT", "PUBLISHED"]),
-      size: z.enum(["4x6", "6x9", "6x11"]),
-      visibility: z.enum(["PUBLIC", "PRIVATE"]),
-    }),
-    async resolve({ ctx, input }) {
+  createItem: authedProcedure
+    .input(
+      z.object({
+        // TODO: ensure that the user is the owner of the publication
+        publicationId: z.number(),
+        name: z.string(),
+        description: z.string(),
+        front: z.string().url(),
+        back: z.string().url(),
+        status: z.enum(["DRAFT", "PUBLISHED"]),
+        size: z.enum(["4x6", "6x9", "6x11"]),
+        visibility: z.enum(["PUBLIC", "PRIVATE"]),
+      })
+    )
+    .mutation(createPostcard),
+  createItemForUser: authedProcedure
+    .input(
+      z.object({
+        name: z.string(),
+        description: z.string(),
+        front: z.string().url(),
+        back: z.string().url(),
+        status: z.enum(["DRAFT", "PUBLISHED"]),
+        size: z.enum(["4x6", "6x9", "6x11"]),
+        visibility: z.enum(["PUBLIC", "PRIVATE"]),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
       if (!ctx.auth.userId) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
@@ -573,13 +577,14 @@ export const items = createRouter()
         },
       });
       return newItem;
-    },
-  })
-  .mutation("deleteItem", {
-    input: z.object({
-      id: z.number(),
     }),
-    async resolve({ ctx, input }) {
+  deleteItem: authedProcedure
+    .input(
+      z.object({
+        id: z.number(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
       const item = await ctx.prisma.item.findUnique({
         where: {
           id: input.id,
@@ -661,5 +666,5 @@ export const items = createRouter()
       }
 
       return deletedItem;
-    },
-  });
+    }),
+});

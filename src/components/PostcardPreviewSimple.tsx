@@ -1,3 +1,4 @@
+import type { JSX } from "react";
 import clsx from "clsx";
 import Img from "./Img";
 import Button from "./Button";
@@ -12,7 +13,7 @@ export function PostcardPreviewSimple(props: {
   hideText?: boolean;
   hideButton?: boolean;
 }): JSX.Element {
-  const aspectRatio = "aspect-[925/625]";
+  const aspectRatio = "aspect-925/625";
   const placeholderSrc =
     "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 9 6'%3E%3C/svg%3E";
 

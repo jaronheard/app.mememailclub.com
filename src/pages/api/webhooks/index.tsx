@@ -11,10 +11,7 @@ import sendMail from "../../../../emails";
 import PostcardError from "../../../../emails/PostcardError";
 import { toErrorWithMessage } from "../../../utils/errors";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
-  // https://github.com/stripe/stripe-node#configuration
-  apiVersion: "2022-11-15",
-});
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
 
 const webhookSecret: string = process.env.STRIPE_WEBHOOK_SECRET || "";
 
@@ -86,21 +83,25 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
       try {
         const checkoutSession = event.data.object as Stripe.Checkout.Session;
         console.log(`🔔 Checkout Session completed: ${checkoutSession.id}`);
+        // Webhook endpoints pinned to older API versions send shipping_details
+        // at the top level; newer versions nest it under collected_information.
+        const shippingDetails:
+          | Stripe.Checkout.Session.CollectedInformation.ShippingDetails
+          | null
+          | undefined =
+          checkoutSession.collected_information?.shipping_details ||
+          (checkoutSession as any).shipping_details;
         const addressDetails = {
-          name: checkoutSession.shipping_details?.name || "",
-          address_line1: checkoutSession.shipping_details?.address?.line1 || "",
-          address_line2: checkoutSession.shipping_details?.address?.line2 || "",
-          address_city: checkoutSession.shipping_details?.address?.city || "",
-          address_state: checkoutSession.shipping_details?.address?.state || "",
-          address_zip:
-            checkoutSession.shipping_details?.address?.postal_code || "",
+          name: shippingDetails?.name || "",
+          address_line1: shippingDetails?.address?.line1 || "",
+          address_line2: shippingDetails?.address?.line2 || "",
+          address_city: shippingDetails?.address?.city || "",
+          address_state: shippingDetails?.address?.state || "",
+          address_zip: shippingDetails?.address?.postal_code || "",
         };
 
         // get lob address
-        const address = await caller.mutation(
-          "lob.createAddress",
-          addressDetails
-        );
+        const address = await caller.lob.createAddress(addressDetails);
 
         // get line items
         const checkoutSessionWithLineItems =
@@ -119,13 +120,13 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
           await Promise.all(
             lineItems.map(async (lineItem) => {
               console.log("lineItem", lineItem);
-              const item = await caller.query("items.getOneByStripeProductId", {
+              const item = await caller.items.getOneByStripeProductId({
                 stripeProductId: lineItem.price?.product as string,
               });
               console.log("recieved item from db", item);
               if (item) {
                 console.log("creating postcard");
-                const postcard = await caller.mutation("lob.createPostcard", {
+                const postcard = await caller.lob.createPostcard({
                   addressId: address.id,
                   itemId: item.id,
                   quantity: lineItem.quantity || 0,

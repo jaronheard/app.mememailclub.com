@@ -1,5 +1,11 @@
 import { Fragment, useEffect } from "react";
-import { Dialog, Transition } from "@headlessui/react";
+import {
+  Dialog,
+  DialogPanel,
+  DialogTitle,
+  Transition,
+  TransitionChild,
+} from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import { useForm } from "react-hook-form";
@@ -83,21 +89,21 @@ export default function Slideover(props: {
   const hasError = tooManyLines || lineTooLong;
 
   const { open, setOpen, itemLink, itemId, itemFront } = props;
-  const createMessage = trpc.useMutation("messages.createMessage", {
+  const createMessage = trpc.messages.createMessage.useMutation({
     onSuccess(message) {
       router.push(`${itemLink}?client_reference_id=${message.id}`);
     },
   });
 
   return (
-    <Transition.Root show={open} as={Fragment}>
+    <Transition show={open} as={Fragment}>
       <Dialog as="div" className="relative z-50" onClose={setOpen}>
         <div className="fixed inset-0" />
 
         <div className="fixed inset-0 overflow-hidden">
           <div className="absolute inset-0 overflow-hidden">
             <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
-              <Transition.Child
+              <TransitionChild
                 as={Fragment}
                 enter="transform transition ease-in-out duration-500 sm:duration-700"
                 enterFrom="translate-x-full"
@@ -106,12 +112,12 @@ export default function Slideover(props: {
                 leaveFrom="translate-x-0"
                 leaveTo="translate-x-full"
               >
-                <Dialog.Panel className="pointer-events-auto w-screen max-w-2xl">
+                <DialogPanel className="pointer-events-auto w-screen max-w-2xl">
                   <div className="flex h-full flex-col divide-y divide-gray-200 bg-postcard shadow-xl">
                     <div className="flex min-h-0 flex-1 flex-col overflow-y-scroll py-6">
                       <div className="px-4 sm:px-6">
                         <div className="flex items-start justify-between">
-                          <Dialog.Title className="flex items-center gap-3">
+                          <DialogTitle className="flex items-center gap-3">
                             <Img
                               src={itemFront}
                               alt=""
@@ -130,7 +136,7 @@ export default function Slideover(props: {
                                 </p>
                               </div>
                             </div>
-                          </Dialog.Title>
+                          </DialogTitle>
                           <div className="ml-3 flex h-7 items-center">
                             <button
                               type="button"
@@ -168,7 +174,7 @@ export default function Slideover(props: {
                           />
                         </div>
                       </div>
-                      <div className="flex flex-shrink-0 justify-between px-4 py-4">
+                      <div className="flex shrink-0 justify-between px-4 py-4">
                         <div className="py-2 px-3">
                           {lineTooLong && (
                             <div className="text-sm text-red-500">
@@ -213,12 +219,12 @@ export default function Slideover(props: {
                       </div>
                     </div>
                   </div>
-                </Dialog.Panel>
-              </Transition.Child>
+                </DialogPanel>
+              </TransitionChild>
             </div>
           </div>
         </div>
       </Dialog>
-    </Transition.Root>
+    </Transition>
   );
 }

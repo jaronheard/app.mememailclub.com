@@ -15,7 +15,7 @@ import {
   PRIVATE_ITEM_DEFAULTS,
   itemSizeToClient,
 } from "../../../../utils/itemSize";
-import { Switch } from "@headlessui/react";
+import { Field, Label, Switch } from "@headlessui/react";
 import Head from "next/head";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
 import { PostcardPreviewSimple } from "../../../../components/PostcardPreviewSimple";
@@ -49,7 +49,7 @@ const hasNoDisallowedChars = (value: string | undefined): boolean | string => {
 
 const Item = () => {
   const router = useRouter();
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
   const [queryStatus, setQueryStatus] = useState({
     ready: false,
     id: 0,
@@ -81,28 +81,36 @@ const Item = () => {
     return url;
   };
 
-  const itemsQuery = trpc.useQuery(["items.getOne", { id: queryStatus.iid }], {
-    enabled: queryStatus.ready,
-  });
+  const itemsQuery = trpc.items.getOne.useQuery(
+    { id: queryStatus.iid },
+    {
+      enabled: queryStatus.ready,
+    }
+  );
   const { data: item } = itemsQuery;
-  const updateItem = trpc.useMutation("items.updateItem", {
+  const updateItem = trpc.items.updateItem.useMutation({
     onSuccess(data, variables) {
-      item
-        ? utils.setQueryData(["items.getOne", { id: queryStatus.iid }], {
+      if (item) {
+        utils.items.getOne.setData(
+          { id: queryStatus.iid },
+          {
             ...item,
             ...data,
-          })
-        : console.error("Query data not set in updateItem, item is undefined");
-      variables.status === "DRAFT"
-        ? router.push(
-            `/publications/${queryStatus.id}/items/${queryStatus.iid}`
-          )
-        : router.push(`/send?id=${queryStatus.iid}`);
+          }
+        );
+      } else {
+        console.error("Query data not set in updateItem, item is undefined");
+      }
+      if (variables.status === "DRAFT") {
+        router.push(`/publications/${queryStatus.id}/items/${queryStatus.iid}`);
+      } else {
+        router.push(`/send?id=${queryStatus.iid}`);
+      }
     },
   });
-  const deleteItem = trpc.useMutation("items.deleteItem", {
+  const deleteItem = trpc.items.deleteItem.useMutation({
     onSuccess() {
-      utils.invalidateQueries();
+      utils.invalidate();
       router.push(`/publications/${queryStatus.id}`);
     },
   });
@@ -230,8 +238,8 @@ const Item = () => {
               </div>
 
               <div className="sm:col-span-6" id="visibility">
-                <Switch.Group as="div" className="flex items-center">
-                  <Switch.Label as="span" className="mr-3 w-[7ch] text-sm">
+                <Field as="div" className="flex items-center">
+                  <Label as="span" className="mr-3 w-[7ch] text-sm">
                     <div
                       className={
                         watch("visibility") === "PUBLIC"
@@ -241,7 +249,7 @@ const Item = () => {
                     >
                       Private
                     </div>
-                  </Switch.Label>
+                  </Label>
                   <Switch
                     checked={watch("visibility") === "PUBLIC"}
                     onChange={() =>
@@ -254,7 +262,7 @@ const Item = () => {
                       watch("visibility") === "PUBLIC"
                         ? "bg-indigo-600"
                         : "bg-gray-200",
-                      "rounded-full relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"
+                      "rounded-full relative inline-flex h-6 w-11 shrink-0 cursor-pointer border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"
                     )}
                   >
                     <span
@@ -267,7 +275,7 @@ const Item = () => {
                       )}
                     />
                   </Switch>
-                  <Switch.Label as="span" className="ml-3 w-[8ch] text-sm">
+                  <Label as="span" className="ml-3 w-[8ch] text-sm">
                     <span
                       className={
                         watch("visibility") === "PUBLIC"
@@ -277,8 +285,8 @@ const Item = () => {
                     >
                       Public
                     </span>
-                  </Switch.Label>
-                </Switch.Group>
+                  </Label>
+                </Field>
                 <p className="mt-2 text-sm text-gray-500">
                   {watch("visibility") === "PUBLIC"
                     ? "Your postcard will be visible and available to send by anyone on PostPostcard once it is approved by our team."
@@ -421,13 +429,13 @@ const Item = () => {
               </div>
 
               <div className="sm:col-span-6" id="visibility">
-                <Switch.Group as="div" className="flex items-center">
-                  <Switch.Label as="span" className="mr-3 w-[7ch] text-sm">
+                <Field as="div" className="flex items-center">
+                  <Label as="span" className="mr-3 w-[7ch] text-sm">
                     <div className="font-bold text-gray-900">Private</div>
-                  </Switch.Label>
+                  </Label>
                   <Switch
                     checked
-                    className="rounded-full relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer border-2 border-transparent bg-gray-200 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"
+                    className="rounded-full relative inline-flex h-6 w-11 shrink-0 cursor-pointer border-2 border-transparent bg-gray-200 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"
                     disabled
                   >
                     <span
@@ -435,10 +443,10 @@ const Item = () => {
                       className="rounded-full pointer-events-none inline-block h-5 w-5 translate-x-0 transform bg-white shadow ring-0 transition duration-200 ease-in-out"
                     />
                   </Switch>
-                  <Switch.Label as="span" className="ml-3 w-[8ch] text-sm">
+                  <Label as="span" className="ml-3 w-[8ch] text-sm">
                     <span className="font-medium text-gray-900">Public</span>
-                  </Switch.Label>
-                </Switch.Group>
+                  </Label>
+                </Field>
                 <p className="mt-2 text-sm text-gray-500">
                   Postcard visibility loading...
                 </p>

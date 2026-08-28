@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createRouter } from "./context";
+import { publicProcedure, router } from "./context";
 import {
   Configuration,
   AddressesApi,
@@ -19,17 +19,19 @@ const config: Configuration = new Configuration({
   username: env.LOB_API_KEY,
 });
 
-export const lob = createRouter()
-  .mutation("createAddress", {
-    input: z.object({
-      name: z.string(),
-      address_line1: z.string(),
-      address_line2: z.string().optional(),
-      address_city: z.string(),
-      address_state: z.string(),
-      address_zip: z.string(),
-    }),
-    async resolve({ input }) {
+export const lob = router({
+  createAddress: publicProcedure
+    .input(
+      z.object({
+        name: z.string(),
+        address_line1: z.string(),
+        address_line2: z.string().optional(),
+        address_city: z.string(),
+        address_state: z.string(),
+        address_zip: z.string(),
+      })
+    )
+    .mutation(async ({ input }) => {
       const addressApi = new AddressesApi(config);
       const addressCreate = new AddressEditable({
         name: input.name,
@@ -48,19 +50,20 @@ export const lob = createRouter()
         });
       }
       return myAddressFromApi;
-    },
-  })
-  .mutation("createPostcard", {
-    input: z.object({
-      addressId: z.string(),
-      itemId: z.number(),
-      quantity: z.number(),
-      test: z.boolean().optional(),
-      size: z.enum(["4x6", "6x9", "6x11"]),
-      client_reference_id: z.string().optional(), // not here
-      email: z.string(),
     }),
-    async resolve({ ctx, input }) {
+  createPostcard: publicProcedure
+    .input(
+      z.object({
+        addressId: z.string(),
+        itemId: z.number(),
+        quantity: z.number(),
+        test: z.boolean().optional(),
+        size: z.enum(["4x6", "6x9", "6x11"]),
+        client_reference_id: z.string().optional(), // not here
+        email: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
       const message = input.client_reference_id
         ? await ctx.prisma.message.findUnique({
             where: {
@@ -135,5 +138,5 @@ export const lob = createRouter()
         component: <PostcardSent postcard={myPostcard} />,
       });
       return myPostcard;
-    },
-  });
+    }),
+});

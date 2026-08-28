@@ -1,3 +1,4 @@
+import type { JSX } from "react";
 import * as React from "react";
 import Image, { ImageLoaderProps, ImageProps } from "next/image";
 // docs: https://cloudinary-build-url.netlify.app/

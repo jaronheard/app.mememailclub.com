@@ -64,7 +64,7 @@ const PostcardCollections: React.FC<PostcardCollectionsProps> = ({
 };
 
 export const SamplePostcardCollections: React.FC = () => {
-  const featuredPublicationsQuery = trpc.useQuery(["publications.getFeatured"]);
+  const featuredPublicationsQuery = trpc.publications.getFeatured.useQuery();
 
   return (
     <div className="bg-indigo-700/10 p-4 sm:p-8 lg:col-span-2">
