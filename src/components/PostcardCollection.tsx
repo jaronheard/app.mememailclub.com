@@ -1,8 +1,9 @@
 import clsx from "clsx";
 import Image from "next/image";
 import React from "react";
-import { trpc } from "../utils/trpc";
-import DefaultQueryCell from "./DefaultQueryCell";
+import { useQuery } from "convex/react";
+import { api } from "../../convex/_generated/api";
+import QueryCell from "./QueryCell";
 import Link from "next/link";
 
 const placeholder6x9 =
@@ -64,7 +65,7 @@ const PostcardCollections: React.FC<PostcardCollectionsProps> = ({
 };
 
 export const SamplePostcardCollections: React.FC = () => {
-  const featuredPublicationsQuery = trpc.publications.getFeatured.useQuery();
+  const featuredPublications = useQuery(api.publications.getFeatured);
 
   return (
     <div className="bg-indigo-700/10 p-4 sm:p-8 lg:col-span-2">
@@ -72,9 +73,9 @@ export const SamplePostcardCollections: React.FC = () => {
         Featured Collections
       </h2>
       <div className="grid grid-cols-1 gap-4 sm:gap-8 md:grid-cols-2">
-        <DefaultQueryCell
-          query={featuredPublicationsQuery}
-          success={({ data: publications }) => {
+        <QueryCell
+          data={featuredPublications}
+          success={(publications) => {
             const [firstFeaturedPublication, secondFeaturedPublication] =
               publications;
             if (!firstFeaturedPublication || !secondFeaturedPublication) {

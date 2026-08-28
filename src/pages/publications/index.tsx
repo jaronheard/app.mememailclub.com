@@ -1,11 +1,12 @@
-import { trpc } from "../../utils/trpc";
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 // Import for PublicationsEmpty
 import { EyeIcon, EyeSlashIcon, PlusIcon } from "@heroicons/react/20/solid";
 //imports for PublicationsList
 import { ChevronRightIcon, EnvelopeOpenIcon } from "@heroicons/react/20/solid";
 import { format } from "date-fns";
 import Link from "next/link";
-import DefaultQueryCell from "../../components/DefaultQueryCell";
+import QueryCell from "../../components/QueryCell";
 import Img from "../../components/Img";
 import Breadcrumbs from "../../components/Breadcrumbs";
 import Button from "../../components/Button";
@@ -53,17 +54,17 @@ const PublicationsEmpty = () => {
 const Publications = () => {
   const { userId } = useAuth();
 
-  const publicationsQuery = trpc.publications.getAllByAuthor.useQuery({
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    userId: userId!,
-  });
+  const publications = useQuery(
+    api.publications.getAllByAuthor,
+    userId ? { userId } : "skip"
+  );
 
   return (
     <div>
-      <DefaultQueryCell
-        query={publicationsQuery}
+      <QueryCell
+        data={publications}
         empty={() => <PublicationsEmpty />}
-        success={({ data: publications }) => (
+        success={(publications) => (
           <>
             <Breadcrumbs pages={[]} />
             <div className="mt-6 overflow-hidden bg-white shadow sm:rounded-md">
@@ -116,12 +117,12 @@ const Publications = () => {
                                     Created on{" "}
                                     <time
                                       dateTime={format(
-                                        publication.createdAt,
+                                        new Date(publication.createdAt),
                                         "yyyy-MM-dd"
                                       )}
                                     >
                                       {format(
-                                        publication.createdAt,
+                                        new Date(publication.createdAt),
                                         "yyyy-MM-dd"
                                       )}
                                     </time>

@@ -1,11 +1,12 @@
 import { useForm } from "react-hook-form";
 // import Link from "next/link";
-import { trpc } from "../../../../utils/trpc";
+import { useAction, useQuery } from "convex/react";
+import { api } from "../../../../../convex/_generated/api";
 import clsx from "clsx";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import FileUpload from "../../../../components/FileUpload";
-import DefaultQueryCell from "../../../../components/DefaultQueryCell";
+import QueryCell from "../../../../components/QueryCell";
 import { z } from "zod";
 import Breadcrumbs from "../../../../components/Breadcrumbs";
 import LoadingLayout from "../../../../components/LoadingLayout";
@@ -31,6 +32,8 @@ export type ItemFormValues = {
   visibility: "PRIVATE" | "PUBLIC";
 };
 
+type ItemStatus = "DRAFT" | "PUBLISHED";
+
 const ParamsValidator = z.object({
   id: z.optional(z.string().transform((str) => Number(str))),
   iid: z.optional(z.string().transform((str) => Number(str))),
@@ -49,7 +52,6 @@ const hasNoDisallowedChars = (value: string | undefined): boolean | string => {
 
 const Item = () => {
   const router = useRouter();
-  const utils = trpc.useUtils();
   const [queryStatus, setQueryStatus] = useState({
     ready: false,
     id: 0,
@@ -81,39 +83,30 @@ const Item = () => {
     return url;
   };
 
-  const itemsQuery = trpc.items.getOne.useQuery(
-    { id: queryStatus.iid },
-    {
-      enabled: queryStatus.ready,
-    }
+  const item = useQuery(
+    api.items.getOne,
+    queryStatus.ready ? { id: queryStatus.iid } : "skip"
   );
-  const { data: item } = itemsQuery;
-  const updateItem = trpc.items.updateItem.useMutation({
-    onSuccess(data, variables) {
-      if (item) {
-        utils.items.getOne.setData(
-          { id: queryStatus.iid },
-          {
-            ...item,
-            ...data,
-          }
-        );
-      } else {
-        console.error("Query data not set in updateItem, item is undefined");
-      }
-      if (variables.status === "DRAFT") {
-        router.push(`/publications/${queryStatus.id}/items/${queryStatus.iid}`);
-      } else {
-        router.push(`/send?id=${queryStatus.iid}`);
-      }
-    },
-  });
-  const deleteItem = trpc.items.deleteItem.useMutation({
-    onSuccess() {
-      utils.invalidate();
-      router.push(`/publications/${queryStatus.id}`);
-    },
-  });
+  const updateItem = useAction(api.itemsNode.updateItem);
+  const deleteItem = useAction(api.itemsNode.deleteItem);
+
+  const saveItem = async (values: ItemFormValues, status: ItemStatus) => {
+    await updateItem({
+      id: queryStatus.iid,
+      name: values.name || PRIVATE_ITEM_DEFAULTS.name,
+      description: values.description || PRIVATE_ITEM_DEFAULTS.description,
+      front: values.front,
+      back: values.back,
+      status,
+      size: values.size,
+      visibility: values.visibility,
+    });
+    if (status === "DRAFT") {
+      router.push(`/publications/${queryStatus.id}/items/${queryStatus.iid}`);
+    } else {
+      router.push(`/send?id=${queryStatus.iid}`);
+    }
+  };
 
   useEffect(() => {
     if (router.isReady) {
@@ -149,9 +142,9 @@ const Item = () => {
 
   return (
     <>
-      <DefaultQueryCell
-        query={itemsQuery}
-        success={({ data: item }) => (
+      <QueryCell
+        data={item}
+        success={(item) => (
           <Breadcrumbs
             pages={[
               {
@@ -176,8 +169,8 @@ const Item = () => {
           </h3>
           <pre>{}</pre>
         </div>
-        <DefaultQueryCell
-          query={itemsQuery}
+        <QueryCell
+          data={item}
           success={() => (
             <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
               <div className="hidden sm:col-span-6" id="size">
@@ -459,37 +452,13 @@ const Item = () => {
           <div className="col-span-6 sm:col-span-4" id="actions">
             <div className="flex items-center justify-start gap-3">
               <Button
-                onClick={handleSubmit((data) => {
-                  updateItem.mutate({
-                    id: queryStatus.iid,
-                    name: data.name || PRIVATE_ITEM_DEFAULTS.name,
-                    description:
-                      data.description || PRIVATE_ITEM_DEFAULTS.description,
-                    front: data.front,
-                    back: data.back,
-                    status: "PUBLISHED",
-                    size: data.size,
-                    visibility: data.visibility,
-                  });
-                })}
+                onClick={handleSubmit((data) => saveItem(data, "PUBLISHED"))}
                 size="sm"
               >
                 Add Message
               </Button>
               <Button
-                onClick={handleSubmit((data) => {
-                  updateItem.mutate({
-                    id: queryStatus.iid,
-                    name: data.name || PRIVATE_ITEM_DEFAULTS.name,
-                    description:
-                      data.description || PRIVATE_ITEM_DEFAULTS.description,
-                    front: data.front,
-                    back: data.back,
-                    status: "DRAFT",
-                    size: data.size,
-                    visibility: data.visibility,
-                  });
-                })}
+                onClick={handleSubmit((data) => saveItem(data, "DRAFT"))}
                 size="sm"
                 variant="secondary"
                 disabled={!isDirty}
@@ -501,11 +470,12 @@ const Item = () => {
           <div className="col-span-6 sm:col-span-2" id="delete">
             <div className="flex items-center justify-start gap-3">
               <Button
-                onClick={(event) => {
+                onClick={async (event) => {
                   event?.preventDefault();
-                  deleteItem.mutate({
+                  await deleteItem({
                     id: queryStatus.iid,
                   });
+                  router.push(`/publications/${queryStatus.id}`);
                 }}
                 size="sm"
                 variant="danger"

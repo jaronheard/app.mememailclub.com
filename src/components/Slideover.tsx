@@ -9,7 +9,8 @@ import {
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import { useForm } from "react-hook-form";
-import { trpc } from "../utils/trpc";
+import { useMutation } from "convex/react";
+import { api } from "../../convex/_generated/api";
 import { useRouter } from "next/router";
 import { trackGoal } from "fathom-client";
 import Img from "./Img";
@@ -89,11 +90,7 @@ export default function Slideover(props: {
   const hasError = tooManyLines || lineTooLong;
 
   const { open, setOpen, itemLink, itemId, itemFront } = props;
-  const createMessage = trpc.messages.createMessage.useMutation({
-    onSuccess(message) {
-      router.push(`${itemLink}?client_reference_id=${message.id}`);
-    },
-  });
+  const createMessage = useMutation(api.messages.createMessage);
 
   return (
     <Transition show={open} as={Fragment}>
@@ -199,13 +196,17 @@ export default function Slideover(props: {
                           <Button
                             disabled={!!hasError || !watch("msg")}
                             variant="primary"
-                            onClick={handleSubmit((data) => {
-                              createMessage.mutate({
+                            onClick={handleSubmit(async (data) => {
+                              const messagePromise = createMessage({
                                 message: data.msg,
                                 itemId: itemId,
                                 userId: userId || "unregistered",
                               });
                               trackGoal("GMZEE6ZN", 0);
+                              const message = await messagePromise;
+                              router.push(
+                                `${itemLink}?client_reference_id=${message.id}`
+                              );
                             })}
                             type="submit"
                             size="sm"

@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import Link from "next/link";
-import { trpc } from "../../utils/trpc";
+import { useAction, useMutation, useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 import clsx from "clsx";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -11,7 +12,7 @@ import {
   PlusIcon,
 } from "@heroicons/react/20/solid";
 import { format } from "date-fns";
-import DefaultQueryCell from "../../components/DefaultQueryCell";
+import QueryCell from "../../components/QueryCell";
 import Img from "../../components/Img";
 import { z } from "zod";
 import Breadcrumbs from "../../components/Breadcrumbs";
@@ -21,6 +22,7 @@ import { SignedIn, SignedOut } from "@clerk/nextjs";
 import Head from "next/head";
 import RedirectToSignInCurrentPage from "../../components/RedirectToSignInCurrentPage";
 import { ITEM_DEFAULTS } from "../../utils/itemSize";
+import { useAnonymousUserId } from "../../utils/anonymousUserId";
 
 export type PublicationFormValues = {
   name: string;
@@ -57,7 +59,7 @@ const ParamsValidator = z.object({
 
 const Publication = () => {
   const router = useRouter();
-  const utils = trpc.useUtils();
+  const anonymousUserId = useAnonymousUserId();
   const [query, setQuery] = useState({ ready: false, id: 0 });
 
   const { id } = router.query;
@@ -73,29 +75,14 @@ const Publication = () => {
       description: "",
     },
   });
-  const publicationQuery = trpc.publications.getOne.useQuery(
-    { id: query.id },
-    { enabled: query.ready }
+  const publication = useQuery(
+    api.publications.getOne,
+    query.ready ? { id: query.id, anonymousUserId } : "skip"
   );
-  const { data: publication, isLoading } = publicationQuery;
-  const updatePublication = trpc.publications.updatePublication.useMutation({
-    onSuccess: () => {
-      utils.invalidate();
-      router.push("/publications");
-    },
-  });
-  const deletePublication = trpc.publications.deletePublication.useMutation({
-    onSuccess: () => {
-      utils.invalidate();
-      router.push("/publications");
-    },
-  });
-  const createItem = trpc.items.createItem.useMutation({
-    onSuccess: (data) => {
-      utils.invalidate();
-      router.push(`/publications/${query.id}/items/${data?.id}`);
-    },
-  });
+  const isLoading = publication === undefined;
+  const updatePublication = useMutation(api.publications.updatePublication);
+  const deletePublication = useMutation(api.publications.deletePublication);
+  const createItem = useAction(api.itemsNode.createItem);
 
   useEffect(() => {
     if (router.isReady) {
@@ -140,9 +127,9 @@ const Publication = () => {
           },
         ]}
       />
-      <DefaultQueryCell
-        query={publicationQuery}
-        success={({ data: publication }) => (
+      <QueryCell
+        data={publication}
+        success={(publication) => (
           <>
             <div className="mt-6" id="items">
               <div id="items-intro">
@@ -153,12 +140,13 @@ const Publication = () => {
                   Add postcards to your collection.
                 </p>
                 <Button
-                  onClick={() =>
-                    createItem.mutate({
+                  onClick={async () => {
+                    const item = await createItem({
                       publicationId: publication?.id as number,
                       ...ITEM_DEFAULTS,
-                    })
-                  }
+                    });
+                    router.push(`/publications/${query.id}/items/${item?.id}`);
+                  }}
                   size="sm"
                   className="mt-5"
                 >
@@ -199,12 +187,12 @@ const Publication = () => {
                                           Created on{" "}
                                           <time
                                             dateTime={format(
-                                              item.createdAt,
+                                              new Date(item.createdAt),
                                               "yyyy-MM-dd"
                                             )}
                                           >
                                             {format(
-                                              item.createdAt,
+                                              new Date(item.createdAt),
                                               "yyyy-MM-dd"
                                             )}
                                           </time>
@@ -321,8 +309,8 @@ const Publication = () => {
             <div className="pt-12">
               <div className="flex justify-between">
                 <Button
-                  onClick={handleSubmit((data) => {
-                    updatePublication.mutate({
+                  onClick={handleSubmit(async (data) => {
+                    await updatePublication({
                       id: query.id,
                       name: data.name,
                       description: data.description,
@@ -330,16 +318,18 @@ const Publication = () => {
                         "https://res.cloudinary.com/jaronheard/image/upload/v1685474738/folder_fpgnfp.png",
                       status: "PUBLISHED",
                     });
+                    router.push("/publications");
                   })}
                   size="sm"
                 >
                   Update Collection
                 </Button>
                 <Button
-                  onClick={() => {
-                    deletePublication.mutate({
+                  onClick={async () => {
+                    await deletePublication({
                       id: query.id,
                     });
+                    router.push("/publications");
                   }}
                   size="sm"
                   variant="danger"

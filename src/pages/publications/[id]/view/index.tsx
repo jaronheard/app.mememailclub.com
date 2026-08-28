@@ -1,5 +1,8 @@
-import DefaultQueryCell from "../../../../components/DefaultQueryCell";
-import { trpc } from "../../../../utils/trpc";
+import QueryCell from "../../../../components/QueryCell";
+import { usePaginatedQuery, useQuery } from "convex/react";
+import type { FunctionReturnType } from "convex/server";
+import { api } from "../../../../../convex/_generated/api";
+import { useAnonymousUserId } from "../../../../utils/anonymousUserId";
 import Head from "next/head";
 import { PostcardPreviewSimple } from "../../../../components/PostcardPreviewSimple";
 import { useEffect, useState, Fragment } from "react";
@@ -39,7 +42,10 @@ import {
   withDefault,
   NumberParam,
 } from "use-query-params";
-import { Tag, TagCategory } from "@prisma/client";
+
+type TagCategoryWithTags = FunctionReturnType<
+  typeof api.tags.getAllTagCategories
+>[number];
 
 function Splash() {
   return (
@@ -76,6 +82,8 @@ const sort = [
   { label: "Oldest", name: "oldest", field: "createdAt", order: "asc" },
 ];
 
+const PAGE_SIZE = 20;
+
 const zSortOption = z.object({
   label: z.string(),
   name: z.string(),
@@ -94,15 +102,15 @@ type CategoryFilterCellProps = {
 };
 
 function CategoryFilterCell(props: CategoryFilterCellProps) {
-  const tagsQuery = trpc.tags.getAllTagCategories.useQuery();
+  const tags = useQuery(api.tags.getAllTagCategories);
   return (
-    <DefaultQueryCell
-      query={tagsQuery}
+    <QueryCell
+      data={tags}
       empty={() => null}
       loading={() => (
         <CategoryFilterLoading>{props.children}</CategoryFilterLoading>
       )}
-      success={({ data }) => {
+      success={(data) => {
         return (
           <CategoryFilter
             tags={data}
@@ -194,7 +202,7 @@ function CategoryFilterLoading(props: CategoryFilterLoadingProps) {
 }
 
 type CategoryFilterProps = CategoryFilterCellProps & {
-  tags: (TagCategory & { Tags: Tag[] })[];
+  tags: TagCategoryWithTags[];
 };
 
 function CategoryFilter(props: CategoryFilterProps) {
@@ -529,12 +537,7 @@ const Send = () => {
   }, [itemId, router]);
 
   const { isSignedIn } = useAuth();
-  const { data: anonymousUserId } = trpc.users.getUniqueUserId.useQuery(
-    undefined,
-    {
-      staleTime: Infinity,
-    }
-  );
+  const anonymousUserId = useAnonymousUserId();
   const [activeSort, setActiveSort] = useQueryParam("sort", SortOptionParam);
   const [activeFilters, setActiveFilters] = useQueryParam(
     "filters",
@@ -554,28 +557,35 @@ const Send = () => {
   const orderToUse = order.success ? order.data : undefined;
 
   // items query
-  const itemsQuery = trpc.items.getInfinite.useInfiniteQuery(
-    {
-      limit: 20,
-      order: orderToUse,
-      filters: activeFilters,
-      anonymousUserId: anonymousUserId,
-      publicationId:
-        queryStatus.ready && queryStatus.id > 0 ? queryStatus.id : undefined,
-    },
-    {
-      enabled: queryStatus.ready,
-      getNextPageParam: (lastPage) => lastPage.nextCursor,
-    }
+  const {
+    results: items,
+    status,
+    loadMore,
+  } = usePaginatedQuery(
+    api.items.getInfinite,
+    queryStatus.ready
+      ? {
+          order: orderToUse,
+          filters: activeFilters,
+          anonymousUserId: anonymousUserId,
+          publicationId: queryStatus.id > 0 ? queryStatus.id : undefined,
+        }
+      : "skip",
+    { initialNumItems: PAGE_SIZE }
   );
 
-  // infinite scroll
+  const isLoadingFirstPage = status === "LoadingFirstPage";
+  const isLoadingMore = status === "LoadingMore";
+  const canLoadMore = status === "CanLoadMore";
+
+  // infinite scroll. Filtering happens after pagination on the server, so a
+  // page can come back empty while more pages remain - keep loading until
+  // there is something to show.
   useEffect(() => {
-    if (inView) {
-      itemsQuery.fetchNextPage();
+    if (canLoadMore && (inView || items.length === 0)) {
+      loadMore(PAGE_SIZE);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [inView]);
+  }, [inView, canLoadMore, items.length, loadMore]);
 
   useEffect(() => {
     if (router.isReady) {
@@ -593,89 +603,70 @@ const Send = () => {
 
   return (
     <>
-      <DefaultQueryCell
-        query={itemsQuery}
-        empty={() => <div>No postcards</div>}
-        loading={() => (
-          <div className="mx-auto max-w-2xl lg:max-w-7xl">
-            <h2 className="sr-only">Products</h2>
-            <CategoryFilterCell
-              activeFilters={activeFilters}
-              setActiveFilters={setActiveFilters}
-              activeSort={activeSort}
-              setActiveSort={setActiveSort}
-            >
-              <div className="grid grid-cols-1 gap-y-4 sm:grid-cols-1 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-2 lg:gap-x-8">
-                <PostcardCreateSimple
-                  onClick={() => router.push("/items/new")}
+      {isLoadingFirstPage ? (
+        <div className="mx-auto max-w-2xl lg:max-w-7xl">
+          <h2 className="sr-only">Products</h2>
+          <CategoryFilterCell
+            activeFilters={activeFilters}
+            setActiveFilters={setActiveFilters}
+            activeSort={activeSort}
+            setActiveSort={setActiveSort}
+          >
+            <div className="grid grid-cols-1 gap-y-4 sm:grid-cols-1 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-2 lg:gap-x-8">
+              <PostcardCreateSimple onClick={() => router.push("/items/new")} />
+            </div>
+          </CategoryFilterCell>
+        </div>
+      ) : (
+        <div className="mx-auto max-w-2xl lg:max-w-7xl">
+          <h2 className="sr-only">Products</h2>
+          <CategoryFilterCell
+            activeFilters={activeFilters}
+            setActiveFilters={setActiveFilters}
+            activeSort={activeSort}
+            setActiveSort={setActiveSort}
+          >
+            <div className="grid grid-cols-1 gap-y-4 sm:grid-cols-1 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-2 lg:gap-x-8">
+              {items.map((item) => (
+                <PostcardPreviewSimple
+                  key={`postcard-${item.id}`}
+                  id={`postcard-${item.id}`}
+                  front={item.front}
+                  name={
+                    isSignedIn
+                      ? `${item.visibility === "PRIVATE" ? "🔒" : "🌐"} ${
+                          item.name
+                        }`
+                      : item.name
+                  }
+                  description={item.description}
+                  onClick={() => {
+                    router.push(`/send/${item.id}`);
+                    trackGoal("1WFW5D7J", 0);
+                  }}
                 />
-              </div>
-            </CategoryFilterCell>
-          </div>
-        )}
-        success={({ data: infiniteData }) => {
-          const items =
-            infiniteData.pages?.map((page) => page.items).flat() || [];
-          return (
-            <>
-              <div className="mx-auto max-w-2xl lg:max-w-7xl">
-                <h2 className="sr-only">Products</h2>
-                <CategoryFilterCell
-                  activeFilters={activeFilters}
-                  setActiveFilters={setActiveFilters}
-                  activeSort={activeSort}
-                  setActiveSort={setActiveSort}
-                >
-                  <div className="grid grid-cols-1 gap-y-4 sm:grid-cols-1 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-2 lg:gap-x-8">
-                    {items.map((item) => (
-                      <>
-                        <PostcardPreviewSimple
-                          key={`postcard-${item.id}`}
-                          id={`postcard-${item.id}`}
-                          front={item.front}
-                          name={
-                            isSignedIn
-                              ? `${
-                                  item.visibility === "PRIVATE" ? "🔒" : "🌐"
-                                } ${item.name}`
-                              : item.name
-                          }
-                          description={item.description}
-                          onClick={() => {
-                            router.push(`/send/${item.id}`);
-                            trackGoal("1WFW5D7J", 0);
-                          }}
-                        />
-                      </>
-                    ))}
-                    <PostcardCreateSimple
-                      onClick={() => router.push("/items/new")}
-                    />
-                  </div>
-                </CategoryFilterCell>
-              </div>
-            </>
-          );
-        }}
-      />
+              ))}
+              <PostcardCreateSimple onClick={() => router.push("/items/new")} />
+            </div>
+          </CategoryFilterCell>
+        </div>
+      )}
       <div className="flex justify-center py-8" ref={ref}>
-        {(itemsQuery.isFetchingNextPage || itemsQuery.hasNextPage) && (
+        {(isLoadingMore || canLoadMore) && (
           <Button
             variant="secondary"
-            onClick={() => itemsQuery.fetchNextPage()}
-            disabled={
-              !(itemsQuery.hasNextPage || itemsQuery.isFetchingNextPage)
-            }
+            onClick={() => loadMore(PAGE_SIZE)}
+            disabled={!canLoadMore}
           >
-            {itemsQuery.isFetchingNextPage
+            {isLoadingMore
               ? "Loading more..."
-              : itemsQuery.hasNextPage
+              : canLoadMore
               ? "Load Newer"
               : "Nothing more to load"}
           </Button>
         )}
       </div>
-      {!itemsQuery.isFetchingNextPage && !itemsQuery.hasNextPage && (
+      {!isLoadingMore && !canLoadMore && (
         <>
           <div className="mx-auto flex max-w-xl justify-center italic">
             There are no more postcards to see, but you can create your own!
@@ -685,11 +676,6 @@ const Send = () => {
           </div>
         </>
       )}
-      <div>
-        {itemsQuery.isFetching && !itemsQuery.isFetchingNextPage
-          ? "Background Updating..."
-          : null}
-      </div>
     </>
   );
 };

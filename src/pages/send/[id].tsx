@@ -6,8 +6,9 @@ import Head from "next/head";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
 import { ItemSizeOpts } from "../../utils/itemSize";
 import { PostcardPreviewSimple } from "../../components/PostcardPreviewSimple";
-import { trpc } from "../../utils/trpc";
-import DefaultQueryCell from "../../components/DefaultQueryCell";
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+import QueryCell from "../../components/QueryCell";
 import Slideover from "../../components/Slideover";
 
 export type ItemFormValues = {
@@ -67,16 +68,11 @@ const Item = () => {
     setOpen(false);
   };
 
-  const itemsQuery = trpc.items.getOne.useQuery(
-    { id },
-    {
-      enabled: !!id,
-    }
-  );
+  const item = useQuery(api.items.getOne, id ? { id } : "skip");
 
   return (
-    <DefaultQueryCell
-      query={itemsQuery}
+    <QueryCell
+      data={item}
       empty={() => <div>Item not found</div>}
       loading={() => (
         <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:max-w-7xl lg:px-8">
@@ -84,7 +80,7 @@ const Item = () => {
           <LoadingItems />
         </div>
       )}
-      success={({ data: item }) => (
+      success={(item) => (
         <>
           <Slideover
             open={open}

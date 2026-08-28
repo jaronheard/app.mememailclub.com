@@ -1,14 +1,10 @@
 import Cors from "micro-cors";
 import { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
-import { appRouter } from "../../../server/router";
-import { prisma } from "../../../server/db/client";
+import { ConvexHttpClient } from "convex/browser";
 import { RequestHandler } from "next/dist/server/next";
-import { itemSizeToClient } from "../../../utils/itemSize";
 import type { Readable } from "node:stream";
-import { getAuth } from "@clerk/nextjs/server";
-import sendMail from "../../../../emails";
-import PostcardError from "../../../../emails/PostcardError";
+import { api } from "../../../../convex/_generated/api";
 import { toErrorWithMessage } from "../../../utils/errors";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
@@ -35,7 +31,9 @@ async function buffer(readable: Readable) {
 }
 
 const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const caller = appRouter.createCaller({ auth: getAuth(req), prisma: prisma });
+  const convex = new ConvexHttpClient(
+    process.env.NEXT_PUBLIC_CONVEX_URL as string
+  );
 
   if (req.method === "POST") {
     const buf = await buffer(req);
@@ -101,7 +99,10 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
         };
 
         // get lob address
-        const address = await caller.lob.createAddress(addressDetails);
+        const address = await convex.action(
+          api.lob.createAddress,
+          addressDetails
+        );
 
         // get line items
         const checkoutSessionWithLineItems =
@@ -120,17 +121,17 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
           await Promise.all(
             lineItems.map(async (lineItem) => {
               console.log("lineItem", lineItem);
-              const item = await caller.items.getOneByStripeProductId({
-                stripeProductId: lineItem.price?.product as string,
-              });
+              const item = await convex.query(
+                api.items.getOneByStripeProductId,
+                { stripeProductId: lineItem.price?.product as string }
+              );
               console.log("recieved item from db", item);
               if (item) {
                 console.log("creating postcard");
-                const postcard = await caller.lob.createPostcard({
+                const postcard = await convex.action(api.lob.createPostcard, {
                   addressId: address.id,
                   itemId: item.id,
                   quantity: lineItem.quantity || 0,
-                  size: itemSizeToClient(item.size),
                   client_reference_id:
                     checkoutSession.client_reference_id || "",
                   email: customerEmail,
@@ -144,11 +145,8 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
           response.status = "success";
         }
       } catch (error) {
-        await sendMail({
-          to: "hi@postpostcard.com",
-          component: (
-            <PostcardError error={toErrorWithMessage(error).message} />
-          ),
+        await convex.action(api.lob.sendPostcardErrorEmail, {
+          error: toErrorWithMessage(error).message,
         });
         console.error("error creating postcard from purchase", error);
         response.error = error;
