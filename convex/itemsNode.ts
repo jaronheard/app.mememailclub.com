@@ -24,7 +24,10 @@ import type { ItemShape } from "./lib/model";
 const bannerHeading = encodeURIComponent("Your postcard is on its way! 💌");
 const bannerText = encodeURIComponent("Send another for $2.99!");
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
+// Lazy: constructing Stripe with no key throws, and env vars may be absent
+// when Convex analyzes modules during a push.
+let _stripe: Stripe | undefined;
+const stripe = () => (_stripe ??= new Stripe(process.env.STRIPE_SECRET_KEY || ""));
 
 const itemSizeInput = v.union(
   v.literal("4x6"),
@@ -66,7 +69,7 @@ async function createPostcard(
   }
 
   // stripe logic
-  const product = await stripe.products.create({
+  const product = await stripe().products.create({
     name: input.name || "Postcard",
     // active: input.status === "PUBLISHED",
     description: productDescription(input.size),
@@ -94,7 +97,7 @@ async function createPostcard(
     throw new Error("Stripe product creation failed");
   }
 
-  const paymentLink = await stripe.paymentLinks.create({
+  const paymentLink = await stripe().paymentLinks.create({
     line_items: [{ price: product.default_price, quantity: 1 }],
     shipping_address_collection: { allowed_countries: ["US"] },
     allow_promotion_codes: true,
@@ -133,7 +136,7 @@ async function createPostcard(
   // point the payment link at the item's send page. The tRPC version left this
   // promise dangling; Convex kills the sandbox when the handler returns, so it
   // is awaited here.
-  await stripe.paymentLinks.update(paymentLink.id, {
+  await stripe().paymentLinks.update(paymentLink.id, {
     after_completion: {
       type: "redirect",
       redirect: {
@@ -266,7 +269,7 @@ export const updateItem = action({
     }
 
     // stripe logic
-    const product = await stripe.products.update(item.stripeProductId, {
+    const product = await stripe().products.update(item.stripeProductId, {
       name: args.name,
       active: true, // allow even for draft items
       statement_descriptor: `postcard: ${args.name.slice(0, 12)}`,
@@ -325,7 +328,7 @@ export const deleteItem = action({
     // deactivate stripe product
     if (item.stripeProductId) {
       try {
-        const updatedProduct = await stripe.products.update(
+        const updatedProduct = await stripe().products.update(
           item.stripeProductId,
           { active: false }
         );
@@ -338,7 +341,7 @@ export const deleteItem = action({
     // deactivate stripe payment link
     if (item.stripePaymentLinkId) {
       try {
-        const updatedPaymentLink = await stripe.paymentLinks.update(
+        const updatedPaymentLink = await stripe().paymentLinks.update(
           item.stripePaymentLinkId,
           { active: false }
         );

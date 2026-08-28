@@ -26,9 +26,10 @@ import sendMail from "../emails";
 import PostcardSent from "../emails/PostcardSent";
 import PostcardError from "../emails/PostcardError";
 
-const config: Configuration = new Configuration({
-  username: process.env.LOB_API_KEY,
-});
+// Lazy: env vars may be absent when Convex analyzes modules during a push.
+let _config: Configuration | undefined;
+const config = () =>
+  (_config ??= new Configuration({ username: process.env.LOB_API_KEY }));
 
 /** Convex only accepts plain values; the Lob SDK hands back class instances. */
 function toPlain<T>(value: T): unknown {
@@ -45,7 +46,7 @@ export const createAddress = action({
     address_zip: v.string(),
   },
   handler: async (_ctx, args) => {
-    const addressApi = new AddressesApi(config);
+    const addressApi = new AddressesApi(config());
     const addressCreate = new AddressEditable({
       name: args.name,
       address_line1: args.address_line1,
@@ -111,7 +112,7 @@ export const createPostcard = action({
       // send_date: new Date(Date.now() + 5 * 60000).toISOString(),
       quantity: args.quantity,
     });
-    const myPostcard = await new PostcardsApi(config).create(postcardCreate);
+    const myPostcard = await new PostcardsApi(config()).create(postcardCreate);
     if (!myPostcard) {
       await sendMail({
         to: "hi@postpostcard.com",
