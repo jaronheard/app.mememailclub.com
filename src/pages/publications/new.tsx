@@ -1,5 +1,6 @@
 import { useForm } from "react-hook-form";
-import { trpc } from "../../utils/trpc";
+import { useMutation } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 import clsx from "clsx";
 import { useRouter } from "next/router";
 import { PublicationFormValues } from "./[id]";
@@ -12,7 +13,6 @@ import RedirectToSignInCurrentPage from "../../components/RedirectToSignInCurren
 const New = () => {
   const { userId } = useAuth();
   const router = useRouter();
-  const utils = trpc.useUtils();
   const {
     register,
     handleSubmit,
@@ -24,12 +24,7 @@ const New = () => {
       description: "",
     },
   });
-  const createPublication = trpc.publications.createPublication.useMutation({
-    onSuccess(data) {
-      utils.invalidate();
-      router.push(`/publications/${data.id}`);
-    },
-  });
+  const createPublication = useMutation(api.publications.createPublication);
 
   return (
     <>
@@ -124,8 +119,8 @@ const New = () => {
         <div className="pt-5">
           <div className="flex justify-end">
             <Button
-              onClick={handleSubmit((data) => {
-                createPublication.mutate({
+              onClick={handleSubmit(async (data) => {
+                const publication = await createPublication({
                   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                   userId: userId!,
                   name: data.name,
@@ -134,6 +129,7 @@ const New = () => {
                     "https://res.cloudinary.com/jaronheard/image/upload/v1685474738/folder_fpgnfp.png",
                   status: "PUBLISHED",
                 });
+                router.push(`/publications/${publication.id}`);
               })}
               className="ml-3"
             >

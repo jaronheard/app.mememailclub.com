@@ -6,7 +6,6 @@ import { z } from "zod";
  * This way you can ensure the app isn't built with invalid env vars.
  */
 export const serverSchema = z.object({
-  DATABASE_URL: z.string().url(),
   NODE_ENV: z.enum(["development", "test", "production"]),
   CLERK_SECRET_KEY: z.string(),
   GOOGLE_CLIENT_ID: z.string(),
@@ -25,6 +24,7 @@ export const serverSchema = z.object({
  */
 export const clientSchema = z.object({
   NEXT_PUBLIC_APP_URL: z.string().url(),
+  NEXT_PUBLIC_CONVEX_URL: z.string().url(),
   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string(),
   NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: z.string(),
   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string(),
@@ -43,6 +43,7 @@ export const clientSchema = z.object({
  */
 export const clientEnv = {
   NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+  NEXT_PUBLIC_CONVEX_URL: process.env.NEXT_PUBLIC_CONVEX_URL,
   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:
     process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
   NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME:

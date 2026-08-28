@@ -1,27 +1,31 @@
 import { SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
-import { trpc } from "../../utils/trpc";
+import { useAction } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import LoadingLayout from "../../components/LoadingLayout";
 import { ITEM_DEFAULTS } from "../../utils/itemSize";
+import { useAnonymousUserId } from "../../utils/anonymousUserId";
 
 const SignedInNew = () => {
   const router = useRouter();
-  const utils = trpc.useUtils();
   const { isLoaded, isSignedIn } = useAuth();
-  const { mutate, status } = trpc.items.createItemForUser.useMutation({
-    onSuccess: (data) => {
-      utils.invalidate();
-      router.replace(`/publications/${data.publicationId}/items/${data.id}`);
-    },
-  });
+  const createItemForUser = useAction(api.itemsNode.createItemForUser);
+  // the action must run exactly once, even under React strict mode
+  const started = useRef(false);
 
-  // effect that runs mutation when a user is signed in and loaded and cleans up when the component is unmounted
   useEffect(() => {
-    if (isLoaded && isSignedIn && status === "idle") {
-      mutate(ITEM_DEFAULTS);
+    if (isLoaded && isSignedIn && !started.current) {
+      started.current = true;
+      createItemForUser(ITEM_DEFAULTS)
+        .then((data) => {
+          router.replace(`/publications/${data.publicationId}/items/${data.id}`);
+        })
+        .catch((error) => {
+          console.error("error creating item", error);
+        });
     }
-  }, [isLoaded, isSignedIn, status, mutate]);
+  }, [isLoaded, isSignedIn, createItemForUser, router]);
 
   return (
     <LoadingLayout>
@@ -32,27 +36,27 @@ const SignedInNew = () => {
 
 const SignedOutNew = () => {
   const router = useRouter();
-  const { mutate, status } = trpc.items.createItemForAnonymousUser.useMutation({
-    onSuccess: (data) => {
-      router.replace(`/publications/${data.publicationId}/items/${data.id}`);
-    },
-  });
-
-  const { data: anonymousUserId } = trpc.users.getUniqueUserId.useQuery(
-    undefined,
-    {
-      staleTime: Infinity,
-    }
+  const createItemForAnonymousUser = useAction(
+    api.itemsNode.createItemForAnonymousUser
   );
-  // effect that runs mutation when a user is signed in and loaded and cleans up when the component is unmounted
+  const anonymousUserId = useAnonymousUserId();
+  const started = useRef(false);
+
   useEffect(() => {
-    if (anonymousUserId && status === "idle") {
-      mutate({
+    if (anonymousUserId && !started.current) {
+      started.current = true;
+      createItemForAnonymousUser({
         ...ITEM_DEFAULTS,
         anonymousUserId: anonymousUserId,
-      });
+      })
+        .then((data) => {
+          router.replace(`/publications/${data.publicationId}/items/${data.id}`);
+        })
+        .catch((error) => {
+          console.error("error creating item", error);
+        });
     }
-  }, [anonymousUserId, status, mutate]);
+  }, [anonymousUserId, createItemForAnonymousUser, router]);
 
   return (
     <LoadingLayout>

@@ -2,14 +2,17 @@ import type { ReactElement } from "react";
 import { render } from "@react-email/render";
 import nodemailer from "nodemailer";
 
-const transport = nodemailer.createTransport({
-  host: "smtp.postmarkapp.com",
-  port: 587,
-  auth: {
-    user: process.env.POSTMARK_API_KEY,
-    pass: process.env.POSTMARK_API_KEY,
-  },
-});
+// Lazy: env vars may be absent when Convex analyzes modules during a push.
+let _transport: ReturnType<typeof nodemailer.createTransport> | undefined;
+const transport = () =>
+  (_transport ??= nodemailer.createTransport({
+    host: "smtp.postmarkapp.com",
+    port: 587,
+    auth: {
+      user: process.env.POSTMARK_API_KEY,
+      pass: process.env.POSTMARK_API_KEY,
+    },
+  }));
 
 const defaultFrom = "Jaron from PostPostcard <hi@postpostcard.com>";
 
@@ -51,7 +54,7 @@ const sendMail = async ({
 }: SendMailOptions) => {
   const html = await render(component);
   const text = await render(component, { plainText: true });
-  return transport.sendMail({
+  return transport().sendMail({
     from,
     to,
     cc,

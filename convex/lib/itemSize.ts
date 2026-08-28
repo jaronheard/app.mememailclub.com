@@ -1,13 +1,17 @@
+/**
+ * Port of src/utils/itemSize.ts without the `@prisma/client` import so it can
+ * be bundled into Convex functions. Values must stay in sync with the Next.js
+ * copy — they control Cloudinary transformations and the DB enum encoding.
+ */
+
 export type ItemSizeOpts = "4x6" | "6x9" | "6x11";
-/** How the size is stored (matches the Convex `itemSize` union). */
 export type ItemSizeDB = "sz_4x6" | "sz_6x9" | "sz_6x11";
 
-export const itemSizeToDB = (size: ItemSizeOpts): ItemSizeDB => {
-  return `sz_${size}` as ItemSizeDB;
-};
-export const itemSizeToClient = (size: ItemSizeDB): ItemSizeOpts => {
-  return size.replace("sz_", "") as ItemSizeOpts;
-};
+export const itemSizeToDB = (size: ItemSizeOpts): ItemSizeDB =>
+  `sz_${size}` as ItemSizeDB;
+
+export const itemSizeToClient = (size: ItemSizeDB): ItemSizeOpts =>
+  size.replace("sz_", "") as ItemSizeOpts;
 
 export const SIZES = {
   "4x6": {
@@ -17,13 +21,10 @@ export const SIZES = {
     textWidth: 650,
     textSize: 24,
     textMargin: 20,
-    previewClassNames: "w-[187.5px] h-[127.5px]",
-    previewClassNamesPortrait: "w-[127.5px] h-[187.5px]",
     previewWidth: 187.5,
     previewHeight: 127.5,
     stripePreviewWidth: 187.5 * 2,
     stripePreviewHeight: 127.5 * 2,
-    // not reviewed
     brandingTextX: 75,
     brandingTextY: 75,
     brandingTextWidth: 975,
@@ -41,8 +42,6 @@ export const SIZES = {
     textWidth: 975,
     textSize: 36,
     textMargin: 30,
-    previewClassNames: "w-[277.5px] h-[187.5px]",
-    previewClassNamesPortrait: "w-[187.5px] h-[277.5px]",
     previewWidth: 277.5,
     previewHeight: 187.5,
     stripePreviewWidth: 277.5 * 2,
@@ -64,13 +63,10 @@ export const SIZES = {
     textWidth: 975,
     textSize: 36,
     textMargin: 30,
-    previewClassNames: "w-[337.5px] h-[187.5px]",
-    previewClassNamesPortrait: "w-[187.5px] h-[337.5px]",
     previewWidth: 337.5,
     previewHeight: 187.5,
     stripePreviewWidth: 337.5 * 2,
     stripePreviewHeight: 187.5 * 2,
-    // not reviewed
     brandingTextX: 75,
     brandingTextY: 75,
     brandingTextWidth: 975,
@@ -87,9 +83,7 @@ export const ITEM_DEFAULTS = {
   name: "",
   description: "",
   front: `https://res.cloudinary.com/jaronheard/image/upload/v1692491797/bluePixel_eklcos_r17q8i.png`,
-  // front: `https://res.cloudinary.com/jaronheard/image/upload/w_2775,h_1875/v1687555005/bluePixel_eklcos.jpg`,
   back: `https://res.cloudinary.com/jaronheard/image/upload/v1692491790/redPixel_peptry_jukrao.png`,
-  // back: `https://res.cloudinary.com/jaronheard/image/upload/w_2775,h_1875/v1687555005/redPixel_peptry.jpg`,
   status: "DRAFT",
   size: "6x9",
   visibility: "PRIVATE",

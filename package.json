@@ -5,15 +5,14 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev",
-    "postinstall": "patch-package && prisma generate",
+    "postinstall": "patch-package",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "start": "next start",
     "stripe": "stripe listen --forward-to localhost:3000/api/webhooks",
-    "db": "pscale connect meme-mail-club initial-setup --port 3309",
-    "db-prod": "pscale connect meme-mail-club main --port 3309",
     "postbuild": "next-sitemap",
-    "email": "email dev --dir emails"
+    "email": "email dev --dir emails",
+    "convex": "convex dev"
   },
   "engines": {
     "node": ">=20.0.0"
@@ -24,21 +23,15 @@
     "@headlessui/react": "^2.2.0",
     "@heroicons/react": "2.0.13",
     "@lob/lob-typescript-sdk": "^1.3.5",
-    "@prisma/client": "^6.0.0",
     "@react-email/components": "^0.5.0",
     "@react-email/render": "^1.1.0",
     "@tailwindcss/forms": "^0.5.9",
-    "@tanstack/react-query": "^5.0.0",
-    "@trpc/client": "^11.0.0",
-    "@trpc/next": "^11.0.0",
-    "@trpc/react-query": "^11.0.0",
-    "@trpc/server": "^11.0.0",
     "cloudinary": "^1.41.3",
     "cloudinary-build-url": "0.2.4",
     "clsx": "^2.1.1",
+    "convex": "^1.44.0",
     "date-fns": "^4.1.0",
     "fathom-client": "^3.7.0",
-    "md5": "^2.3.0",
     "micro-cors": "^0.1.1",
     "nanoid": "^5.0.0",
     "next": "^15.0.0",
@@ -53,7 +46,6 @@
     "react-hook-form": "^7.53.0",
     "react-intersection-observer": "^9.13.0",
     "stripe": "^18.0.0",
-    "superjson": "^2.2.1",
     "use-query-params": "^2.2.1",
     "zod": "^3.25.0"
   },
@@ -75,7 +67,6 @@
     "postcss": "^8.4.47",
     "prettier": "^3.3.3",
     "prettier-plugin-tailwindcss": "^0.8.1",
-    "prisma": "^6.0.0",
     "react-email": "^4.0.0",
     "tailwindcss": "^4.3.3",
     "typescript": "^5.6.0"

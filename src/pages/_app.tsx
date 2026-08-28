@@ -2,15 +2,17 @@
 import type { AppType } from "next/app";
 import "../styles/globals.css";
 import ChatwootWidget from "../components/Chatwoot";
-import { Router } from "next/router";
+import { Router, useRouter } from "next/router";
 import * as Fathom from "fathom-client";
 import { useEffect } from "react";
-import { ClerkProvider } from "@clerk/nextjs";
+import { ClerkProvider, useAuth } from "@clerk/nextjs";
+import { ConvexReactClient } from "convex/react";
+import { ConvexProviderWithClerk } from "convex/react-clerk";
 import Layout from "../components/Layout";
 import NextAdapterPages from "next-query-params/pages";
 import { QueryParamProvider } from "use-query-params";
 import { useReportWebVitals } from "next-axiom";
-import { trpc } from "../utils/trpc";
+import QueryErrorBoundary from "../components/QueryErrorBoundary";
 
 // Record a pageview when route changes
 Router.events.on("routeChangeComplete", (as, routeProps) => {
@@ -19,7 +21,12 @@ Router.events.on("routeChangeComplete", (as, routeProps) => {
   }
 });
 
+const convex = new ConvexReactClient(
+  process.env.NEXT_PUBLIC_CONVEX_URL as string
+);
+
 const MyApp: AppType = ({ Component, pageProps: { ...pageProps } }) => {
+  const router = useRouter();
   useReportWebVitals();
 
   // Initialize Fathom when the app loads
@@ -39,14 +46,18 @@ const MyApp: AppType = ({ Component, pageProps: { ...pageProps } }) => {
       }}
       {...pageProps}
     >
-      <ChatwootWidget />
-      <Layout>
-        <QueryParamProvider adapter={NextAdapterPages}>
-          <Component {...pageProps} />
-        </QueryParamProvider>
-      </Layout>
+      <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
+        <ChatwootWidget />
+        <Layout>
+          <QueryParamProvider adapter={NextAdapterPages}>
+            <QueryErrorBoundary resetKey={router.pathname}>
+              <Component {...pageProps} />
+            </QueryErrorBoundary>
+          </QueryParamProvider>
+        </Layout>
+      </ConvexProviderWithClerk>
     </ClerkProvider>
   );
 };
 
-export default trpc.withTRPC(MyApp);
+export default MyApp;

@@ -5,8 +5,7 @@ Send real, physical postcards from the browser — [postpostcard.com](https://po
 ## Stack
 
 - [Next.js 15](https://nextjs.org) (pages router) with React 19
-- [tRPC 11](https://trpc.io) + [TanStack Query 5](https://tanstack.com/query)
-- [Prisma 6](https://prisma.io) against PlanetScale MySQL (`relationMode = "prisma"`)
+- [Convex](https://convex.dev) for the database and all queries/mutations/actions (`convex/`); reactive client via `convex/react`
 - [Clerk 6](https://clerk.com) for auth (`clerkMiddleware`, all routes public by default)
 - [Stripe](https://stripe.com) Checkout + webhooks for payment
 - [Lob](https://lob.com) for postcard printing and mailing
@@ -20,9 +19,9 @@ Send real, physical postcards from the browser — [postpostcard.com](https://po
 Requires Node 20+ (see `.nvmrc`). Copy env vars into `.env` (see `src/env/schema.mjs` for the required keys).
 
 ```bash
-npm install        # also applies patches + generates Prisma client
+npm install        # also applies patches
 npm run dev        # app on localhost:3000
-npm run db         # PlanetScale proxy for the dev branch (port 3309)
+npm run convex     # Convex dev server (pushes convex/ on change)
 npm run stripe     # forward Stripe webhook events to localhost
 npm run email      # react-email template preview server
 ```
@@ -39,4 +38,6 @@ npm run build
 
 - `patches/` pins fixes for `@heroicons/react@2.0.13` and `cloudinary-build-url@0.2.4`; keep those exact versions or drop the patches deliberately.
 - The Stripe webhook (`src/pages/api/webhooks`) reads shipping details from both the current (`collected_information.shipping_details`) and legacy top-level payload shapes, so the webhook endpoint's pinned API version in the Stripe dashboard can be upgraded independently.
-- Deploys on Vercel; `postbuild` generates the sitemap from `NEXT_PUBLIC_APP_URL`.
+- Deploys on Vercel; `postbuild` generates the sitemap from `NEXT_PUBLIC_APP_URL`. Convex functions deploy separately via `npx convex deploy` (or `scripts/go-live-convex.sh` for full prod provisioning).
+- Convex↔Clerk auth needs a JWT template named `convex` on the Clerk instance and `CLERK_JWT_ISSUER_DOMAIN` set on the Convex deployment.
+- Legacy numeric ids from the old MySQL era live on as `legacyId` (returned as `id`), so old URLs and Stripe metadata keep working; `convex/migrations.ts` holds the importer used for the one-time data migration.
