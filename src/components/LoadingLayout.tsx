@@ -1,3 +1,4 @@
+import type { JSX } from "react";
 import Loading from "./Loading";
 
 const LoadingLayout = ({

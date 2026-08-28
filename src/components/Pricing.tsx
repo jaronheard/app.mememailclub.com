@@ -63,7 +63,7 @@ const Pricing = () => {
                   {tier.includedFeatures.map((feature) => (
                     <li key={feature} className="flex space-x-3">
                       <CheckIcon
-                        className="h-5 w-5 flex-shrink-0 text-green-500"
+                        className="h-5 w-5 shrink-0 text-green-500"
                         aria-hidden="true"
                       />
                       <span className="text-sm text-gray-500">{feature}</span>

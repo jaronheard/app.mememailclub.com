@@ -292,7 +292,7 @@ function FileUpload<FormValues extends FieldValues>({
                           className={clsx([
                             "-mb-2.5 h-6 w-6 text-indigo-700",
                             {
-                              "-ml-1 mr-1 rotate-[225deg] -scale-y-100":
+                              "-ml-1 mr-1 rotate-225 -scale-y-100":
                                 orientation === "portrait",
                             },
                           ])}

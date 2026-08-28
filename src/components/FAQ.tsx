@@ -1,5 +1,9 @@
 /* eslint-disable react/no-unescaped-entities */
-import { Disclosure } from "@headlessui/react";
+import {
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
+} from "@headlessui/react";
 import { MinusSmallIcon, PlusSmallIcon } from "@heroicons/react/20/solid";
 
 const faqs = [
@@ -38,7 +42,7 @@ const FAQ = () => {
                   {({ open }) => (
                     <>
                       <dt>
-                        <Disclosure.Button className="flex w-full items-start justify-between text-left text-gray-900">
+                        <DisclosureButton className="flex w-full items-start justify-between text-left text-gray-900">
                           <span className="text-base font-semibold leading-7">
                             {faq.question}
                           </span>
@@ -55,13 +59,13 @@ const FAQ = () => {
                               />
                             )}
                           </span>
-                        </Disclosure.Button>
+                        </DisclosureButton>
                       </dt>
-                      <Disclosure.Panel as="dd" className="mt-2 pr-12">
+                      <DisclosurePanel as="dd" className="mt-2 pr-12">
                         <p className="text-base leading-7 text-gray-600">
                           {faq.answer}
                         </p>
-                      </Disclosure.Panel>
+                      </DisclosurePanel>
                     </>
                   )}
                 </Disclosure>

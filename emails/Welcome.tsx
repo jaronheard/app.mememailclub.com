@@ -1,10 +1,10 @@
 import React from "react";
-import { MjmlColumn, MjmlSection, MjmlWrapper } from "@faire/mjml-react";
-import BaseLayout from "./components/BaseLayout";
-import Footer from "./components/Footer";
-import Heading from "./components/Heading";
-import Text from "./components/Text";
-import Header from "./components/Header";
+import { Section } from "@react-email/components";
+import BaseLayout from "./_components/BaseLayout";
+import Footer from "./_components/Footer";
+import Header from "./_components/Header";
+import Heading from "./_components/Heading";
+import Text from "./_components/Text";
 import { colors, spacing } from "./theme";
 
 type WelcomeProps = {
@@ -15,27 +15,26 @@ const Welcome = ({ includeUnsubscribe }: WelcomeProps) => {
   return (
     <BaseLayout width={600}>
       <Header />
-      <MjmlWrapper>
-        <MjmlSection
-          padding={spacing.s11}
-          cssClass="gutter"
-          backgroundColor={colors.postcard}
-        >
-          <MjmlColumn>
-            <Heading maxWidth={420} cssClass="h1" color={colors.black}>
-              Welcome to PostPostcard!
-            </Heading>
-            <Text color={colors.black}>Glad you are here!</Text>
-          </MjmlColumn>
-        </MjmlSection>
-        <MjmlSection
-          paddingBottom={spacing.s11}
-          cssClass="gutter"
-        ></MjmlSection>
-      </MjmlWrapper>
+      <Section
+        className="gutter"
+        style={{
+          backgroundColor: colors.postcard,
+          paddingTop: spacing.s11,
+          paddingBottom: spacing.s11,
+        }}
+      >
+        <Heading maxWidth={420} style={{ color: colors.black }}>
+          Welcome to PostPostcard!
+        </Heading>
+        <Text style={{ color: colors.black }}>Glad you are here!</Text>
+      </Section>
+      <Section style={{ paddingBottom: spacing.s11 }} />
       <Footer includeUnsubscribe={includeUnsubscribe} />
     </BaseLayout>
   );
 };
 Welcome.subject = "Thank you for signing up!";
+Welcome.PreviewProps = {
+  includeUnsubscribe: true,
+} satisfies WelcomeProps;
 export default Welcome;

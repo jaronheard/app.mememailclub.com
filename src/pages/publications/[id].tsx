@@ -212,13 +212,13 @@ const Publication = () => {
                                         <p className="mt-2 flex items-center text-sm text-gray-500">
                                           {item.status === "DRAFT" && (
                                             <EyeSlashIcon
-                                              className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                                              className="mr-1.5 h-5 w-5 shrink-0 text-gray-400"
                                               aria-hidden="true"
                                             />
                                           )}
                                           {item.status === "PUBLISHED" && (
                                             <EyeIcon
-                                              className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                                              className="mr-1.5 h-5 w-5 shrink-0 text-gray-400"
                                               aria-hidden="true"
                                             />
                                           )}

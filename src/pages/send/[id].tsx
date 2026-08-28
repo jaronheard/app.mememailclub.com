@@ -95,7 +95,7 @@ const Item = () => {
           ></Slideover>
           <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:max-w-7xl lg:px-8">
             <Splash />
-            <div className="grid grid-cols-1 gap-y-4 py-[4.5rem] sm:grid-cols-1 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-2 lg:gap-x-8">
+            <div className="grid grid-cols-1 gap-y-4 py-18 sm:grid-cols-1 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-2 lg:gap-x-8">
               <PostcardPreviewSimple
                 key={`postcard-front-${item.id}`}
                 id={`postcard-${item.id}`}

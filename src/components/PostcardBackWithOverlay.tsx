@@ -1,3 +1,4 @@
+import type { JSX } from "react";
 import clsx from "clsx";
 import Img from "./Img";
 
@@ -36,7 +37,7 @@ export function PostcardBackWithOverlay(props: {
   let height = 400;
   let addressWidth = "w-[50%]"; // 300
   let addressHeight = "h-[60%]"; // 160
-  let aspectRatio = "aspect-[6/4]";
+  let aspectRatio = "aspect-6/4";
   let placeholderSrc = placeholder4x6;
 
   if (props.size === "6x9") {
@@ -44,14 +45,14 @@ export function PostcardBackWithOverlay(props: {
     height = 625;
     addressWidth = "w-[43.10%]"; // 4" / 9.25" = 0.431
     addressHeight = "h-[37.5%]"; // 2.375" / 6.25" = 0.375
-    aspectRatio = "aspect-[925/625]";
+    aspectRatio = "aspect-925/625";
     placeholderSrc = placeholder6x9;
   } else if (props.size === "6x11") {
     width = 1100;
     height = 600;
     addressWidth = "w-[27.27%]"; // 300
     addressHeight = "h-[26.66%]"; // 160
-    aspectRatio = "aspect-[11/6]";
+    aspectRatio = "aspect-11/6";
     placeholderSrc = placeholder6x11;
   }
 

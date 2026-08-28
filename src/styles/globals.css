@@ -1,3 +1,100 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@plugin '@tailwindcss/forms';
+@plugin '@tailwindcss/typography';
+
+@theme {
+  /* Replace (not extend) the default palette — only these colors exist. */
+  --color-*: initial;
+  --color-black: #120f0c;
+  --color-white: #ffffff;
+  --color-postcard: #fffaf5;
+
+  --color-indigo: #5520f8;
+  --color-indigo-50: #5520f8;
+  --color-indigo-100: #5520f8;
+  --color-indigo-200: #5520f8;
+  --color-indigo-300: #5520f8;
+  --color-indigo-400: #5520f8;
+  --color-indigo-500: #5520f8;
+  --color-indigo-600: #5520f8;
+  --color-indigo-700: #5520f8;
+  --color-indigo-800: #5520f8;
+  --color-indigo-900: #5520f8;
+  --color-indigo-950: #39159d;
+
+  --color-gray: #120f0c;
+  --color-gray-50: #f5f5f5;
+  --color-gray-100: #eaeaec;
+  --color-gray-200: #cbcbcf;
+  --color-gray-300: #ababb1;
+  --color-gray-400: #6d6d77;
+  --color-gray-500: #2e2e3d;
+  --color-gray-600: #292937;
+  --color-gray-700: #1c1c25;
+  --color-gray-800: #15151b;
+  --color-gray-900: #0e0e12;
+
+  --color-red-50: #fef2f2;
+  --color-red-100: #fee2e2;
+  --color-red-200: #fecaca;
+  --color-red-300: #fca5a5;
+  --color-red-400: #f87171;
+  --color-red-500: #ef4444;
+  --color-red-600: #dc2626;
+  --color-red-700: #b91c1c;
+  --color-red-800: #991b1b;
+  --color-red-900: #7f1d1d;
+  --color-red-950: #450a0a;
+
+  --color-yellow: #f7d832;
+  --color-brandIndigo: #5520f8;
+  --color-brandTeal: #00b4d8;
+  --color-brandOrange: #fc5825;
+  --color-brandRed: #fe0760;
+
+  /* Square everything — no corner rounding anywhere in the design. */
+  --radius-*: initial;
+  --radius-none: 0;
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+
+  --font-sans: 'Sen', sans-serif;
+
+  --shadow-button: 3.2px 4.8px 0px 0px hsla(29, 22%, 6%, 0.33);
+  --shadow-buttonPressed: 2.4px 3.2px 0px 0px hsla(29, 22%, 6%, 0.37);
+}
+
+/* Bare `rounded` (v3 borderRadius.DEFAULT) — keep it valid, and square. */
+@utility rounded {
+  border-radius: 0;
+}
+
+/* The v3 theme removed `full` from the radius scale, so rounded-full never
+   applied; v4 ships it unconditionally. Keep those elements square. This
+   must be a plain rule late in the utilities layer — @utility cannot
+   override the built-in. */
+@layer utilities {
+  .rounded-full {
+    border-radius: 0;
+  }
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}

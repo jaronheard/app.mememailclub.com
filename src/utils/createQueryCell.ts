@@ -1,3 +1,4 @@
+import type { JSX } from "react";
 /**
  * Cells are a declarative approach to data fetching, inspired by https://redwoodjs.com/docs/cells
  */

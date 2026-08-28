@@ -11,10 +11,20 @@ import Button from "../components/Button";
 import { z } from "zod";
 import {
   Dialog,
+  DialogPanel,
   Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
   Menu,
+  MenuButton,
+  MenuItem,
+  MenuItems,
   Popover,
+  PopoverButton,
+  PopoverGroup,
+  PopoverPanel,
   Transition,
+  TransitionChild,
 } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
@@ -116,13 +126,13 @@ function CategoryFilterLoading(props: CategoryFilterLoadingProps) {
   return (
     <div className="">
       {/* Mobile filter dialog */}
-      <Transition.Root show={false} as={Fragment}>
+      <Transition show={false} as={Fragment}>
         <Dialog
           as="div"
           className="relative z-40 sm:hidden"
           onClose={() => null}
         >
-          <Transition.Child
+          <TransitionChild
             as={Fragment}
             enter="transition-opacity ease-linear duration-300"
             enterFrom="opacity-0"
@@ -132,10 +142,10 @@ function CategoryFilterLoading(props: CategoryFilterLoadingProps) {
             leaveTo="opacity-0"
           >
             <div className="fixed inset-0 bg-black bg-opacity-25" />
-          </Transition.Child>
+          </TransitionChild>
 
           <div className="fixed inset-0 z-40 flex">
-            <Transition.Child
+            <TransitionChild
               as={Fragment}
               enter="transition ease-in-out duration-300 transform"
               enterFrom="translate-x-full"
@@ -144,7 +154,7 @@ function CategoryFilterLoading(props: CategoryFilterLoadingProps) {
               leaveFrom="translate-x-0"
               leaveTo="translate-x-full"
             >
-              <Dialog.Panel className="relative ml-auto flex h-full w-full max-w-xs flex-col overflow-y-auto bg-white py-4 pb-6 shadow-xl">
+              <DialogPanel className="relative ml-auto flex h-full w-full max-w-xs flex-col overflow-y-auto bg-white py-4 pb-6 shadow-xl">
                 <div className="flex items-center justify-between px-4">
                   <h2 className="text-lg font-medium text-gray-900">Filters</h2>
                   <button
@@ -156,11 +166,11 @@ function CategoryFilterLoading(props: CategoryFilterLoadingProps) {
                     <XMarkIcon className="h-6 w-6" aria-hidden="true" />
                   </button>
                 </div>
-              </Dialog.Panel>
-            </Transition.Child>
+              </DialogPanel>
+            </TransitionChild>
           </div>
         </Dialog>
-      </Transition.Root>
+      </Transition>
 
       <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:max-w-7xl lg:px-8">
         <Splash />
@@ -200,9 +210,9 @@ function CategoryFilter(props: CategoryFilterProps) {
   return (
     <div className="">
       {/* Mobile filter dialog */}
-      <Transition.Root show={open} as={Fragment}>
+      <Transition show={open} as={Fragment}>
         <Dialog as="div" className="relative z-40 sm:hidden" onClose={setOpen}>
-          <Transition.Child
+          <TransitionChild
             as={Fragment}
             enter="transition-opacity ease-linear duration-300"
             enterFrom="opacity-0"
@@ -212,10 +222,10 @@ function CategoryFilter(props: CategoryFilterProps) {
             leaveTo="opacity-0"
           >
             <div className="fixed inset-0 bg-black bg-opacity-25" />
-          </Transition.Child>
+          </TransitionChild>
 
           <div className="fixed inset-0 z-40 flex">
-            <Transition.Child
+            <TransitionChild
               as={Fragment}
               enter="transition ease-in-out duration-300 transform"
               enterFrom="translate-x-full"
@@ -224,7 +234,7 @@ function CategoryFilter(props: CategoryFilterProps) {
               leaveFrom="translate-x-0"
               leaveTo="translate-x-full"
             >
-              <Dialog.Panel className="relative ml-auto flex h-full w-full max-w-xs flex-col overflow-y-auto bg-white py-4 pb-6 shadow-xl">
+              <DialogPanel className="relative ml-auto flex h-full w-full max-w-xs flex-col overflow-y-auto bg-white py-4 pb-6 shadow-xl">
                 <div className="flex items-center justify-between px-4">
                   <h2 className="text-lg font-medium text-gray-900">Filters</h2>
                   <button
@@ -256,7 +266,7 @@ function CategoryFilter(props: CategoryFilterProps) {
                         {({ open }) => (
                           <>
                             <h3 className="-mx-2 -my-3 flow-root">
-                              <Disclosure.Button className="flex w-full items-center justify-between bg-white px-2 py-3 text-sm text-gray-400">
+                              <DisclosureButton className="flex w-full items-center justify-between bg-white px-2 py-3 text-sm text-gray-400">
                                 <span className="font-medium text-gray-900">
                                   {numberOfActiveFiltersInSection > 0 ? (
                                     <span className="mr-1.5 rounded bg-gray-200 px-1.5 py-0.5 text-xs font-semibold tabular-nums text-gray-700">
@@ -274,9 +284,9 @@ function CategoryFilter(props: CategoryFilterProps) {
                                     aria-hidden="true"
                                   />
                                 </span>
-                              </Disclosure.Button>
+                              </DisclosureButton>
                             </h3>
-                            <Disclosure.Panel className="pt-6">
+                            <DisclosurePanel className="pt-6">
                               <div className="space-y-6">
                                 {section.Tags.map((option, optionIdx) => (
                                   <div
@@ -315,18 +325,18 @@ function CategoryFilter(props: CategoryFilterProps) {
                                   </div>
                                 ))}
                               </div>
-                            </Disclosure.Panel>
+                            </DisclosurePanel>
                           </>
                         )}
                       </Disclosure>
                     );
                   })}
                 </form>
-              </Dialog.Panel>
-            </Transition.Child>
+              </DialogPanel>
+            </TransitionChild>
           </div>
         </Dialog>
-      </Transition.Root>
+      </Transition>
 
       <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:max-w-7xl lg:px-8">
         <Splash />
@@ -341,13 +351,13 @@ function CategoryFilter(props: CategoryFilterProps) {
           <div className="flex items-center justify-between">
             <Menu as="div" className="relative inline-block text-left">
               <div>
-                <Menu.Button className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
+                <MenuButton className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
                   Sort
                   <ChevronDownIcon
-                    className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
+                    className="-mr-1 ml-1 h-5 w-5 shrink-0 text-gray-400 group-hover:text-gray-500"
                     aria-hidden="true"
                   />
-                </Menu.Button>
+                </MenuButton>
               </div>
 
               <Transition
@@ -359,10 +369,10 @@ function CategoryFilter(props: CategoryFilterProps) {
                 leaveFrom="transform opacity-100 scale-100"
                 leaveTo="transform opacity-0 scale-95"
               >
-                <Menu.Items className="absolute left-0 z-10 mt-2 w-40 origin-top-left rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none">
+                <MenuItems className="absolute left-0 z-10 mt-2 w-40 origin-top-left rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none">
                   <div className="py-1">
                     {sort.map((option) => (
-                      <Menu.Item key={`sort-option-${option.name}`}>
+                      <MenuItem key={`sort-option-${option.name}`}>
                         {() => (
                           <button
                             onClick={() => {
@@ -384,10 +394,10 @@ function CategoryFilter(props: CategoryFilterProps) {
                             {option.label}
                           </button>
                         )}
-                      </Menu.Item>
+                      </MenuItem>
                     ))}
                   </div>
-                </Menu.Items>
+                </MenuItems>
               </Transition>
             </Menu>
 
@@ -404,7 +414,7 @@ function CategoryFilter(props: CategoryFilterProps) {
               Filters
             </button>
 
-            <Popover.Group className="hidden sm:flex sm:items-baseline sm:space-x-8">
+            <PopoverGroup className="hidden sm:flex sm:items-baseline sm:space-x-8">
               {props.tags.map((section, sectionIdx) => {
                 const activeFiltersInSection = props.activeFilters
                   ? props.activeFilters.filter((filter) =>
@@ -421,7 +431,7 @@ function CategoryFilter(props: CategoryFilterProps) {
                     className="relative inline-block text-left"
                   >
                     <div>
-                      <Popover.Button className="group inline-flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
+                      <PopoverButton className="group inline-flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
                         <span>{section.label}</span>
                         {numberOfActiveFiltersInSection > 0 ? (
                           <span className="ml-1.5 rounded bg-gray-200 px-1.5 py-0.5 text-xs font-semibold tabular-nums text-gray-700">
@@ -429,10 +439,10 @@ function CategoryFilter(props: CategoryFilterProps) {
                           </span>
                         ) : null}
                         <ChevronDownIcon
-                          className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
+                          className="-mr-1 ml-1 h-5 w-5 shrink-0 text-gray-400 group-hover:text-gray-500"
                           aria-hidden="true"
                         />
-                      </Popover.Button>
+                      </PopoverButton>
                     </div>
 
                     <Transition
@@ -444,7 +454,7 @@ function CategoryFilter(props: CategoryFilterProps) {
                       leaveFrom="transform opacity-100 scale-100"
                       leaveTo="transform opacity-0 scale-95"
                     >
-                      <Popover.Panel className="absolute right-0 z-10 mt-2 origin-top-right rounded-md bg-white p-4 shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none">
+                      <PopoverPanel className="absolute right-0 z-10 mt-2 origin-top-right rounded-md bg-white p-4 shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none">
                         <form className="space-y-4">
                           {section.Tags.map((option) => (
                             <div
@@ -484,12 +494,12 @@ function CategoryFilter(props: CategoryFilterProps) {
                             </div>
                           ))}
                         </form>
-                      </Popover.Panel>
+                      </PopoverPanel>
                     </Transition>
                   </Popover>
                 );
               })}
-            </Popover.Group>
+            </PopoverGroup>
           </div>
         </section>
         {props.children}
@@ -529,10 +539,7 @@ const Send = () => {
     "filters",
     ArrayParam
   );
-  const [publicationId, setPublicationId] = useQueryParam(
-    "publicationId",
-    NumberParam
-  );
+  const [publicationId] = useQueryParam("publicationId", NumberParam);
   const { ref, inView } = useInView();
 
   const order = z

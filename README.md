@@ -4,15 +4,15 @@ Send real, physical postcards from the browser — [postpostcard.com](https://po
 
 ## Stack
 
-- [Next.js 15](https://nextjs.org) (pages router) with React 18
+- [Next.js 15](https://nextjs.org) (pages router) with React 19
 - [tRPC 11](https://trpc.io) + [TanStack Query 5](https://tanstack.com/query)
 - [Prisma 6](https://prisma.io) against PlanetScale MySQL (`relationMode = "prisma"`)
 - [Clerk 6](https://clerk.com) for auth (`clerkMiddleware`, all routes public by default)
 - [Stripe](https://stripe.com) Checkout + webhooks for payment
 - [Lob](https://lob.com) for postcard printing and mailing
 - [Cloudinary](https://cloudinary.com) for image storage/transforms
-- [Tailwind CSS 3](https://tailwindcss.com)
-- [mailing](https://github.com/sofn-xyz/mailing) + MJML for transactional email
+- [Tailwind CSS 4](https://tailwindcss.com) (CSS-first theme in `src/styles/globals.css`) + [Headless UI 2](https://headlessui.com)
+- [react-email](https://react.email) + [nodemailer](https://nodemailer.com) (Postmark SMTP) for transactional email
 - Axiom (logging) and Fathom (analytics)
 
 ## Development
@@ -24,7 +24,7 @@ npm install        # also applies patches + generates Prisma client
 npm run dev        # app on localhost:3000
 npm run db         # PlanetScale proxy for the dev branch (port 3309)
 npm run stripe     # forward Stripe webhook events to localhost
-npm run mailing    # email template preview server
+npm run email      # react-email template preview server
 ```
 
 Checks:
